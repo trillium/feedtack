@@ -3,11 +3,26 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FeedtackContext } from './context.js'
 import { getTargetMeta, getViewportMeta, getPageMeta, getDeviceMeta, getPinCoords } from '../capture/index.js'
-import { FEEDTACK_STYLES } from '../ui/styles.js'
+import { FEEDTACK_STYLES, FEEDTACK_DEFAULT_TOKENS } from '../ui/styles.js'
+import { themeToCSS } from '../types/theme.js'
+import type { FeedtackTheme } from '../types/theme.js'
 import { PIN_PALETTE } from '../ui/colors.js'
 import { SCHEMA_VERSION } from '../types/payload.js'
 import type { FeedtackAdapter } from '../types/adapter.js'
 import type { FeedbackItem, FeedtackPayload, FeedtackPin, FeedtackSentiment, FeedtackUser } from '../types/payload.js'
+
+export interface FeedtackClasses {
+  /** Class added to the activation button */
+  button?: string
+  /** Class added to the comment form panel */
+  form?: string
+  /** Class added to the thread/reply panel */
+  thread?: string
+  /** Class added to the color picker row */
+  colorPicker?: string
+  /** Class added to each pin marker */
+  pinMarker?: string
+}
 
 export interface FeedtackProviderProps {
   children: React.ReactNode
@@ -17,6 +32,10 @@ export interface FeedtackProviderProps {
   hotkey?: string
   /** Only show the activation button for users whose role is in this list */
   adminOnly?: boolean
+  /** CSS token overrides for brand alignment */
+  theme?: FeedtackTheme
+  /** Additional class names for individual feedtack elements */
+  classes?: FeedtackClasses
   onError?: (err: Error) => void
 }
 
@@ -51,7 +70,7 @@ function getAnchoredPosition(x: number, y: number): { left?: number; right?: num
   return { left, right, top, bottom }
 }
 
-export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p', adminOnly = false, onError }: FeedtackProviderProps) {
+export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p', adminOnly = false, theme, classes = {}, onError }: FeedtackProviderProps) {
   const [isPinModeActive, setIsPinModeActive] = useState(false)
   const [pendingPins, setPendingPins] = useState<Array<Omit<FeedtackPin, 'index'>>>([])
   const [selectedColor, setSelectedColor] = useState<string>(PIN_PALETTE[0])
@@ -71,7 +90,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
     if (document.getElementById('feedtack-styles')) return
     const style = document.createElement('style')
     style.id = 'feedtack-styles'
-    style.textContent = FEEDTACK_STYLES
+    style.textContent = FEEDTACK_DEFAULT_TOKENS + FEEDTACK_STYLES
     document.head.appendChild(style)
     return () => { style.remove() }
   }, [])
@@ -84,6 +103,14 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
     rootRef.current = root
     return () => { root.remove() }
   }, [])
+
+  // Apply theme tokens onto root element
+  useEffect(() => {
+    const root = document.getElementById('feedtack-root')
+    if (!root || !theme) return
+    const tokens = themeToCSS(theme)
+    Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v))
+  }, [theme])
 
   // Load persisted feedback on mount
   useEffect(() => {
@@ -237,7 +264,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
       {/* Activation button */}
       {showButton && (
         <button
-          className={`feedtack-btn${isPinModeActive ? ' active' : ''}`}
+          className={`feedtack-btn${isPinModeActive ? ' active' : ''}${classes.button ? ` ${classes.button}` : ''}`}
           onClick={() => isPinModeActive ? deactivatePinMode() : activatePinMode()}
           title="Toggle feedback pin mode"
         >
@@ -247,7 +274,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
 
       {/* Color picker — shown when pin mode is active */}
       {isPinModeActive && (
-        <div className="feedtack-color-picker">
+        <div className={`feedtack-color-picker${classes.colorPicker ? ` ${classes.colorPicker}` : ''}`}>
           {PIN_PALETTE.map((color) => (
             <button
               key={color}
@@ -264,7 +291,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
       {pendingPins.map((pin, i) => (
         <div
           key={i}
-          className="feedtack-pin-marker"
+          className={`feedtack-pin-marker${classes.pinMarker ? ` ${classes.pinMarker}` : ''}`}
           style={{
             background: pin.color,
             left: pin.x,
@@ -276,7 +303,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
 
       {/* New feedback comment form */}
       {showForm && (
-        <div className="feedtack-form" style={{ position: 'fixed', ...formPos }}>
+        <div className={`feedtack-form${classes.form ? ` ${classes.form}` : ''}`} style={{ position: 'fixed', ...formPos }}>
           <textarea
             className={commentError ? 'error' : ''}
             placeholder="What's the issue? (required)"
@@ -313,7 +340,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
           return (
             <div
               key={item.payload.id}
-              className="feedtack-pin-marker"
+              className={`feedtack-pin-marker${classes.pinMarker ? ` ${classes.pinMarker}` : ''}`}
               style={{
                 background: firstItemPin.color,
                 left: firstItemPin.x,
@@ -335,7 +362,7 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
         const pin = item.payload.pins[0]
         const pos = getAnchoredPosition(pin.x, pin.y)
         return (
-          <div className="feedtack-thread" style={{ position: 'fixed', ...pos }}>
+          <div className={`feedtack-thread${classes.thread ? ` ${classes.thread}` : ''}`} style={{ position: 'fixed', ...pos }}>
             <strong style={{ fontSize: 13 }}>{item.payload.submittedBy.name}</strong>
             <p style={{ fontSize: 13 }}>{item.payload.comment}</p>
             {item.replies.map((r) => (

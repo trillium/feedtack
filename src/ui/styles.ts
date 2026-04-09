@@ -1,4 +1,20 @@
-/** Injected once into <head> — all styles scoped to .feedtack-* */
+/** CSS custom property defaults — overridden by the theme prop */
+export const FEEDTACK_DEFAULT_TOKENS = `
+  #feedtack-root {
+    --ft-primary: #2563eb;
+    --ft-primary-hover: #1d4ed8;
+    --ft-bg: #ffffff;
+    --ft-surface: #f9fafb;
+    --ft-text: #111827;
+    --ft-text-muted: #6b7280;
+    --ft-border: #e5e7eb;
+    --ft-radius: 8px;
+    --ft-error: #ef4444;
+    --ft-badge: #f59e0b;
+  }
+`
+
+/** Injected once into <head> — all styles scoped to .feedtack-* using CSS tokens */
 export const FEEDTACK_STYLES = `
   #feedtack-root * {
     box-sizing: border-box;
@@ -13,10 +29,10 @@ export const FEEDTACK_STYLES = `
     bottom: 24px;
     right: 24px;
     z-index: 2147483640;
-    background: #1a1a1a;
-    color: #fff;
+    background: var(--ft-text);
+    color: var(--ft-bg);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--ft-radius);
     padding: 8px 14px;
     font-size: 13px;
     font-weight: 500;
@@ -29,11 +45,11 @@ export const FEEDTACK_STYLES = `
   }
 
   .feedtack-btn:hover {
-    background: #333;
+    opacity: 0.85;
   }
 
   .feedtack-btn.active {
-    background: #2563eb;
+    background: var(--ft-primary);
   }
 
   .feedtack-crosshair * {
@@ -59,17 +75,17 @@ export const FEEDTACK_STYLES = `
     right: -4px;
     width: 10px;
     height: 10px;
-    background: #f59e0b;
+    background: var(--ft-badge);
     border-radius: 50%;
-    border: 1.5px solid #fff;
+    border: 1.5px solid var(--ft-bg);
   }
 
   .feedtack-color-picker {
     display: flex;
     gap: 6px;
     padding: 8px;
-    background: #fff;
-    border-radius: 8px;
+    background: var(--ft-bg);
+    border-radius: var(--ft-radius);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     position: fixed;
     bottom: 72px;
@@ -87,15 +103,15 @@ export const FEEDTACK_STYLES = `
   }
 
   .feedtack-color-swatch.selected {
-    border-color: #1a1a1a;
+    border-color: var(--ft-text);
     transform: scale(1.15);
   }
 
   .feedtack-form {
     position: absolute;
     z-index: 2147483642;
-    background: #fff;
-    border-radius: 10px;
+    background: var(--ft-bg);
+    border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
     width: 280px;
@@ -106,26 +122,28 @@ export const FEEDTACK_STYLES = `
 
   .feedtack-form textarea {
     width: 100%;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 6px;
+    border: 1.5px solid var(--ft-border);
+    border-radius: var(--ft-radius);
     padding: 8px;
     font-size: 13px;
     resize: vertical;
     min-height: 80px;
     outline: none;
+    background: var(--ft-surface);
+    color: var(--ft-text);
   }
 
   .feedtack-form textarea:focus {
-    border-color: #2563eb;
+    border-color: var(--ft-primary);
   }
 
   .feedtack-form textarea.error {
-    border-color: #ef4444;
+    border-color: var(--ft-error);
   }
 
   .feedtack-error-msg {
     font-size: 12px;
-    color: #ef4444;
+    color: var(--ft-error);
   }
 
   .feedtack-sentiment {
@@ -136,18 +154,19 @@ export const FEEDTACK_STYLES = `
   .feedtack-sentiment button {
     flex: 1;
     padding: 6px 10px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 6px;
-    background: #fff;
+    border: 1.5px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    background: var(--ft-bg);
+    color: var(--ft-text);
     font-size: 12px;
     cursor: pointer;
     transition: all 0.1s;
   }
 
   .feedtack-sentiment button.selected {
-    border-color: #2563eb;
-    background: #eff6ff;
-    color: #2563eb;
+    border-color: var(--ft-primary);
+    background: var(--ft-surface);
+    color: var(--ft-primary);
   }
 
   .feedtack-form-actions {
@@ -158,9 +177,10 @@ export const FEEDTACK_STYLES = `
 
   .feedtack-btn-cancel {
     padding: 6px 12px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 6px;
-    background: #fff;
+    border: 1.5px solid var(--ft-border);
+    border-radius: var(--ft-radius);
+    background: var(--ft-bg);
+    color: var(--ft-text);
     font-size: 13px;
     cursor: pointer;
   }
@@ -168,8 +188,8 @@ export const FEEDTACK_STYLES = `
   .feedtack-btn-submit {
     padding: 6px 12px;
     border: none;
-    border-radius: 6px;
-    background: #2563eb;
+    border-radius: var(--ft-radius);
+    background: var(--ft-primary);
     color: #fff;
     font-size: 13px;
     font-weight: 500;
@@ -184,8 +204,8 @@ export const FEEDTACK_STYLES = `
   .feedtack-thread {
     position: absolute;
     z-index: 2147483642;
-    background: #fff;
-    border-radius: 10px;
+    background: var(--ft-bg);
+    border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
     width: 300px;
@@ -201,7 +221,7 @@ export const FEEDTACK_STYLES = `
     bottom: 70px;
     right: 24px;
     font-size: 12px;
-    color: #6b7280;
+    color: var(--ft-text-muted);
     z-index: 2147483640;
   }
 `
