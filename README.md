@@ -2,100 +2,132 @@
 
 > Click anywhere. Drop a pin. Get a payload a developer can act on.
 
-**feedtack** is a drop-in DOM feedback overlay for web apps. Non-technical stakeholders click anywhere on a page, leave a short comment, and feedtack emits a structured JSON payload so complete that a developer (or LLM, or ticket system) can act on it without asking any follow-up questions.
-
-## The problem
-
-Non-technical stakeholders describe UI problems in words. Developers need coordinates, element state, viewport size, page URL, component hierarchy, and application state. There is always a gap. feedtack closes it.
-
-## What it does
-
-- **Click-anywhere pin UI** — floating toggle, crosshair cursor, pin marker
-- **Automatic metadata capture** — element path, viewport, scroll position, page state, device info
-- **Comment form** — minimal textarea + submit, no friction
-- **Structured JSON payload** — LLM-ready but not LLM-dependent
-- **Pluggable backends** — Supabase out of the box, local JSON fallback, bring your own
-
-## What it does not do
-
-feedtack is **Tool 1**: capture and emit. It does not triage, summarize, or route feedback. That is a downstream concern. The payload is the product.
+**feedtack** is a drop-in React feedback overlay. Non-technical stakeholders click anywhere on a page, leave a comment, and feedtack emits a structured JSON payload so complete that an LLM can attempt a first-pass fix before consuming developer hours.
 
 ## Install
 
 ```bash
 npm install feedtack
+# or
+pnpm add feedtack
 ```
 
-### Script tag (any site)
-
-```html
-<script src="https://unpkg.com/feedtack/dist/feedtack.min.js"></script>
-<script>
-  Feedtack.init({ projectId: 'your-project-id' });
-</script>
-```
-
-### React / Next.js
+## Quick start
 
 ```tsx
-import { FeedtackProvider } from 'feedtack/react';
+import { FeedtackProvider } from 'feedtack/react'
+import { ConsoleAdapter } from 'feedtack'
 
-export default function RootLayout({ children }) {
+export default function App() {
   return (
-    <FeedtackProvider projectId="your-project-id">
-      {children}
+    <FeedtackProvider
+      adapter={new ConsoleAdapter()}
+      currentUser={{ id: 'u1', name: 'Trillium', role: 'admin' }}
+    >
+      <YourApp />
     </FeedtackProvider>
-  );
+  )
+}
+```
+
+## Production — webhook adapter
+
+```tsx
+import { FeedtackProvider } from 'feedtack/react'
+import { WebhookAdapter } from 'feedtack'
+
+const adapter = new WebhookAdapter({
+  submitUrl: 'https://your-app.com/api/feedtack',
+  updateUrl: 'https://your-app.com/api/feedtack/update', // optional
+  loadFeedback: async (filter) => {
+    const res = await fetch(`/api/feedtack?pathname=${filter?.pathname ?? ''}`)
+    return res.json()
+  },
+})
+
+export default function App() {
+  return (
+    <FeedtackProvider
+      adapter={adapter}
+      currentUser={{ id: 'u1', name: 'Alice', role: 'designer', avatarUrl: '/alice.jpg' }}
+      hotkey="p"        // default: Shift+P
+      adminOnly         // only show button to users with role === 'admin'
+      onError={console.error}
+    >
+      <YourApp />
+    </FeedtackProvider>
+  )
+}
+```
+
+## Custom adapter
+
+```ts
+import type { FeedtackAdapter } from 'feedtack'
+
+class MySupabaseAdapter implements FeedtackAdapter {
+  async submit(payload) { /* POST to supabase */ }
+  async reply(feedbackId, reply) { /* insert reply */ }
+  async resolve(feedbackId, resolution) { /* update resolved */ }
+  async archive(feedbackId, userId) { /* insert archive record */ }
+  async loadFeedback(filter) { /* select from supabase */ }
 }
 ```
 
 ## The payload
 
-Every pin emits a payload like this:
+Every pin emits a versioned JSON payload:
 
 ```json
 {
-  "id": "fb_01j...",
+  "schemaVersion": "1.0.0",
+  "id": "ft_01j...",
   "timestamp": "2026-04-09T13:42:00.000Z",
+  "submittedBy": { "id": "u1", "name": "Alice", "role": "designer" },
   "comment": "This button doesn't do anything",
-  "target": {
-    "selector": "#checkout-form > button.submit",
-    "tagName": "BUTTON",
-    "textContent": "Place Order",
-    "boundingRect": { "x": 420, "y": 812, "width": 200, "height": 44 },
-    "attributes": { "id": "submit-btn", "class": "submit btn-primary", "disabled": "true" }
-  },
-  "page": {
-    "url": "https://app.example.com/checkout",
-    "title": "Checkout — Acme Store",
-    "pathname": "/checkout"
-  },
-  "viewport": {
-    "width": 1440,
-    "height": 900,
-    "scrollX": 0,
-    "scrollY": 812,
-    "devicePixelRatio": 2
-  },
-  "device": {
-    "userAgent": "Mozilla/5.0...",
-    "platform": "MacIntel",
-    "touchEnabled": false
-  },
-  "pin": {
-    "x": 520,
-    "y": 834,
-    "xPct": 36.1,
-    "yPct": 92.7
-  }
+  "sentiment": "dissatisfied",
+  "pins": [{
+    "index": 1,
+    "color": "#ef4444",
+    "x": 420, "y": 812,
+    "xPct": 29.2, "yPct": 78.4,
+    "target": {
+      "selector": "#submit-btn",
+      "best_effort": false,
+      "tagName": "BUTTON",
+      "textContent": "Place Order",
+      "attributes": { "id": "submit-btn", "disabled": "true" },
+      "boundingRect": { "x": 420, "y": 812, "width": 200, "height": 44 }
+    }
+  }],
+  "page": { "url": "https://app.example.com/checkout", "pathname": "/checkout", "title": "Checkout" },
+  "viewport": { "width": 1440, "height": 900, "scrollX": 0, "scrollY": 812, "devicePixelRatio": 2 },
+  "device": { "userAgent": "Mozilla/5.0...", "platform": "MacIntel", "touchEnabled": false }
 }
 ```
 
-A developer who was not present, on a different device, in a different timezone, should be able to read this and know exactly what the user was looking at, what state the app was in, and what they meant.
+## `useFeedtack` hook
 
-## Self-hostable
+```tsx
+import { useFeedtack } from 'feedtack/react'
 
-feedtack has no required SaaS dependency. Run your own backend or use the local JSON adapter during development.
+function MyButton() {
+  const { activatePinMode, isPinModeActive } = useFeedtack()
+  return <button onClick={activatePinMode}>{isPinModeActive ? 'Cancel' : 'Give Feedback'}</button>
+}
+```
+
+## What feedtack does NOT do
+
+- LLM triage or routing (downstream concern — feedtack emits, others act)
+- Developer dashboard or inbox
+- Screenshot annotation
+
+## ICEBOX
+
+- Script tag CDN distribution
+- Next.js plugin
+- `allowedCaptures` config for scoping DOM access
 
 ## License
 
