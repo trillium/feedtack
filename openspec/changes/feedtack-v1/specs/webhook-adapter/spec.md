@@ -1,20 +1,40 @@
 ## ADDED Requirements
 
 ### Requirement: Plugin adapter interface
-The system SHALL define a TypeScript adapter interface that any backend implementation must satisfy. The interface SHALL be:
+The system SHALL define a TypeScript adapter interface that any backend implementation must satisfy. The interface SHALL cover all write operations: initial submission, replies, resolutions, and archives.
 
 ```ts
 interface FeedtackAdapter {
   submit(payload: FeedtackPayload): Promise<void>;
+  reply(feedbackId: string, reply: FeedtackReply): Promise<void>;
+  resolve(feedbackId: string, resolution: FeedtackResolution): Promise<void>;
+  archive(feedbackId: string, userId: string): Promise<void>;
+  loadFeedback(filter?: FeedtackFilter): Promise<FeedbackItem[]>;
+}
+
+interface FeedtackFilter {
+  url?: string;
+  pathname?: string;
+  userId?: string;
 }
 ```
 
+`loadFeedback` SHALL return all feedback items when called with no filter, and filtered results when a filter is provided. The host app is responsible for state management of the returned items.
+
 #### Scenario: Custom adapter accepted
 - **WHEN** a user supplies an object implementing `FeedtackAdapter` at init time
-- **THEN** feedtack uses that adapter to submit all payloads
+- **THEN** feedtack uses that adapter for all read and write operations
 
-#### Scenario: Adapter submit failure is surfaced
-- **WHEN** the adapter's `submit()` method throws or rejects
+#### Scenario: loadFeedback with no filter returns all items
+- **WHEN** feedtack calls `loadFeedback()` with no arguments
+- **THEN** the adapter returns all feedback items
+
+#### Scenario: loadFeedback with filter returns subset
+- **WHEN** feedtack calls `loadFeedback({ pathname: '/dashboard' })`
+- **THEN** the adapter returns only feedback items for that pathname
+
+#### Scenario: Adapter method failure is surfaced
+- **WHEN** any adapter method throws or rejects
 - **THEN** feedtack surfaces the error to the host app via an `onError` callback (if configured) and does not silently swallow it
 
 ---

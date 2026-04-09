@@ -49,8 +49,12 @@ The system SHALL capture `userAgent`, `platform`, and `touchEnabled` at the mome
 ---
 
 ### Requirement: Pin coordinates captured
-The system SHALL capture each pin's click position as both absolute pixel coordinates and percentage of viewport dimensions.
+The system SHALL capture each pin's click position as document-relative coordinates (pageX, pageY — accounting for scroll) and as a percentage of the full document dimensions. Document-relative coordinates ensure pins render at the correct position after scroll or layout shifts.
 
 #### Scenario: Pin coordinates captured
-- **WHEN** a pin is placed at position (x, y)
-- **THEN** the payload pin includes `x`, `y`, `xPct` (x / viewport.width × 100), `yPct` (y / viewport.height × 100)
+- **WHEN** a pin is placed at viewport position (clientX, clientY) with scroll offset (scrollX, scrollY)
+- **THEN** the payload pin includes `x` (clientX + scrollX), `y` (clientY + scrollY), `xPct`, `yPct`
+
+#### Scenario: Pin renders at correct position after scroll
+- **WHEN** a persisted pin is loaded on a page that has been scrolled
+- **THEN** the pin marker renders at the correct document position, not the viewport position

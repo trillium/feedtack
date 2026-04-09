@@ -1,11 +1,15 @@
 ## ADDED Requirements
 
 ### Requirement: Activation button with visible hotkey
-The system SHALL render a floating activation button in the host app's admin nav. The button text SHALL display the configured hotkey (e.g., "Drop Pin [P]"). The host app SHALL control whether the button is visible based on user role (admin/stakeholder).
+The system SHALL render a floating activation button in the host app's admin nav. The button text SHALL display the configured hotkey (e.g., "Drop Pin [Shift+P]"). The default hotkey SHALL be `Shift+P`. The host app may override the hotkey via config. The host app SHALL control whether the button is visible based on user role (admin/stakeholder).
 
-#### Scenario: Button shows hotkey in label
-- **WHEN** feedtack is initialized with a hotkey config
-- **THEN** the activation button label includes the hotkey in brackets (e.g., "[P]")
+#### Scenario: Button shows default hotkey in label
+- **WHEN** feedtack is initialized without a hotkey config
+- **THEN** the activation button label shows "[Shift+P]"
+
+#### Scenario: Button shows custom hotkey in label
+- **WHEN** feedtack is initialized with a custom hotkey config
+- **THEN** the activation button label includes the custom hotkey in brackets
 
 #### Scenario: Hotkey activates pin mode
 - **WHEN** the user presses the configured hotkey
@@ -30,20 +34,20 @@ The system SHALL change the cursor to a crosshair when pin mode is active, indic
 
 ---
 
-### Requirement: Multiple color-coded pins per session
-The system SHALL allow the user to place multiple pins before submitting. Each pin SHALL be assigned a distinct color from a predefined palette. Pins placed in a single feedback session SHALL share one comment thread.
+### Requirement: Multiple color-selectable pins per session
+The system SHALL allow the user to place multiple pins before submitting. Pins placed in a single feedback session SHALL share one comment thread. The user SHALL be able to select any color for each pin from a fixed palette of 6 colors — color is for the user's own convention and has no semantic meaning to the system.
 
-#### Scenario: First pin placed
-- **WHEN** the user clicks in pin mode
-- **THEN** a pin marker is rendered at the click location with the first available color
+#### Scenario: First pin placed with default color
+- **WHEN** the user clicks in pin mode without selecting a color
+- **THEN** a pin marker is rendered at the click location with the first palette color
 
-#### Scenario: Second pin placed in same session
-- **WHEN** the user clicks a second location while pin mode is still active
-- **THEN** a second pin marker is rendered with a different color
+#### Scenario: User selects a color before placing pin
+- **WHEN** the user selects a color from the palette and then clicks
+- **THEN** the pin marker renders in the selected color
 
-#### Scenario: Pins are visually distinct
-- **WHEN** multiple pins exist on the page
-- **THEN** each pin marker has a unique color from the palette
+#### Scenario: Multiple pins with different colors
+- **WHEN** the user places multiple pins with different colors selected
+- **THEN** each pin marker renders in its selected color
 
 ---
 

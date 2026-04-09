@@ -1,5 +1,62 @@
 ## ADDED Requirements
 
+### Requirement: currentUser type
+The host app SHALL supply a `currentUser` object to `FeedtackProvider`. feedtack uses this to populate `submittedBy` in payloads and to attribute replies, resolutions, and archives.
+
+```ts
+interface FeedtackUser {
+  id: string;          // unique identifier — used for attribution
+  name: string;        // display name shown in threads
+  role: string;        // e.g. 'admin' | 'designer' | 'stakeholder' | 'partner'
+  avatarUrl?: string;  // shown in reply threads next to name
+  email?: string;      // reserved for future notification use
+}
+```
+
+#### Scenario: currentUser populates submittedBy
+- **WHEN** a user submits feedback
+- **THEN** the payload `submittedBy` field is populated from `currentUser.id`, `currentUser.name`, and `currentUser.role`
+
+---
+
+### Requirement: FeedbackItem type
+`loadFeedback` returns an array of `FeedbackItem` — the full state of a feedback submission including its thread.
+
+```ts
+interface FeedbackItem {
+  payload: FeedtackPayload;
+  replies: FeedtackReply[];
+  resolutions: FeedtackResolution[];
+  archives: FeedtackArchive[];
+}
+
+interface FeedtackReply {
+  id: string;
+  feedbackId: string;
+  author: FeedtackUser;
+  body: string;
+  timestamp: string;  // ISO 8601 UTC
+}
+
+interface FeedtackResolution {
+  feedbackId: string;
+  resolvedBy: FeedtackUser;
+  timestamp: string;
+}
+
+interface FeedtackArchive {
+  feedbackId: string;
+  archivedBy: FeedtackUser;
+  timestamp: string;
+}
+```
+
+#### Scenario: loadFeedback returns full item state
+- **WHEN** feedtack calls `loadFeedback()`
+- **THEN** each returned item includes its payload, replies array, resolutions array, and archives array
+
+---
+
 ### Requirement: Versioned stable payload schema
 The system SHALL emit a JSON payload conforming to a semver-versioned schema. The schema version SHALL be included in every payload as `schemaVersion`. Breaking changes to the schema SHALL require a major version bump. The current schema version is `1.0.0`.
 

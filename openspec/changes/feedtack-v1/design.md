@@ -51,6 +51,21 @@ Feedback state (submitted items, replies, resolutions, archives) is stored via t
 ### 5. Distribution: npm ESM + React provider only (v1)
 `import { FeedtackProvider } from 'feedtack'` is the only supported integration in v1. A `<FeedtackProvider>` wraps the app and accepts config props. Script tag CDN and framework-specific plugins (Next.js) are ICEBOX for post-v1.
 
+### 7. Pin coordinates: document-relative
+Pins are stored as `pageX = clientX + scrollX`, `pageY = clientY + scrollY`. This ensures pins render at the correct document position regardless of scroll state on re-render. Viewport-relative coordinates were rejected because they break when the page is scrolled between capture and re-render.
+
+### 8. Color selection: user-driven, free choice
+The palette has 6 fixed colors. The user selects any color before placing each pin. Color carries no semantic meaning — it exists for the user's personal convention (e.g. "red = critical, blue = copy"). No cycling logic needed; user always chooses.
+
+### 9. Default hotkey: Shift+P
+`Shift+P` is the default activation hotkey. It avoids conflicts with screen reader conventions (which use Alt+key on Windows). Host apps may override via config.
+
+### 10. Existing pin interaction: click → anchored panel
+Persisted pins show an unread notification badge when there is activity the current user hasn't seen. Clicking a pin opens an anchored modal/popover using the same edge-detection logic as the comment form. The panel shows the thread (original comment + replies) and action buttons (Reply, Mark Resolved, Archive).
+
+### 11. Adapter interface: full write surface
+All write and read operations go through the adapter: `submit`, `reply`, `resolve`, `archive`, `loadFeedback`. `loadFeedback` accepts an optional filter (`{ url?, pathname?, userId? }`); called with no filter it returns all items. The host app owns state management of returned items.
+
 ### 6. Multi-user resolution and archive: server-authoritative
 Resolved and archive states are per-user records stored in the adapter backend. The payload schema for state updates mirrors the feedback payload shape. feedtack does not attempt to merge or reconcile state client-side — the adapter is the source of truth.
 

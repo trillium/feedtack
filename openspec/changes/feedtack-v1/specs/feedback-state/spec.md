@@ -9,6 +9,36 @@ The system SHALL persist submitted feedback items so they survive page reloads a
 
 ---
 
+### Requirement: Persisted pin notification badge
+The system SHALL display an unread notification badge on any persisted pin marker that has activity the current user has not yet viewed (new replies, new resolutions). The badge SHALL be visually distinct from the pin marker itself.
+
+#### Scenario: Unread pin shows notification badge
+- **WHEN** a persisted pin has a reply the current user has not viewed
+- **THEN** the pin marker displays a notification badge
+
+#### Scenario: Badge clears after viewing
+- **WHEN** the current user opens the pin thread
+- **THEN** the notification badge is removed for that user
+
+---
+
+### Requirement: Click pin to open thread panel
+The system SHALL open an anchored modal/popover attached to the pin marker when the user clicks an existing (persisted) pin. The panel SHALL display the original comment, all replies in chronological order, and action buttons for Reply, Mark Resolved, and Archive. The panel SHALL remain fully on-screen using the same edge detection as the comment form.
+
+#### Scenario: Click existing pin opens panel
+- **WHEN** the user clicks a persisted pin marker
+- **THEN** an anchored panel opens showing the feedback thread
+
+#### Scenario: Panel stays on-screen near edges
+- **WHEN** the pin is within 300px of a screen edge
+- **THEN** the panel flips to the opposite side to remain fully visible
+
+#### Scenario: Panel closes on outside click or Escape
+- **WHEN** the user clicks outside the panel or presses Escape
+- **THEN** the panel closes
+
+---
+
 ### Requirement: Reply threads on feedback items
 Each feedback item SHALL support a reply thread. Any team member or LLM integration may post a reply. Replies SHALL be ordered chronologically and include the author's identity and timestamp.
 
