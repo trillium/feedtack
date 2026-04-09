@@ -63,6 +63,11 @@ Resolved and archive states are per-user records stored in the adapter backend. 
 
 ## Open Questions
 
-- Should `loadFeedback` be a required config option for the webhook adapter, or optional (gracefully degrade to no persisted pins)?
-- Pin color palette: fixed set of 6–8 colors, or user-configurable?
-- Should the comment form be positioned relative to the first pin or centered in the viewport?
+~~Should `loadFeedback` be a required config option for the webhook adapter, or optional?~~
+**Decision:** Required. The webhook adapter must be initialized with a `loadFeedback` function.
+
+~~Pin color palette: fixed set of 6–8 colors, or user-configurable?~~
+**Decision:** Fixed set of 6 colors in v1.
+
+~~Should the comment form be positioned relative to the first pin or centered in the viewport?~~
+**Decision:** Anchored near the first pin, with edge detection to flip sides when near a screen edge.
