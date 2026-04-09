@@ -24,6 +24,11 @@ export interface FeedtackClasses {
   pinMarker?: string
 }
 
+export interface FeedtackSentimentLabels {
+  satisfied?: React.ReactNode
+  dissatisfied?: React.ReactNode
+}
+
 export interface FeedtackProviderProps {
   children: React.ReactNode
   adapter: FeedtackAdapter
@@ -36,6 +41,8 @@ export interface FeedtackProviderProps {
   theme?: FeedtackTheme
   /** Additional class names for individual feedtack elements */
   classes?: FeedtackClasses
+  /** Custom labels/content for sentiment toggle buttons */
+  sentimentLabels?: FeedtackSentimentLabels
   onError?: (err: Error) => void
 }
 
@@ -70,7 +77,7 @@ function getAnchoredPosition(x: number, y: number): { left?: number; right?: num
   return { left, right, top, bottom }
 }
 
-export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p', adminOnly = false, theme, classes = {}, onError }: FeedtackProviderProps) {
+export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p', adminOnly = false, theme, classes = {}, sentimentLabels = {}, onError }: FeedtackProviderProps) {
   const [isPinModeActive, setIsPinModeActive] = useState(false)
   const [pendingPins, setPendingPins] = useState<Array<Omit<FeedtackPin, 'index'>>>([])
   const [selectedColor, setSelectedColor] = useState<string>(PIN_PALETTE[0])
@@ -316,11 +323,11 @@ export function FeedtackProvider({ children, adapter, currentUser, hotkey = 'p',
             <button
               className={sentiment === 'satisfied' ? 'selected' : ''}
               onClick={() => setSentiment(sentiment === 'satisfied' ? null : 'satisfied')}
-            >😊 Satisfied</button>
+            >{sentimentLabels.satisfied ?? '😊 Satisfied'}</button>
             <button
               className={sentiment === 'dissatisfied' ? 'selected' : ''}
               onClick={() => setSentiment(sentiment === 'dissatisfied' ? null : 'dissatisfied')}
-            >😞 Dissatisfied</button>
+            >{sentimentLabels.dissatisfied ?? '😞 Dissatisfied'}</button>
           </div>
           <div className="feedtack-form-actions">
             <button className="feedtack-btn-cancel" onClick={deactivatePinMode}>Cancel</button>

@@ -84,7 +84,7 @@ export const FEEDTACK_STYLES = `
     display: flex;
     gap: 6px;
     padding: 8px;
-    background: var(--ft-bg);
+    background: var(--ft-bg) !important;
     border-radius: var(--ft-radius);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     position: fixed;
@@ -110,7 +110,7 @@ export const FEEDTACK_STYLES = `
   .feedtack-form {
     position: absolute;
     z-index: 2147483642;
-    background: var(--ft-bg);
+    background: var(--ft-bg) !important;
     border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
@@ -204,7 +204,7 @@ export const FEEDTACK_STYLES = `
   .feedtack-thread {
     position: absolute;
     z-index: 2147483642;
-    background: var(--ft-bg);
+    background: var(--ft-bg) !important;
     border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
