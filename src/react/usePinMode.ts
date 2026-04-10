@@ -8,9 +8,10 @@ import { PIN_PALETTE } from '../ui/colors.js'
 export interface UsePinModeOpts {
   hotkey: string
   onDeactivate?: () => void
+  disabled?: boolean
 }
 
-export function usePinMode({ hotkey, onDeactivate }: UsePinModeOpts) {
+export function usePinMode({ hotkey, onDeactivate, disabled }: UsePinModeOpts) {
   const [isActive, setIsActive] = useState(false)
   const [pendingPins, setPendingPins] = useState<
     Array<Omit<FeedtackPin, 'index'>>
@@ -39,6 +40,7 @@ export function usePinMode({ hotkey, onDeactivate }: UsePinModeOpts) {
 
   // Hotkey + arrow keys for color cycling
   useEffect(() => {
+    if (disabled) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === hotkey.toUpperCase() && e.shiftKey) {
         setIsActive((prev) => !prev)
@@ -59,7 +61,7 @@ export function usePinMode({ hotkey, onDeactivate }: UsePinModeOpts) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [hotkey, deactivate, isActive])
+  }, [hotkey, deactivate, isActive, disabled])
 
   // Click-to-place pin
   const handlePageClick = useCallback(
@@ -86,9 +88,10 @@ export function usePinMode({ hotkey, onDeactivate }: UsePinModeOpts) {
   )
 
   useEffect(() => {
+    if (disabled) return
     document.addEventListener('click', handlePageClick, true)
     return () => document.removeEventListener('click', handlePageClick, true)
-  }, [handlePageClick])
+  }, [handlePageClick, disabled])
 
   return {
     isActive,

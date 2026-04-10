@@ -5,6 +5,7 @@ import type { FeedtackAdapter } from '../types/adapter.js'
 import type { FeedtackUser } from '../types/payload.js'
 import type { FeedtackTheme } from '../types/theme.js'
 import { PIN_PALETTE } from '../ui/colors.js'
+import { CommentForm } from './CommentForm.js'
 import { FeedtackContext } from './context.js'
 import { ThreadPanel } from './ThreadPanel.js'
 import { useFeedtackState } from './useFeedtackState.js'
@@ -33,6 +34,7 @@ export interface FeedtackProviderProps {
   classes?: FeedtackClasses
   sentimentLabels?: FeedtackSentimentLabels
   onError?: (err: Error) => void
+  disabled?: boolean
 }
 
 export function FeedtackProvider({
@@ -45,6 +47,7 @@ export function FeedtackProvider({
   classes = {},
   sentimentLabels = {},
   onError,
+  disabled = false,
 }: FeedtackProviderProps) {
   const state = useFeedtackState({
     adapter,
@@ -52,6 +55,7 @@ export function FeedtackProvider({
     hotkey,
     theme,
     onError,
+    disabled,
   })
 
   const firstPin = state.pendingPins[0]
@@ -65,14 +69,14 @@ export function FeedtackProvider({
   return (
     <FeedtackContext.Provider
       value={{
-        activatePinMode: state.activatePinMode,
-        deactivatePinMode: state.deactivatePinMode,
-        isPinModeActive: state.isPinModeActive,
+        activatePinMode: disabled ? () => {} : state.activatePinMode,
+        deactivatePinMode: disabled ? () => {} : state.deactivatePinMode,
+        isPinModeActive: disabled ? false : state.isPinModeActive,
       }}
     >
       {children}
 
-      {showButton && (
+      {!disabled && showButton && (
         <button
           type="button"
           className={cx(
@@ -123,65 +127,22 @@ export function FeedtackProvider({
       ))}
 
       {state.showForm && (
-        <div
-          className={cx('feedtack-form', classes.form)}
-          style={{ position: 'fixed', ...formPos }}
-        >
-          <textarea
-            className={state.commentError ? 'error' : ''}
-            placeholder="What's the issue? (required)"
-            value={state.comment}
-            onChange={(e) => {
-              state.setComment(e.target.value)
-              state.setCommentError(false)
-            }}
-            ref={(el) => el?.focus()}
-          />
-          {state.commentError && (
-            <span className="feedtack-error-msg">Comment is required</span>
-          )}
-          <div className="feedtack-sentiment">
-            <button
-              type="button"
-              className={state.sentiment === 'satisfied' ? 'selected' : ''}
-              onClick={() =>
-                state.setSentiment(
-                  state.sentiment === 'satisfied' ? null : 'satisfied',
-                )
-              }
-            >
-              {sentimentLabels.satisfied ?? '😊 Satisfied'}
-            </button>
-            <button
-              type="button"
-              className={state.sentiment === 'dissatisfied' ? 'selected' : ''}
-              onClick={() =>
-                state.setSentiment(
-                  state.sentiment === 'dissatisfied' ? null : 'dissatisfied',
-                )
-              }
-            >
-              {sentimentLabels.dissatisfied ?? '😞 Dissatisfied'}
-            </button>
-          </div>
-          <div className="feedtack-form-actions">
-            <button
-              type="button"
-              className="feedtack-btn-cancel"
-              onClick={state.deactivatePinMode}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="feedtack-btn-submit"
-              onClick={state.handleSubmit}
-              disabled={state.submitting}
-            >
-              {state.submitting ? 'Sending…' : 'Submit'}
-            </button>
-          </div>
-        </div>
+        <CommentForm
+          comment={state.comment}
+          commentError={state.commentError}
+          sentiment={state.sentiment}
+          submitting={state.submitting}
+          formPos={formPos}
+          classes={classes}
+          sentimentLabels={sentimentLabels}
+          onCommentChange={(v) => {
+            state.setComment(v)
+            state.setCommentError(false)
+          }}
+          onSentimentChange={state.setSentiment}
+          onSubmit={state.handleSubmit}
+          onCancel={state.deactivatePinMode}
+        />
       )}
 
       {!state.loading &&

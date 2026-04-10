@@ -72,6 +72,35 @@ describe('FeedtackProvider', () => {
     expect(screen.queryByText(/Drop Pin/i)).not.toBeInTheDocument()
   })
 
+  it('renders only children when disabled', async () => {
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+          <div data-testid="child">hello</div>
+        </FeedtackProvider>,
+      )
+    })
+    expect(screen.getByTestId('child')).toBeInTheDocument()
+    expect(screen.queryByText(/Drop Pin/i)).not.toBeInTheDocument()
+    expect(document.getElementById('feedtack-root')).not.toBeInTheDocument()
+  })
+
+  it('useFeedtack does not throw when disabled', async () => {
+    const { useFeedtack } = await import('./useFeedtack.js')
+    function Consumer() {
+      const ctx = useFeedtack()
+      return <div data-testid="active">{String(ctx.isPinModeActive)}</div>
+    }
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+          <Consumer />
+        </FeedtackProvider>,
+      )
+    })
+    expect(screen.getByTestId('active')).toHaveTextContent('false')
+  })
+
   it('loads feedback on mount', async () => {
     await act(async () => {
       render(

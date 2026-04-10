@@ -25,6 +25,7 @@ export interface UseFeedtackStateOpts {
   hotkey: string
   theme?: FeedtackTheme
   onError?: (err: Error) => void
+  disabled?: boolean
 }
 
 export function useFeedtackState({
@@ -33,8 +34,9 @@ export function useFeedtackState({
   hotkey,
   theme,
   onError,
+  disabled,
 }: UseFeedtackStateOpts) {
-  useFeedtackDom(theme)
+  useFeedtackDom(theme, disabled)
 
   const [pathname, setPathname] = useState(() => window.location.pathname)
 
@@ -78,6 +80,7 @@ export function useFeedtackState({
 
   const pinMode = usePinMode({
     hotkey,
+    disabled,
     onDeactivate: () => {
       resetForm()
       setOpenThreadId(null)
