@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0](https://github.com/trillium/feedtack/compare/v0.1.1...v0.2.0) (2026-04-10)
+
+### Features
+
+* **provider:** add disabled prop to suppress all UI in CI environments ([c416afe](https://github.com/trillium/feedtack/commit/c416afea5b7bd0cda8f97c4d41788369e12c56d0))
+
 ## [0.1.1](https://github.com/trillium/feedtack/compare/v0.1.0...v0.1.1) (2026-04-10)
 
 ### Bug Fixes
