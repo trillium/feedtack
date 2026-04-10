@@ -104,3 +104,8 @@ Source `.ts`/`.tsx` files (excluding tests and configs) must be under 250 lines.
 
 ~~Should the comment form be positioned relative to the first pin or centered in the viewport?~~
 **Decision:** Anchored near the first pin, with edge detection to flip sides when near a screen edge.
+
+### 18. SPA navigation: pathname-scoped pin rendering
+Pins are scoped to the pathname they were captured on. On navigation, `loadFeedback` is re-called with the new pathname, and the render layer filters by `item.payload.page.pathname === currentPathname`. Navigation is detected by patching `history.pushState`/`replaceState` and listening to `popstate`.
+
+**Why:** Pins store absolute pixel coordinates relative to a specific page layout. Rendering them on a different page would misplace markers and corrupt the UI. The patch approach handles both browser back/forward and programmatic SPA pushes without requiring the host app to wire up router events.

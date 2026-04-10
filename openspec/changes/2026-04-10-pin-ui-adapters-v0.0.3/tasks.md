@@ -121,3 +121,9 @@
 - [x] 15.5 Slim `useFeedtackState` to data/actions layer composing usePinMode + useFeedtackDom
 - [x] 15.6 Slim `FeedtackProvider` to composition shell under 250 lines
 - [x] 15.7 Verify all source files under 250 lines post-biome formatting
+
+## 16. Pathname-Scoped Pin Rendering
+
+- [x] 16.1 Track current pathname in state, detect SPA navigation via pushState/replaceState/popstate
+- [x] 16.2 Re-run `loadFeedback` when pathname changes
+- [x] 16.3 Filter rendered persisted pins by `item.payload.page.pathname === currentPathname`
