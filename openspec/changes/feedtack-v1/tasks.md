@@ -85,3 +85,39 @@
 - [x] 10.1 Update README with accurate install and usage examples (script tag marked ICEBOX)
 - [x] 10.2 Add JSDoc to all public types and the adapter interface
 - [x] 10.3 Add a `CONTRIBUTING.md` with adapter authoring guide
+
+## 11. Payload Enhancements (v0.0.4)
+
+- [x] 11.1 Add `testId` field to `FeedtackPinTarget` — always shipped, null when absent
+- [x] 11.2 Add `elementPath` field — readable `tag.class` DOM ancestry, stops at data-testid ancestor
+- [x] 11.3 Write tests: testId present/absent, elementPath ancestry, elementPath stops at testid ancestor
+
+## 12. LocalStorage Adapter
+
+- [x] 12.1 Implement `LocalStorageAdapter` with full adapter interface
+- [x] 12.2 Support custom storage key via config
+- [x] 12.3 Handle corrupted localStorage gracefully
+- [x] 12.4 Write tests: persist/load, filtering, reply, resolve, archive, custom key, corruption
+
+## 13. Pin UX Improvements
+
+- [x] 13.1 Fix pin marker anchor — bottom tip at click point, not top-left
+- [x] 13.2 Add arrow key (left/right) color cycling in pin mode
+
+## 14. Code Quality Tooling
+
+- [x] 14.1 Add husky with pre-commit and commit-msg hooks
+- [x] 14.2 Add commitlint with conventional commit enforcement
+- [x] 14.3 Add biome for linting and formatting (replacing eslint)
+- [x] 14.4 Add lint-staged to run biome on staged files
+- [x] 14.5 Add 250-line file limit pre-commit check (tests/configs exempt)
+
+## 15. Provider Refactor
+
+- [x] 15.1 Extract `usePinMode` hook — activation, cursor, hotkey, color cycling, click-to-place
+- [x] 15.2 Extract `useFeedtackDom` hook — style injection, root div, theme tokens
+- [x] 15.3 Extract `ThreadPanel` component — reply list, actions, reply input
+- [x] 15.4 Extract `utils.ts` — ID generation, anchored positioning, cx()
+- [x] 15.5 Slim `useFeedtackState` to data/actions layer composing usePinMode + useFeedtackDom
+- [x] 15.6 Slim `FeedtackProvider` to composition shell under 250 lines
+- [x] 15.7 Verify all source files under 250 lines post-biome formatting

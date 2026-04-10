@@ -49,6 +49,14 @@ The system SHALL allow the user to place multiple pins before submitting. Pins p
 - **WHEN** the user places multiple pins with different colors selected
 - **THEN** each pin marker renders in its selected color
 
+#### Scenario: Arrow keys cycle color in pin mode
+- **WHEN** pin mode is active and the user presses ArrowRight
+- **THEN** the selected color advances to the next color in the palette (wrapping around)
+
+#### Scenario: Arrow left cycles color backward
+- **WHEN** pin mode is active and the user presses ArrowLeft
+- **THEN** the selected color moves to the previous color in the palette (wrapping around)
+
 ---
 
 ### Requirement: Comment form required before submission

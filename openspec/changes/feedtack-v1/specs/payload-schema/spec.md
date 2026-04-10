@@ -96,6 +96,8 @@ The system SHALL emit a payload with the following top-level fields. All fields 
       "target": {
         "selector": string,
         "best_effort": boolean,
+        "testId": string | null,   // data-testid value if present, always shipped
+        "elementPath": string | null, // "div.hero > button.btn" ancestry, null if testId present
         "tagName": string,
         "textContent": string,     // trimmed, max 200 chars
         "attributes": object,

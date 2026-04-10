@@ -9,11 +9,36 @@ The system SHALL capture the clicked DOM element's identity and position at the 
 
 #### Scenario: Element with data-testid captured
 - **WHEN** user clicks an element with `data-testid` but no `id`
-- **THEN** the payload target includes `selector: "[data-testid=\"<value>\"]"` and `best_effort: false`
+- **THEN** the payload target includes `selector: "[data-testid=\"<value>\"]"`, `best_effort: false`, and `testId: "<value>"`
+
+#### Scenario: testId always shipped when present
+- **WHEN** user clicks an element that has both `id` and `data-testid`
+- **THEN** the payload target uses `selector: "#<id>"` but still includes `testId: "<data-testid value>"` as a separate field
+
+#### Scenario: testId null when absent
+- **WHEN** user clicks an element with no `data-testid` attribute
+- **THEN** the payload target includes `testId: null`
 
 #### Scenario: Fallback to CSS selector
 - **WHEN** user clicks an element with neither `id` nor `data-testid`
 - **THEN** the payload target includes a CSS selector path and `best_effort: true`
+
+---
+
+### Requirement: Element path capture
+The system SHALL capture a human-readable DOM ancestry path for each pinned element, showing tag names and CSS classes from the element up to the document body or the nearest ancestor with a `data-testid`. This path is designed for downstream LLM consumers to map pins back to source code components. When the clicked element itself has a `data-testid`, the `elementPath` SHALL be `null` (the `testId` is sufficient).
+
+#### Scenario: elementPath shows tag.class ancestry
+- **WHEN** user clicks an element without `data-testid` nested inside `<div class="page"><section class="hero"><button class="btn btn-primary">`
+- **THEN** the payload target includes `elementPath: "div.page > section.hero > button.btn.btn-primary"`
+
+#### Scenario: elementPath stops at data-testid ancestor
+- **WHEN** user clicks an `<em>` inside a `<span class="label">` inside a `<div data-testid="card">`
+- **THEN** the payload target includes `elementPath: "[data-testid=\"card\"] > span.label > em"`
+
+#### Scenario: elementPath null when element has testId
+- **WHEN** user clicks an element that has a `data-testid` attribute
+- **THEN** the payload target includes `elementPath: null`
 
 #### Scenario: Bounding rect captured
 - **WHEN** any pin is placed

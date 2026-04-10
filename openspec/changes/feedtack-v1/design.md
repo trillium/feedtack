@@ -69,6 +69,24 @@ All write and read operations go through the adapter: `submit`, `reply`, `resolv
 ### 6. Multi-user resolution and archive: server-authoritative
 Resolved and archive states are per-user records stored in the adapter backend. The payload schema for state updates mirrors the feedback payload shape. feedtack does not attempt to merge or reconcile state client-side — the adapter is the source of truth.
 
+### 12. Pin marker anchor point: bottom tip
+The pin marker's pointy tip (the teardrop corner) SHALL align with the exact click coordinate. The CSS `transform` uses `translate(-50%, -100%)` with `transform-origin: bottom center` so the visual pin "sticks into" the page at the click point, not offset above or beside it.
+
+### 13. testId always shipped as first-class field
+The `data-testid` attribute value is always shipped as `target.testId` (string | null) in the payload, regardless of which selector strategy wins. This ensures downstream LLM consumers and dogfooding systems can reliably find test IDs without parsing the `attributes` bag.
+
+### 14. elementPath for DOM ancestry context
+When an element has no `data-testid`, the system captures a readable `tag.class` ancestry path (e.g. `div.hero > button.btn.btn-primary`). The walk stops at body or at the nearest ancestor with a `data-testid` (which becomes an anchor like `[data-testid="card"] > span.label > em`). When the element itself has a `testId`, `elementPath` is null — the testId is sufficient context.
+
+### 15. Arrow key color cycling
+In pin mode, left/right arrow keys cycle through the color palette. This avoids requiring the user to click the color picker for every color change — particularly useful when placing multiple pins rapidly.
+
+### 16. LocalStorageAdapter for zero-infrastructure use
+A `LocalStorageAdapter` implements the full adapter interface using only the browser's `localStorage`. It is single-user, single-device, and handles corrupted data gracefully (returns empty array). Intended for local dev, demos, and dogfooding. Custom storage keys are supported to avoid collisions.
+
+### 17. 250-line file limit enforced via pre-commit hook
+Source `.ts`/`.tsx` files (excluding tests and configs) must be under 250 lines. This is enforced by a husky pre-commit hook. The limit drives architectural decomposition along natural responsibility boundaries rather than line-gaming (e.g. cramming multiple declarations per line).
+
 ## Risks / Trade-offs
 
 - [CSS bleed] Host app styles may conflict with feedtack UI despite CSS reset → Mitigation: use highly specific class names (`.feedtack-pin-marker`) and audit against common CSS frameworks (Tailwind, Bootstrap)

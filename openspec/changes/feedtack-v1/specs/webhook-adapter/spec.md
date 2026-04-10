@@ -62,3 +62,28 @@ The system SHALL ship a local development adapter that logs the payload to the b
 #### Scenario: Console adapter logs payload
 - **WHEN** the console adapter is active and a submission is made
 - **THEN** the full payload is logged to `console.log` and `submit()` resolves successfully
+
+---
+
+### Requirement: LocalStorage adapter for zero-infrastructure persistence
+The system SHALL ship a `LocalStorageAdapter` that persists feedback items to the browser's `localStorage`. This adapter implements the full `FeedtackAdapter` interface (submit, reply, resolve, archive, loadFeedback) with no server required. It is single-user, single-device, and intended for local development, demos, and dogfooding.
+
+#### Scenario: Feedback persists across page reloads
+- **WHEN** a user submits feedback via the LocalStorageAdapter and reloads the page
+- **THEN** the submitted feedback item is returned by `loadFeedback()` and pins re-render
+
+#### Scenario: loadFeedback filters by pathname
+- **WHEN** `loadFeedback({ pathname: '/dashboard' })` is called
+- **THEN** only feedback items submitted on `/dashboard` are returned
+
+#### Scenario: Custom storage key
+- **WHEN** the adapter is initialized with `{ key: 'my-feedback' }`
+- **THEN** feedback is stored under `localStorage['my-feedback']` instead of the default `'feedtack'` key
+
+#### Scenario: Corrupted localStorage handled gracefully
+- **WHEN** the localStorage value is corrupted (invalid JSON)
+- **THEN** `loadFeedback()` returns an empty array instead of throwing
+
+#### Scenario: Reply, resolve, and archive update stored items
+- **WHEN** a reply, resolution, or archive action is performed
+- **THEN** the stored feedback item is updated in localStorage with the new data
