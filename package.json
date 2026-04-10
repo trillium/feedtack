@@ -30,7 +30,7 @@
     "test:watch": "vitest",
     "lint": "biome check src/",
     "lint:fix": "biome check --fix src/",
-    "release": "npm version patch && git push --follow-tags && pnpm publish",
+    "release": "release-it",
     "prepublishOnly": "pnpm test && pnpm build",
     "prepare": "husky"
   },
@@ -42,6 +42,7 @@
     "@biomejs/biome": "^2.4.11",
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@release-it/conventional-changelog": "^10.0.6",
     "@testing-library/jest-dom": "^6.4.0",
     "@testing-library/react": "^16.0.0",
     "@types/node": "^22.0.0",
@@ -52,12 +53,15 @@
     "husky": "^9.1.7",
     "jsdom": "^25.0.0",
     "lint-staged": "^16.4.0",
+    "release-it": "^19.2.4",
     "tsup": "^8.5.1",
     "typescript": "^5.5.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^2.0.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["biome check --fix --no-errors-on-unmatched"]
+    "*.{ts,tsx}": [
+      "biome check --fix --no-errors-on-unmatched"
+    ]
   }
 }
