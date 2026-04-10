@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.1](https://github.com/trillium/feedtack/compare/v0.1.0...v0.1.1) (2026-04-10)
+
+### Bug Fixes
+
+* **ui:** filter pins by current pathname, reload on SPA navigation ([c95bd5f](https://github.com/trillium/feedtack/commit/c95bd5ff8d51af4ccedd6b8fe109db2485b90e42))
+
+### Reverts
+
+* Revert "docs(spec): rename change dir to date-brief-version format (v0.0.3)" ([2bd2412](https://github.com/trillium/feedtack/commit/2bd2412ccf087896c43b543e481f100ab9e54db0))
+* Revert "docs(spec): bump change dir to v0.1.0" ([b429f2e](https://github.com/trillium/feedtack/commit/b429f2eb146b9fd083106147b115d5951830354f))
+
 ## 0.1.0 (2026-04-10)
 
 ### Features
