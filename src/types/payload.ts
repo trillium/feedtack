@@ -25,6 +25,10 @@ export interface FeedtackPinTarget {
   selector: string
   /** True when no stable selector was found — downstream consumers should not rely on selector for automated targeting */
   best_effort: boolean
+  /** data-testid attribute value if present, null otherwise — always shipped for downstream consumers */
+  testId: string | null
+  /** Readable DOM ancestry: "div.hero > div.card > button.btn.btn-primary". Walks up to body or nearest data-testid ancestor. Null when element itself has a data-testid (testId is sufficient). */
+  elementPath: string | null
   tagName: string
   /** Trimmed text content of the element, max 200 chars */
   textContent: string

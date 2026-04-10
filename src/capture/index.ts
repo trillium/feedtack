@@ -1,2 +1,7 @@
-export { getTargetMeta, getCSSSelector } from './target.js'
-export { getViewportMeta, getPageMeta, getDeviceMeta, getPinCoords } from './meta.js'
+export {
+  getDeviceMeta,
+  getPageMeta,
+  getPinCoords,
+  getViewportMeta,
+} from './meta.js'
+export { getCSSSelector, getTargetMeta } from './target.js'

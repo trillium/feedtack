@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { SCHEMA_VERSION } from './payload.js'
+import { describe, expect, it } from 'vitest'
 import type { FeedtackPayload } from './payload.js'
+import { SCHEMA_VERSION } from './payload.js'
 
 const mockPayload: FeedtackPayload = {
   schemaVersion: SCHEMA_VERSION,
@@ -20,6 +20,8 @@ const mockPayload: FeedtackPayload = {
       target: {
         selector: '#submit-btn',
         best_effort: false,
+        testId: null,
+        elementPath: 'button',
         tagName: 'BUTTON',
         textContent: 'Place Order',
         attributes: { id: 'submit-btn', class: 'btn-primary' },
@@ -27,9 +29,23 @@ const mockPayload: FeedtackPayload = {
       },
     },
   ],
-  page: { url: 'https://app.example.com/checkout', pathname: '/checkout', title: 'Checkout' },
-  viewport: { width: 1440, height: 900, scrollX: 0, scrollY: 812, devicePixelRatio: 2 },
-  device: { userAgent: 'Mozilla/5.0', platform: 'MacIntel', touchEnabled: false },
+  page: {
+    url: 'https://app.example.com/checkout',
+    pathname: '/checkout',
+    title: 'Checkout',
+  },
+  viewport: {
+    width: 1440,
+    height: 900,
+    scrollX: 0,
+    scrollY: 812,
+    devicePixelRatio: 2,
+  },
+  device: {
+    userAgent: 'Mozilla/5.0',
+    platform: 'MacIntel',
+    touchEnabled: false,
+  },
 }
 
 describe('SCHEMA_VERSION', () => {

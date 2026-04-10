@@ -1,5 +1,29 @@
 import type { FeedtackPinTarget } from '../types/payload.js'
 
+/** Build readable tag.class ancestry path, stopping at body or a data-testid ancestor */
+export function getElementPath(element: Element): string {
+  const parts: string[] = []
+  let current: Element | null = element
+
+  while (current && current !== document.body) {
+    const tag = current.tagName.toLowerCase()
+    const classes = Array.from(current.classList).join('.')
+    let part = classes ? `${tag}.${classes}` : tag
+
+    // If an ancestor has a data-testid, anchor there and stop
+    if (current !== element && current.hasAttribute('data-testid')) {
+      part = `[data-testid="${current.getAttribute('data-testid')}"]`
+      parts.unshift(part)
+      break
+    }
+
+    parts.unshift(part)
+    current = current.parentElement
+  }
+
+  return parts.join(' > ')
+}
+
 /** Build shortest unique CSS selector for an element */
 export function getCSSSelector(element: Element): string {
   const parts: string[] = []
@@ -11,7 +35,7 @@ export function getCSSSelector(element: Element): string {
 
     if (parent) {
       const siblings = Array.from(parent.children).filter(
-        (c) => c.tagName === current!.tagName
+        (c) => c.tagName === current!.tagName,
       )
       if (siblings.length > 1) {
         const index = siblings.indexOf(current) + 1
@@ -54,6 +78,8 @@ export function getTargetMeta(element: Element): FeedtackPinTarget {
   return {
     selector,
     best_effort,
+    testId: testId ?? null,
+    elementPath: testId ? null : getElementPath(element),
     tagName: element.tagName,
     textContent: (element.textContent ?? '').trim().slice(0, 200),
     attributes: attrs,

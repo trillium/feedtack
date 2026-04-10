@@ -1,4 +1,8 @@
-import type { FeedtackDeviceMeta, FeedtackPageMeta, FeedtackViewportMeta } from '../types/payload.js'
+import type {
+  FeedtackDeviceMeta,
+  FeedtackPageMeta,
+  FeedtackViewportMeta,
+} from '../types/payload.js'
 
 export function getViewportMeta(): FeedtackViewportMeta {
   return {
@@ -26,7 +30,12 @@ export function getDeviceMeta(): FeedtackDeviceMeta {
   }
 }
 
-export function getPinCoords(event: MouseEvent): { x: number; y: number; xPct: number; yPct: number } {
+export function getPinCoords(event: MouseEvent): {
+  x: number
+  y: number
+  xPct: number
+  yPct: number
+} {
   // Document-relative coordinates: accounts for scroll position
   const x = event.clientX + window.scrollX
   const y = event.clientY + window.scrollY
