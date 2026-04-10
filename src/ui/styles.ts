@@ -62,7 +62,8 @@ export const FEEDTACK_STYLES = `
     width: 24px;
     height: 24px;
     border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg) translate(-50%, -50%);
+    transform: translate(-50%, -100%) rotate(-45deg);
+    transform-origin: bottom center;
     border: 2px solid rgba(255,255,255,0.8);
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     cursor: pointer;

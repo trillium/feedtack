@@ -8,4 +8,4 @@ export const PIN_PALETTE = [
   '#ec4899', // pink
 ] as const
 
-export type PinColor = typeof PIN_PALETTE[number]
+export type PinColor = (typeof PIN_PALETTE)[number]
