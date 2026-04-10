@@ -20,13 +20,13 @@ export interface FeedtackTheme {
 /** Maps FeedtackTheme fields to CSS custom properties on #feedtack-root */
 export function themeToCSS(theme: FeedtackTheme): Record<string, string> {
   const map: Record<string, string> = {}
-  if (theme.primary)    map['--ft-primary'] = theme.primary
+  if (theme.primary) map['--ft-primary'] = theme.primary
   if (theme.background) map['--ft-bg'] = theme.background
-  if (theme.surface)    map['--ft-surface'] = theme.surface
-  if (theme.text)       map['--ft-text'] = theme.text
-  if (theme.textMuted)  map['--ft-text-muted'] = theme.textMuted
-  if (theme.border)     map['--ft-border'] = theme.border
-  if (theme.radius)     map['--ft-radius'] = theme.radius
-  if (theme.badge)      map['--ft-badge'] = theme.badge
+  if (theme.surface) map['--ft-surface'] = theme.surface
+  if (theme.text) map['--ft-text'] = theme.text
+  if (theme.textMuted) map['--ft-text-muted'] = theme.textMuted
+  if (theme.border) map['--ft-border'] = theme.border
+  if (theme.radius) map['--ft-radius'] = theme.radius
+  if (theme.badge) map['--ft-badge'] = theme.badge
   return map
 }

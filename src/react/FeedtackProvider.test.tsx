@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, act } from '@testing-library/react'
-import React from 'react'
-import { FeedtackProvider } from './FeedtackProvider.js'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { FeedtackAdapter } from '../types/adapter.js'
+import { FeedtackProvider } from './FeedtackProvider.js'
 
 const mockAdapter: FeedtackAdapter = {
   submit: vi.fn().mockResolvedValue(undefined),
@@ -26,7 +25,7 @@ describe('FeedtackProvider', () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
           <div data-testid="child">hello</div>
-        </FeedtackProvider>
+        </FeedtackProvider>,
       )
     })
     expect(screen.getByTestId('child')).toBeInTheDocument()
@@ -37,7 +36,7 @@ describe('FeedtackProvider', () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
           <div />
-        </FeedtackProvider>
+        </FeedtackProvider>,
       )
     })
     expect(screen.getByText(/Drop Pin \[Shift\+P\]/i)).toBeInTheDocument()
@@ -48,20 +47,26 @@ describe('FeedtackProvider', () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
           <div />
-        </FeedtackProvider>
+        </FeedtackProvider>,
       )
     })
     const btn = screen.getByText(/Drop Pin/i)
-    await act(async () => { fireEvent.click(btn) })
+    await act(async () => {
+      fireEvent.click(btn)
+    })
     expect(btn.className).toContain('active')
   })
 
   it('hides button when adminOnly and user role is not admin', async () => {
     await act(async () => {
       render(
-        <FeedtackProvider adapter={mockAdapter} currentUser={{ ...mockUser, role: 'viewer' }} adminOnly>
+        <FeedtackProvider
+          adapter={mockAdapter}
+          currentUser={{ ...mockUser, role: 'viewer' }}
+          adminOnly
+        >
           <div />
-        </FeedtackProvider>
+        </FeedtackProvider>,
       )
     })
     expect(screen.queryByText(/Drop Pin/i)).not.toBeInTheDocument()
@@ -72,7 +77,7 @@ describe('FeedtackProvider', () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
           <div />
-        </FeedtackProvider>
+        </FeedtackProvider>,
       )
     })
     expect(mockAdapter.loadFeedback).toHaveBeenCalled()
