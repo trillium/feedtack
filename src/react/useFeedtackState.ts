@@ -36,6 +36,31 @@ export function useFeedtackState({
 }: UseFeedtackStateOpts) {
   useFeedtackDom(theme)
 
+  const [pathname, setPathname] = useState(() => window.location.pathname)
+
+  // Track SPA navigation (popstate + pushState/replaceState)
+  useEffect(() => {
+    const update = () => setPathname(window.location.pathname)
+    const origPush = history.pushState.bind(history)
+    const origReplace = history.replaceState.bind(history)
+    history.pushState = (...args: Parameters<typeof history.pushState>) => {
+      origPush(...args)
+      update()
+    }
+    history.replaceState = (
+      ...args: Parameters<typeof history.replaceState>
+    ) => {
+      origReplace(...args)
+      update()
+    }
+    window.addEventListener('popstate', update)
+    return () => {
+      window.removeEventListener('popstate', update)
+      history.pushState = origPush
+      history.replaceState = origReplace
+    }
+  }, [])
+
   const [comment, setComment] = useState('')
   const [sentiment, setSentiment] = useState<FeedtackSentiment>(null)
   const [commentError, setCommentError] = useState(false)
@@ -62,11 +87,11 @@ export function useFeedtackState({
   useEffect(() => {
     setLoading(true)
     adapter
-      .loadFeedback({ pathname: window.location.pathname })
+      .loadFeedback({ pathname })
       .then(setFeedbackItems)
       .catch((err) => onError?.(err))
       .finally(() => setLoading(false))
-  }, [adapter, onError])
+  }, [adapter, onError, pathname])
 
   const updateItem = (id: string, fn: (item: FeedbackItem) => FeedbackItem) =>
     setFeedbackItems((prev) =>
@@ -182,6 +207,7 @@ export function useFeedtackState({
     commentError,
     setCommentError,
     submitting,
+    pathname,
     feedbackItems,
     loading,
     openThreadId,
