@@ -1,5 +1,11 @@
 import type { FeedtackAdapter } from '../types/adapter.js'
-import type { FeedbackItem, FeedtackFilter, FeedtackPayload, FeedtackReply, FeedtackResolution } from '../types/payload.js'
+import type {
+  FeedbackItem,
+  FeedtackFilter,
+  FeedtackPayload,
+  FeedtackReply,
+  FeedtackResolution,
+} from '../types/payload.js'
 
 export interface WebhookAdapterConfig {
   /** URL to POST new feedback payloads to */
@@ -39,12 +45,18 @@ export class WebhookAdapter implements FeedtackAdapter {
     await this.post(this.config.submitUrl, payload)
   }
 
-  async reply(feedbackId: string, reply: Omit<FeedtackReply, 'id' | 'feedbackId'>): Promise<void> {
+  async reply(
+    feedbackId: string,
+    reply: Omit<FeedtackReply, 'id' | 'feedbackId'>,
+  ): Promise<void> {
     const url = this.config.updateUrl ?? this.config.submitUrl
     await this.post(url, { type: 'reply', feedbackId, ...reply })
   }
 
-  async resolve(feedbackId: string, resolution: Omit<FeedtackResolution, 'feedbackId'>): Promise<void> {
+  async resolve(
+    feedbackId: string,
+    resolution: Omit<FeedtackResolution, 'feedbackId'>,
+  ): Promise<void> {
     const url = this.config.updateUrl ?? this.config.submitUrl
     await this.post(url, { type: 'resolve', feedbackId, ...resolution })
   }

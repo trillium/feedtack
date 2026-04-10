@@ -1,3 +1,5 @@
 export { ConsoleAdapter } from './ConsoleAdapter.js'
-export { WebhookAdapter } from './WebhookAdapter.js'
+export type { LocalStorageAdapterConfig } from './LocalStorageAdapter.js'
+export { LocalStorageAdapter } from './LocalStorageAdapter.js'
 export type { WebhookAdapterConfig } from './WebhookAdapter.js'
+export { WebhookAdapter } from './WebhookAdapter.js'

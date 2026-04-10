@@ -1,5 +1,11 @@
 import type { FeedtackAdapter } from '../types/adapter.js'
-import type { FeedbackItem, FeedtackFilter, FeedtackPayload, FeedtackReply, FeedtackResolution } from '../types/payload.js'
+import type {
+  FeedbackItem,
+  FeedtackFilter,
+  FeedtackPayload,
+  FeedtackReply,
+  FeedtackResolution,
+} from '../types/payload.js'
 
 /** Development adapter — logs all operations to the browser console */
 export class ConsoleAdapter implements FeedtackAdapter {
@@ -7,11 +13,17 @@ export class ConsoleAdapter implements FeedtackAdapter {
     console.log('[feedtack] submit', payload)
   }
 
-  async reply(feedbackId: string, reply: Omit<FeedtackReply, 'id' | 'feedbackId'>): Promise<void> {
+  async reply(
+    feedbackId: string,
+    reply: Omit<FeedtackReply, 'id' | 'feedbackId'>,
+  ): Promise<void> {
     console.log('[feedtack] reply', { feedbackId, reply })
   }
 
-  async resolve(feedbackId: string, resolution: Omit<FeedtackResolution, 'feedbackId'>): Promise<void> {
+  async resolve(
+    feedbackId: string,
+    resolution: Omit<FeedtackResolution, 'feedbackId'>,
+  ): Promise<void> {
     console.log('[feedtack] resolve', { feedbackId, resolution })
   }
 
