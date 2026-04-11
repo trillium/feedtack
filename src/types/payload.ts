@@ -20,19 +20,37 @@ export interface FeedtackBoundingRect {
   height: number
 }
 
+export interface AncestorNode {
+  tag: string
+  id: string | null
+  ariaLabel: string | null
+  role: string | null
+  type: string | null
+  name: string | null
+  title: string | null
+  alt: string | null
+  dataTestId: string | null
+  dataFeedtackComponent: string | null
+  /** 1-indexed position among all sibling elements. Null when node has a stable id or dataTestId. */
+  nthChild: number | null
+  /** 1-indexed position among same-tag siblings. Null when node has a stable id or dataTestId. */
+  nthOfType: number | null
+  /** React component display name from fiber traversal, or data-feedtack-component value */
+  componentName: string | null
+}
+
 export interface FeedtackPinTarget {
-  /** CSS selector path to the clicked element */
+  /** CSS selector path to the resolved interactive target */
   selector: string
   /** True when no stable selector was found — downstream consumers should not rely on selector for automated targeting */
   best_effort: boolean
-  /** data-testid attribute value if present, null otherwise — always shipped for downstream consumers */
-  testId: string | null
-  /** Readable DOM ancestry: "div.hero > div.card > button.btn.btn-primary". Walks up to body or nearest data-testid ancestor. Null when element itself has a data-testid (testId is sufficient). */
+  /** data-testid attribute value if present, null otherwise */
+  dataTestId: string | null
+  /** Readable DOM ancestry path retained for backward compatibility */
   elementPath: string | null
   tagName: string
-  /** Trimmed text content of the element, max 200 chars */
-  textContent: string
-  attributes: Record<string, string>
+  /** Ancestor chain up to 5 levels from the resolved target, for LLM element location */
+  ancestors: AncestorNode[]
   boundingRect: FeedtackBoundingRect
 }
 

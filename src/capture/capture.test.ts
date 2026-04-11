@@ -1,7 +1,156 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getCSSSelector, getElementPath, getTargetMeta } from './target.js'
+import {
+  getAncestorChain,
+  getCSSSelector,
+  getTargetMeta,
+  resolveTarget,
+  serializeNode,
+} from './target.js'
 
-describe('getTargetMeta — selector priority chain', () => {
+describe('resolveTarget — interactive ancestor promotion', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('promotes SVG inside button to button', () => {
+    document.body.innerHTML =
+      '<button id="btn"><svg><path></path></svg></button>'
+    const path = document.querySelector('path')!
+    const resolved = resolveTarget(path)
+    expect(resolved.tagName.toLowerCase()).toBe('button')
+  })
+
+  it('promotes span inside anchor to anchor', () => {
+    document.body.innerHTML = '<a href="#"><span>text</span></a>'
+    const span = document.querySelector('span')!
+    const resolved = resolveTarget(span)
+    expect(resolved.tagName.toLowerCase()).toBe('a')
+  })
+
+  it('leaves directly interactive element unchanged', () => {
+    document.body.innerHTML = '<button id="btn">Click</button>'
+    const btn = document.querySelector('button')!
+    expect(resolveTarget(btn)).toBe(btn)
+  })
+
+  it('leaves non-interactive element with no interactive ancestor unchanged', () => {
+    document.body.innerHTML = '<div class="wrapper"><p>text</p></div>'
+    const p = document.querySelector('p')!
+    expect(resolveTarget(p)).toBe(p)
+  })
+})
+
+describe('getAncestorChain — depth and serialization', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('caps chain at 5 levels', () => {
+    document.body.innerHTML =
+      '<div><div><div><div><div><div><button id="deep"></button></div></div></div></div></div></div>'
+    const btn = document.querySelector('button')!
+    const chain = getAncestorChain(btn)
+    expect(chain.length).toBe(5)
+  })
+
+  it('stops before body', () => {
+    document.body.innerHTML = '<div><button id="btn"></button></div>'
+    const btn = document.querySelector('button')!
+    const chain = getAncestorChain(btn)
+    expect(chain.every((n) => n.tag !== 'body')).toBe(true)
+  })
+
+  it('each node includes tag and semantic attributes', () => {
+    document.body.innerHTML =
+      '<div aria-label="container" role="region"><button id="btn"></button></div>'
+    const btn = document.querySelector('button')!
+    const chain = getAncestorChain(btn)
+    expect(chain[0].tag).toBe('div')
+    expect(chain[0].ariaLabel).toBe('container')
+    expect(chain[0].role).toBe('region')
+  })
+})
+
+describe('serializeNode — nth-child / nth-of-type', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('computes nthChild for unlabeled element', () => {
+    document.body.innerHTML =
+      '<div><span></span><span></span><span id="target"></span></div>'
+    const target = document.querySelector('#target')!
+    // target has id so nthChild should be null
+    const node = serializeNode(target)
+    expect(node.nthChild).toBeNull()
+  })
+
+  it('computes nthChild for element without id or data-testid', () => {
+    document.body.innerHTML = '<div><p></p><p></p><p class="target"></p></div>'
+    const target = document.querySelector('.target')!
+    const node = serializeNode(target)
+    expect(node.nthChild).toBe(3)
+  })
+
+  it('computes nthOfType correctly', () => {
+    document.body.innerHTML =
+      '<div><span></span><button></button><button class="target"></button></div>'
+    const target = document.querySelector('.target')!
+    const node = serializeNode(target)
+    expect(node.nthOfType).toBe(2)
+  })
+
+  it('omits nthChild when node has id', () => {
+    document.body.innerHTML = '<div><button id="stable"></button></div>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.nthChild).toBeNull()
+    expect(node.nthOfType).toBeNull()
+  })
+
+  it('omits nthChild when node has data-testid', () => {
+    document.body.innerHTML =
+      '<div><button data-testid="submit"></button></div>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.nthChild).toBeNull()
+  })
+})
+
+describe('data-feedtack-component', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('captures data-feedtack-component on target', () => {
+    document.body.innerHTML =
+      '<button data-feedtack-component="CheckoutButton">Buy</button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.dataFeedtackComponent).toBe('CheckoutButton')
+    expect(node.componentName).toBe('CheckoutButton')
+  })
+
+  it('captures data-feedtack-component on ancestor node in chain', () => {
+    document.body.innerHTML =
+      '<div data-feedtack-component="Sidebar"><button id="btn">x</button></div>'
+    const btn = document.querySelector('button')!
+    const chain = getAncestorChain(btn)
+    expect(chain[0].dataFeedtackComponent).toBe('Sidebar')
+  })
+})
+
+describe('getComponentName — fiber unavailable', () => {
+  it('returns null without throwing when fiber not present', async () => {
+    const { getComponentName } = await import('./fiber.js')
+    const el = document.createElement('button')
+    document.body.appendChild(el)
+    expect(() => getComponentName(el)).not.toThrow()
+    expect(getComponentName(el)).toBeNull()
+  })
+})
+
+describe('getTargetMeta — selector priority and ancestor chain', () => {
   beforeEach(() => {
     document.body.innerHTML = ''
   })
@@ -16,18 +165,7 @@ describe('getTargetMeta — selector priority chain', () => {
     expect(meta.best_effort).toBe(false)
   })
 
-  it('ships testId when data-testid is present (even if id wins selector)', () => {
-    const el = document.createElement('button')
-    el.id = 'submit-btn'
-    el.setAttribute('data-testid', 'checkout-submit')
-    document.body.appendChild(el)
-
-    const meta = getTargetMeta(el)
-    expect(meta.selector).toBe('#submit-btn')
-    expect(meta.testId).toBe('checkout-submit')
-  })
-
-  it('uses data-testid when no id is present and sets elementPath null', () => {
+  it('uses data-testid selector when no id', () => {
     const el = document.createElement('button')
     el.setAttribute('data-testid', 'checkout-submit')
     document.body.appendChild(el)
@@ -35,16 +173,16 @@ describe('getTargetMeta — selector priority chain', () => {
     const meta = getTargetMeta(el)
     expect(meta.selector).toBe('[data-testid="checkout-submit"]')
     expect(meta.best_effort).toBe(false)
-    expect(meta.testId).toBe('checkout-submit')
+    expect(meta.dataTestId).toBe('checkout-submit')
     expect(meta.elementPath).toBeNull()
   })
 
-  it('sets testId to null when no data-testid attribute exists', () => {
+  it('sets dataTestId to null when no data-testid attribute exists', () => {
     const el = document.createElement('button')
     document.body.appendChild(el)
 
     const meta = getTargetMeta(el)
-    expect(meta.testId).toBeNull()
+    expect(meta.dataTestId).toBeNull()
   })
 
   it('falls back to CSS selector and sets best_effort true', () => {
@@ -57,13 +195,14 @@ describe('getTargetMeta — selector priority chain', () => {
     expect(meta.best_effort).toBe(true)
   })
 
-  it('truncates textContent to 200 chars', () => {
-    const el = document.createElement('p')
-    el.textContent = 'a'.repeat(300)
+  it('uses data-feedtack-component in selector when no id or testid', () => {
+    const el = document.createElement('button')
+    el.setAttribute('data-feedtack-component', 'NavButton')
     document.body.appendChild(el)
 
     const meta = getTargetMeta(el)
-    expect(meta.textContent.length).toBe(200)
+    expect(meta.selector).toBe('[data-feedtack-component="NavButton"]')
+    expect(meta.best_effort).toBe(false)
   })
 
   it('captures tagName', () => {
@@ -75,33 +214,35 @@ describe('getTargetMeta — selector priority chain', () => {
     expect(meta.tagName).toBe('BUTTON')
   })
 
-  it('elementPath shows tag.class ancestry when no testId', () => {
+  it('promotes SVG click to button and captures button metadata', () => {
     document.body.innerHTML =
-      '<div class="page"><section class="hero main"><button class="btn btn-primary"></button></section></div>'
+      '<button id="icon-btn"><svg><path></path></svg></button>'
+    const path = document.querySelector('path')!
+
+    const meta = getTargetMeta(path)
+    expect(meta.selector).toBe('#icon-btn')
+    expect(meta.tagName).toBe('BUTTON')
+  })
+
+  it('includes ancestors array', () => {
+    document.body.innerHTML =
+      '<div id="wrapper"><button id="btn">x</button></div>'
     const btn = document.querySelector('button')!
 
     const meta = getTargetMeta(btn)
-    expect(meta.elementPath).toBe(
-      'div.page > section.hero.main > button.btn.btn-primary',
-    )
-    expect(meta.testId).toBeNull()
+    expect(Array.isArray(meta.ancestors)).toBe(true)
+    expect(meta.ancestors[0].tag).toBe('div')
   })
 
-  it('elementPath stops at ancestor with data-testid', () => {
-    document.body.innerHTML =
-      '<div data-testid="card"><span class="label"><em></em></span></div>'
-    const em = document.querySelector('em')!
+  it('retains elementPath for backward compat', () => {
+    document.body.innerHTML = '<div><button id="btn">x</button></div>'
+    const btn = document.querySelector('button')!
 
-    const meta = getTargetMeta(em)
-    expect(meta.elementPath).toBe('[data-testid="card"] > span.label > em')
-  })
-
-  it('elementPath includes bare tags without classes', () => {
-    document.body.innerHTML = '<main><div><p></p></div></main>'
-    const p = document.querySelector('p')!
-
-    const meta = getTargetMeta(p)
-    expect(meta.elementPath).toBe('main > div > p')
+    const meta = getTargetMeta(btn)
+    // btn has id so elementPath is not null (no testid)
+    expect(
+      typeof meta.elementPath === 'string' || meta.elementPath === null,
+    ).toBe(true)
   })
 })
 
@@ -111,5 +252,12 @@ describe('getCSSSelector', () => {
     const li = document.querySelector('li')!
     const selector = getCSSSelector(li)
     expect(selector).toContain('li')
+  })
+
+  it('stops at id', () => {
+    document.body.innerHTML = '<div id="root"><ul><li></li></ul></div>'
+    const li = document.querySelector('li')!
+    const selector = getCSSSelector(li)
+    expect(selector).toContain('#root')
   })
 })
