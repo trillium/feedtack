@@ -47,13 +47,13 @@ export function useFeedtackState({
     const origReplace = history.replaceState.bind(history)
     history.pushState = (...args: Parameters<typeof history.pushState>) => {
       origPush(...args)
-      update()
+      queueMicrotask(update)
     }
     history.replaceState = (
       ...args: Parameters<typeof history.replaceState>
     ) => {
       origReplace(...args)
-      update()
+      queueMicrotask(update)
     }
     window.addEventListener('popstate', update)
     return () => {
@@ -224,5 +224,7 @@ export function useFeedtackState({
     isArchivedForUser: (item: FeedbackItem) =>
       item.archives.some((a) => a.archivedBy.id === currentUser.id),
     hasUnread: (item: FeedbackItem) => item.replies.length > 0,
+    hasValidPins: (item: FeedbackItem) =>
+      Array.isArray(item.payload?.pins) && item.payload.pins.length > 0,
   }
 }

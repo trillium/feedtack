@@ -111,4 +111,47 @@ describe('FeedtackProvider', () => {
     })
     expect(mockAdapter.loadFeedback).toHaveBeenCalled()
   })
+
+  it('does not crash when feedback items have empty pins', async () => {
+    const adapterWithBadItems: FeedtackAdapter = {
+      ...mockAdapter,
+      loadFeedback: vi.fn().mockResolvedValue([
+        {
+          payload: {
+            id: 'ft_bad',
+            schemaVersion: '0.2.0',
+            timestamp: '2026-04-14T00:00:00.000Z',
+            submittedBy: mockUser,
+            comment: 'missing pins',
+            sentiment: null,
+            pins: [],
+            page: { url: 'http://localhost/', pathname: '/', title: '' },
+            viewport: {
+              width: 1280,
+              height: 800,
+              scrollX: 0,
+              scrollY: 0,
+              devicePixelRatio: 1,
+            },
+            device: {
+              userAgent: 'test',
+              platform: 'test',
+              touchEnabled: false,
+            },
+          },
+          replies: [],
+          resolutions: [],
+          archives: [],
+        },
+      ]),
+    }
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={adapterWithBadItems} currentUser={mockUser}>
+          <div data-testid="child">hello</div>
+        </FeedtackProvider>,
+      )
+    })
+    expect(screen.getByTestId('child')).toBeInTheDocument()
+  })
 })

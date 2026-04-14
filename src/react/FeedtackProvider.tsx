@@ -149,6 +149,7 @@ export function FeedtackProvider({
         state.feedbackItems
           .filter((item) => item.payload.page.pathname === state.pathname)
           .filter((item) => !state.isArchivedForUser(item))
+          .filter((item) => state.hasValidPins(item))
           .map((item) => {
             const pin = item.payload.pins[0]
             return (

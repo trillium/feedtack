@@ -24,7 +24,8 @@ export function ThreadPanel({
   onClose,
   className,
 }: ThreadPanelProps) {
-  const pin = item.payload.pins[0]
+  const pin = item.payload?.pins?.[0]
+  if (!pin) return null
   const pos = getAnchoredPosition(pin.x, pin.y)
 
   return (
