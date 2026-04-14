@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.1](https://github.com/trillium/feedtack/compare/v0.2.0...v0.2.1) (2026-04-14)
+
+### Features
+
+* **capture:** rich element targeting — ancestor chain, interactive resolution, fiber names ([da908ba](https://github.com/trillium/feedtack/commit/da908ba05d353a1c7e1bd32097479a8fcf71a9f9))
+
+### Bug Fixes
+
+* **react:** defer history state updates and guard malformed pins ([#4](https://github.com/trillium/feedtack/issues/4), [#5](https://github.com/trillium/feedtack/issues/5)) ([697d901](https://github.com/trillium/feedtack/commit/697d901c80a2d16eb4e0dff4da88cfb929e69597))
+
 ## [0.2.0](https://github.com/trillium/feedtack/compare/v0.1.1...v0.2.0) (2026-04-10)
 
 ### Features
