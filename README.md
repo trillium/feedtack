@@ -74,6 +74,96 @@ class MySupabaseAdapter implements FeedtackAdapter {
 }
 ```
 
+## Adapter recipes
+
+The `FeedtackAdapter` interface has five methods. Here are copy-paste implementations for common backends.
+
+### Disk / JSON files (Node.js)
+
+Git-trackable feedback — each submission becomes a JSON file in `.feedback/`.
+
+```ts
+import type { FeedtackAdapter, FeedbackItem, FeedtackPayload } from 'feedtack'
+import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
+import { join } from 'node:path'
+
+const DIR = '.feedback'
+
+class DiskAdapter implements FeedtackAdapter {
+  async submit(payload: FeedtackPayload) {
+    await mkdir(DIR, { recursive: true })
+    const item: FeedbackItem = { payload, replies: [], resolutions: [], archives: [] }
+    await writeFile(join(DIR, `${payload.id}.json`), JSON.stringify(item, null, 2))
+  }
+
+  async reply(feedbackId: string, reply: Omit<FeedbackItem['replies'][0], 'id' | 'feedbackId'>) {
+    const item = await this.read(feedbackId)
+    item.replies.push({ ...reply, id: crypto.randomUUID(), feedbackId })
+    await this.write(feedbackId, item)
+  }
+
+  async resolve(feedbackId: string, resolution: Omit<FeedbackItem['resolutions'][0], 'feedbackId'>) {
+    const item = await this.read(feedbackId)
+    item.resolutions.push({ ...resolution, feedbackId })
+    await this.write(feedbackId, item)
+  }
+
+  async archive(feedbackId: string, userId: string) {
+    const item = await this.read(feedbackId)
+    item.archives.push({ feedbackId, archivedBy: { id: userId, name: '', role: '' }, timestamp: new Date().toISOString() })
+    await this.write(feedbackId, item)
+  }
+
+  async loadFeedback() {
+    await mkdir(DIR, { recursive: true })
+    const files = (await readdir(DIR)).filter((f) => f.endsWith('.json'))
+    return Promise.all(files.map(async (f) => JSON.parse(await readFile(join(DIR, f), 'utf-8')) as FeedbackItem))
+  }
+
+  private async read(id: string) { return JSON.parse(await readFile(join(DIR, `${id}.json`), 'utf-8')) as FeedbackItem }
+  private async write(id: string, item: FeedbackItem) { await writeFile(join(DIR, `${id}.json`), JSON.stringify(item, null, 2)) }
+}
+```
+
+### Supabase
+
+```ts
+import type { FeedtackAdapter, FeedbackItem, FeedtackFilter, FeedtackPayload } from 'feedtack'
+import type { SupabaseClient } from '@supabase/supabase-js'
+
+class SupabaseAdapter implements FeedtackAdapter {
+  constructor(private supabase: SupabaseClient) {}
+
+  async submit(payload: FeedtackPayload) {
+    await this.supabase.from('feedtack_submissions').insert({ id: payload.id, data: payload })
+  }
+
+  async reply(feedbackId: string, reply: Omit<FeedbackItem['replies'][0], 'id' | 'feedbackId'>) {
+    await this.supabase.from('feedtack_replies').insert({ feedback_id: feedbackId, ...reply })
+  }
+
+  async resolve(feedbackId: string, resolution: Omit<FeedbackItem['resolutions'][0], 'feedbackId'>) {
+    await this.supabase.from('feedtack_resolutions').insert({ feedback_id: feedbackId, ...resolution })
+  }
+
+  async archive(feedbackId: string, userId: string) {
+    await this.supabase.from('feedtack_archives').insert({ feedback_id: feedbackId, user_id: userId })
+  }
+
+  async loadFeedback(filter?: FeedtackFilter): Promise<FeedbackItem[]> {
+    let query = this.supabase.from('feedtack_submissions').select('*, feedtack_replies(*), feedtack_resolutions(*), feedtack_archives(*)')
+    if (filter?.pathname) query = query.eq('data->>page->>pathname', filter.pathname)
+    const { data } = await query
+    return (data ?? []).map((row) => ({
+      payload: row.data,
+      replies: row.feedtack_replies ?? [],
+      resolutions: row.feedtack_resolutions ?? [],
+      archives: row.feedtack_archives ?? [],
+    }))
+  }
+}
+```
+
 ## The payload
 
 Every pin emits a versioned JSON payload:
