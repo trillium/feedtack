@@ -2,7 +2,7 @@
 
 import type React from 'react'
 import type { FeedtackAdapter } from '../types/adapter.js'
-import type { FeedtackUser } from '../types/payload.js'
+import type { FeedbackItem, FeedtackUser } from '../types/payload.js'
 import type { FeedtackTheme } from '../types/theme.js'
 import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
@@ -35,6 +35,8 @@ export interface FeedtackProviderProps {
   sentimentLabels?: FeedtackSentimentLabels
   onError?: (err: Error) => void
   disabled?: boolean
+  /** Render custom content inside a submitted pin marker. Receives the feedback item. */
+  renderPinIcon?: (item: FeedbackItem) => React.ReactNode
 }
 
 export function FeedtackProvider({
@@ -48,6 +50,7 @@ export function FeedtackProvider({
   sentimentLabels = {},
   onError,
   disabled = false,
+  renderPinIcon,
 }: FeedtackProviderProps) {
   const state = useFeedtackState({
     adapter,
@@ -156,7 +159,11 @@ export function FeedtackProvider({
               <button
                 type="button"
                 key={item.payload.id}
-                className={cx('feedtack-pin-marker', classes.pinMarker)}
+                className={cx(
+                  'feedtack-pin-marker',
+                  item.resolutions.length > 0 && 'feedtack-pin-resolved',
+                  classes.pinMarker,
+                )}
                 style={{
                   background: pin.color,
                   left: pin.x,
@@ -172,6 +179,21 @@ export function FeedtackProvider({
                   )
                 }
               >
+                {renderPinIcon ? (
+                  <span className="feedtack-pin-icon">
+                    {renderPinIcon(item)}
+                  </span>
+                ) : (
+                  item.resolutions.length > 0 && (
+                    <span
+                      className="feedtack-pin-icon"
+                      role="img"
+                      aria-label="Resolved"
+                    >
+                      ✓
+                    </span>
+                  )
+                )}
                 {state.hasUnread(item) && (
                   <div className="feedtack-pin-badge" />
                 )}

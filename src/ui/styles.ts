@@ -70,6 +70,24 @@ export const FEEDTACK_STYLES = `
     pointer-events: all;
   }
 
+  .feedtack-pin-resolved {
+    opacity: 0.6;
+  }
+
+  .feedtack-pin-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    pointer-events: none;
+  }
+
   .feedtack-pin-badge {
     position: absolute;
     top: -4px;
