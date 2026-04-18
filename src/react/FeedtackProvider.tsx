@@ -93,6 +93,8 @@ export function FeedtackProvider({
               : state.activatePinMode()
           }
           title="Toggle feedback pin mode"
+          aria-label="Toggle feedback pin mode"
+          aria-pressed={state.isPinModeActive}
         >
           Drop Pin [Shift+{hotkey.toUpperCase()}]
         </button>

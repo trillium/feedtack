@@ -70,9 +70,7 @@ export const FEEDTACK_STYLES = `
     pointer-events: all;
   }
 
-  .feedtack-pin-resolved {
-    opacity: 0.6;
-  }
+  .feedtack-pin-resolved { opacity: 0.6; }
 
   .feedtack-pin-icon {
     position: absolute;
@@ -233,6 +231,11 @@ export const FEEDTACK_STYLES = `
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .feedtack-sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
   .feedtack-loading {

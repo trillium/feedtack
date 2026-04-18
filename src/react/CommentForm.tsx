@@ -39,15 +39,29 @@ export function CommentForm({
       className={cx('feedtack-form', classes.form)}
       style={{ position: 'fixed', ...formPos }}
     >
+      <label htmlFor="feedtack-comment" className="feedtack-sr-only">
+        Feedback comment
+      </label>
       <textarea
+        id="feedtack-comment"
         className={commentError ? 'error' : ''}
         placeholder="What's the issue? (required)"
         value={comment}
         onChange={(e) => onCommentChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault()
+            onSubmit()
+          }
+        }}
         ref={(el) => el?.focus()}
+        aria-describedby={commentError ? 'feedtack-comment-error' : undefined}
+        aria-invalid={commentError || undefined}
       />
       {commentError && (
-        <span className="feedtack-error-msg">Comment is required</span>
+        <span id="feedtack-comment-error" className="feedtack-error-msg">
+          Comment is required
+        </span>
       )}
       <div className="feedtack-sentiment">
         <button
