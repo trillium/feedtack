@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/trillium/feedtack/compare/v0.2.1...v0.3.0) (2026-04-18)
+
+### Features
+
+* ctrl+enter submit and accessibility improvements ([#7](https://github.com/trillium/feedtack/issues/7), [#8](https://github.com/trillium/feedtack/issues/8)) ([56acfee](https://github.com/trillium/feedtack/commit/56acfeea35384437950c8f0f16bc6b8e8e07dffb))
+* **react:** add renderPinIcon prop and default resolved checkmark ([#6](https://github.com/trillium/feedtack/issues/6)) ([43e1d19](https://github.com/trillium/feedtack/commit/43e1d19d52c98b8ab9655105693c5b7f9bb2fead))
+
 ## [0.2.1](https://github.com/trillium/feedtack/compare/v0.2.0...v0.2.1) (2026-04-14)
 
 ### Features
