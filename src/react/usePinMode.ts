@@ -9,9 +9,16 @@ export interface UsePinModeOpts {
   hotkey: string
   onDeactivate?: () => void
   disabled?: boolean
+  /** When true, suppress arrow-key color cycling (e.g. thread panel is open) */
+  isModalOpen?: boolean
 }
 
-export function usePinMode({ hotkey, onDeactivate, disabled }: UsePinModeOpts) {
+export function usePinMode({
+  hotkey,
+  onDeactivate,
+  disabled,
+  isModalOpen,
+}: UsePinModeOpts) {
   const [isActive, setIsActive] = useState(false)
   const [pendingPins, setPendingPins] = useState<
     Array<Omit<FeedtackPin, 'index'>>
@@ -48,7 +55,12 @@ export function usePinMode({ hotkey, onDeactivate, disabled }: UsePinModeOpts) {
       if (e.key === 'Escape') {
         deactivate()
       }
-      if (isActive && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      if (
+        isActive &&
+        !isModalOpen &&
+        !showForm &&
+        (e.key === 'ArrowLeft' || e.key === 'ArrowRight')
+      ) {
         e.preventDefault()
         setSelectedColor((prev) => {
           const idx = PIN_PALETTE.indexOf(prev as (typeof PIN_PALETTE)[number])
@@ -61,7 +73,7 @@ export function usePinMode({ hotkey, onDeactivate, disabled }: UsePinModeOpts) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [hotkey, deactivate, isActive, disabled])
+  }, [hotkey, deactivate, isActive, disabled, isModalOpen, showForm])
 
   // Click-to-place pin
   const handlePageClick = useCallback(

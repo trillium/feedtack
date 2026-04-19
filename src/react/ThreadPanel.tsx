@@ -39,7 +39,7 @@ export function ThreadPanel({
       {item.replies.map((r) => (
         <div
           key={r.id}
-          style={{ borderTop: '1px solid #f3f4f6', paddingTop: 8 }}
+          style={{ borderTop: '1px solid var(--ft-border)', paddingTop: 8 }}
         >
           <span style={{ fontSize: 12, fontWeight: 600 }}>{r.author.name}</span>
           <p style={{ fontSize: 12 }}>{r.body}</p>
@@ -55,7 +55,7 @@ export function ThreadPanel({
           fontSize: 12,
           padding: 6,
           borderRadius: 6,
-          border: '1px solid #e5e7eb',
+          border: '1px solid var(--ft-border)',
           marginTop: 4,
         }}
       />

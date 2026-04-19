@@ -81,6 +81,7 @@ export function useFeedtackState({
   const pinMode = usePinMode({
     hotkey,
     disabled,
+    isModalOpen: openThreadId !== null,
     onDeactivate: () => {
       resetForm()
       setOpenThreadId(null)
