@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1](https://github.com/trillium/feedtack/compare/v0.3.0...v0.3.1) (2026-04-19)
+
+### Bug Fixes
+
+* suppress arrow-key color cycling when modal open, use theme vars in thread panel ([#11](https://github.com/trillium/feedtack/issues/11), [#12](https://github.com/trillium/feedtack/issues/12)) ([add797f](https://github.com/trillium/feedtack/commit/add797f04a0e52ccd1a8d0853b0d2fccec35145a))
+
 ## [0.3.0](https://github.com/trillium/feedtack/compare/v0.2.1...v0.3.0) (2026-04-18)
 
 ### Features
