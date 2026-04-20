@@ -56,6 +56,10 @@ export function ThreadPanel({
           padding: 6,
           borderRadius: 6,
           border: '1px solid var(--ft-border)',
+          background: 'var(--ft-surface)',
+          color: 'var(--ft-text)',
+          minHeight: 60,
+          resize: 'vertical' as const,
           marginTop: 4,
         }}
       />

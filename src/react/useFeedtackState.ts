@@ -38,7 +38,9 @@ export function useFeedtackState({
 }: UseFeedtackStateOpts) {
   useFeedtackDom(theme, disabled)
 
-  const [pathname, setPathname] = useState(() => window.location.pathname)
+  const [pathname, setPathname] = useState(() =>
+    typeof window === 'undefined' ? '/' : window.location.pathname,
+  )
 
   // Track SPA navigation (popstate + pushState/replaceState)
   useEffect(() => {

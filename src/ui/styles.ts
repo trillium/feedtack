@@ -1,6 +1,6 @@
 /** CSS custom property defaults — overridden by the theme prop */
 export const FEEDTACK_DEFAULT_TOKENS = `
-  #feedtack-root {
+  #feedtack-root, .feedtack-form, .feedtack-thread {
     --ft-primary: #2563eb;
     --ft-primary-hover: #1d4ed8;
     --ft-bg: #ffffff;
