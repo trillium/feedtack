@@ -8,6 +8,7 @@ import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
 import { FeedtackContext } from './context.js'
 import { ThreadPanel } from './ThreadPanel.js'
+import { useAnchoredPins } from './useAnchoredPins.js'
 import type { FeedtackFlushEvent } from './useFeedtackFlush.js'
 import { useFeedtackState } from './useFeedtackState.js'
 import { cx, getAnchoredPosition } from './utils.js'
@@ -73,6 +74,8 @@ export function FeedtackProvider({
     flushIdleMs,
     rescopeRoles,
   })
+
+  const { getPosition } = useAnchoredPins(state.feedbackItems, state.pathname)
 
   const firstPin = state.pendingPins[0]
   const formPos = firstPin ? getAnchoredPosition(firstPin.x, firstPin.y) : {}
@@ -170,6 +173,7 @@ export function FeedtackProvider({
           .filter((item) => state.hasValidPins(item))
           .map((item) => {
             const pin = item.payload.pins[0]
+            const pos = getPosition(item.payload.id, pin)
             return (
               <button
                 type="button"
@@ -181,8 +185,8 @@ export function FeedtackProvider({
                 )}
                 style={{
                   background: pin.color,
-                  left: pin.x,
-                  top: pin.y,
+                  left: pos.x,
+                  top: pos.y,
                   position: 'absolute',
                   cursor: 'pointer',
                 }}
@@ -225,6 +229,10 @@ export function FeedtackProvider({
           onResolve={() => state.handleResolve(openItem.payload.id)}
           onArchive={() => state.handleArchive(openItem.payload.id)}
           onClose={() => state.setOpenThreadId(null)}
+          pinPosition={getPosition(
+            openItem.payload.id,
+            openItem.payload.pins[0],
+          )}
           className={classes.thread}
         />
       )}

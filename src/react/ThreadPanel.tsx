@@ -12,6 +12,8 @@ interface ThreadPanelProps {
   onArchive: () => void
   onClose: () => void
   className?: string
+  /** Resolved pin position (DOM-anchored or fallback x/y) */
+  pinPosition?: { x: number; y: number }
 }
 
 export function ThreadPanel({
@@ -23,10 +25,12 @@ export function ThreadPanel({
   onArchive,
   onClose,
   className,
+  pinPosition,
 }: ThreadPanelProps) {
   const pin = item.payload?.pins?.[0]
   if (!pin) return null
-  const pos = getAnchoredPosition(pin.x, pin.y)
+  const { x, y } = pinPosition ?? pin
+  const pos = getAnchoredPosition(x, y)
 
   return (
     <div
