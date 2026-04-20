@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0](https://github.com/trillium/feedtack/compare/v0.3.1...v0.4.0) (2026-04-20)
+
+### Features
+
+* onFlush callback, re-scope on reply, and touch pin placement ([#14](https://github.com/trillium/feedtack/issues/14), [#16](https://github.com/trillium/feedtack/issues/16), [#17](https://github.com/trillium/feedtack/issues/17)) ([c510efb](https://github.com/trillium/feedtack/commit/c510efb0ea6f54e68f1afeb4f4c2dbaee7653b94))
+
+### Bug Fixes
+
+* ssr guard for window access and theme vars on fixed-position elements ([#13](https://github.com/trillium/feedtack/issues/13), [#15](https://github.com/trillium/feedtack/issues/15)) ([56efd54](https://github.com/trillium/feedtack/commit/56efd54c462b2df1e9def02e9f30ae10f43c56a6))
+
 ## [0.3.1](https://github.com/trillium/feedtack/compare/v0.3.0...v0.3.1) (2026-04-19)
 
 ### Bug Fixes
