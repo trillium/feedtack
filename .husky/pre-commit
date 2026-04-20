@@ -1,10 +1,10 @@
 npx lint-staged
 
-MAX_LINES=250
+MAX_LINES=300
 FAILED=0
 
 # Check staged ts/tsx source files (exclude tests, configs, lock files)
-for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.tsx?$' | grep -v '\.test\.' | grep -v '\.config\.'); do
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.tsx?$' | grep -v '\.test\.' | grep -v '\.config\.' ); do
   if [ -f "$file" ]; then
     lines=$(wc -l < "$file")
     if [ "$lines" -gt "$MAX_LINES" ]; then

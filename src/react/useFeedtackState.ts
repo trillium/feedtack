@@ -16,6 +16,8 @@ import type {
 import { SCHEMA_VERSION } from '../types/payload.js'
 import type { FeedtackTheme } from '../types/theme.js'
 import { useFeedtackDom } from './useFeedtackDom.js'
+import type { FeedtackFlushEvent } from './useFeedtackFlush.js'
+import { useFeedtackFlush } from './useFeedtackFlush.js'
 import { usePinMode } from './usePinMode.js'
 import { generateId } from './utils.js'
 
@@ -26,6 +28,12 @@ export interface UseFeedtackStateOpts {
   theme?: FeedtackTheme
   onError?: (err: Error) => void
   disabled?: boolean
+  /** Called with batched feedback when user leaves a page or goes idle */
+  onFlush?: (event: FeedtackFlushEvent) => void
+  /** Idle timeout before flushing (default 5 min) */
+  flushIdleMs?: number
+  /** Roles that trigger re-scope on reply (default: any non-'agent' role) */
+  rescopeRoles?: string[]
 }
 
 export function useFeedtackState({
@@ -35,6 +43,9 @@ export function useFeedtackState({
   theme,
   onError,
   disabled,
+  onFlush,
+  flushIdleMs,
+  rescopeRoles,
 }: UseFeedtackStateOpts) {
   useFeedtackDom(theme, disabled)
 
@@ -88,6 +99,14 @@ export function useFeedtackState({
       resetForm()
       setOpenThreadId(null)
     },
+  })
+
+  const { clearFlushed } = useFeedtackFlush({
+    pathname,
+    feedbackItems,
+    onFlush,
+    flushIdleMs,
+    disabled,
   })
 
   useEffect(() => {
@@ -146,19 +165,29 @@ export function useFeedtackState({
         body,
         timestamp: ts,
       })
-      updateItem(feedbackId, (item) => ({
-        ...item,
-        replies: [
-          ...item.replies,
-          {
-            id: generateId(),
-            feedbackId,
-            author: currentUser,
-            body,
-            timestamp: ts,
-          },
-        ],
-      }))
+      updateItem(feedbackId, (item) => {
+        const updated = {
+          ...item,
+          replies: [
+            ...item.replies,
+            {
+              id: generateId(),
+              feedbackId,
+              author: currentUser,
+              body,
+              timestamp: ts,
+            },
+          ],
+        }
+        // Re-scope: non-agent reply on unresolved tack re-enters flush pipeline
+        const triggerRescope = rescopeRoles
+          ? rescopeRoles.includes(currentUser.role)
+          : currentUser.role !== 'agent'
+        if (triggerRescope && updated.resolutions.length === 0 && onFlush) {
+          clearFlushed(pathname)
+        }
+        return updated
+      })
       setReplyBody('')
     } catch (err) {
       onError?.(err as Error)
@@ -201,6 +230,12 @@ export function useFeedtackState({
     }
   }
 
+  const isArchivedForUser = (item: FeedbackItem) =>
+    item.archives.some((a) => a.archivedBy.id === currentUser.id)
+  const hasUnread = (item: FeedbackItem) => item.replies.length > 0
+  const hasValidPins = (item: FeedbackItem) =>
+    Array.isArray(item.payload?.pins) && item.payload.pins.length > 0
+
   return {
     ...pinMode,
     isPinModeActive: pinMode.isActive,
@@ -224,10 +259,8 @@ export function useFeedtackState({
     handleReply,
     handleResolve,
     handleArchive,
-    isArchivedForUser: (item: FeedbackItem) =>
-      item.archives.some((a) => a.archivedBy.id === currentUser.id),
-    hasUnread: (item: FeedbackItem) => item.replies.length > 0,
-    hasValidPins: (item: FeedbackItem) =>
-      Array.isArray(item.payload?.pins) && item.payload.pins.length > 0,
+    isArchivedForUser,
+    hasUnread,
+    hasValidPins,
   }
 }

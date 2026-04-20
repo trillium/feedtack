@@ -8,6 +8,7 @@ import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
 import { FeedtackContext } from './context.js'
 import { ThreadPanel } from './ThreadPanel.js'
+import type { FeedtackFlushEvent } from './useFeedtackFlush.js'
 import { useFeedtackState } from './useFeedtackState.js'
 import { cx, getAnchoredPosition } from './utils.js'
 
@@ -37,6 +38,12 @@ export interface FeedtackProviderProps {
   disabled?: boolean
   /** Render custom content inside a submitted pin marker. Receives the feedback item. */
   renderPinIcon?: (item: FeedbackItem) => React.ReactNode
+  /** Called with batched feedback when user leaves a page or goes idle */
+  onFlush?: (event: FeedtackFlushEvent) => void
+  /** Idle timeout in ms before flushing (default 5 min) */
+  flushIdleMs?: number
+  /** User roles that trigger re-scope on reply (default: any non-'agent' role) */
+  rescopeRoles?: string[]
 }
 
 export function FeedtackProvider({
@@ -51,6 +58,9 @@ export function FeedtackProvider({
   onError,
   disabled = false,
   renderPinIcon,
+  onFlush,
+  flushIdleMs,
+  rescopeRoles,
 }: FeedtackProviderProps) {
   const state = useFeedtackState({
     adapter,
@@ -59,6 +69,9 @@ export function FeedtackProvider({
     theme,
     onError,
     disabled,
+    onFlush,
+    flushIdleMs,
+    rescopeRoles,
   })
 
   const firstPin = state.pendingPins[0]

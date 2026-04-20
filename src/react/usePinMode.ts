@@ -75,35 +75,60 @@ export function usePinMode({
     return () => window.removeEventListener('keydown', handler)
   }, [hotkey, deactivate, isActive, disabled, isModalOpen, showForm])
 
-  // Click-to-place pin
-  const handlePageClick = useCallback(
-    (e: MouseEvent) => {
-      if (!isActive) return
-      const target = e.target as Element
+  // Shared pin placement logic
+  const placePin = useCallback(
+    (coords: { clientX: number; clientY: number }, target: Element) => {
       if (
         target.closest('#feedtack-root, .feedtack-form, .feedtack-color-picker')
       )
         return
-      e.preventDefault()
-      e.stopPropagation()
       setPendingPins((prev) => [
         ...prev,
         {
           color: selectedColor,
-          ...getPinCoords(e),
+          ...getPinCoords(coords),
           target: getTargetMeta(target),
         },
       ])
       setShowForm(true)
     },
-    [isActive, selectedColor],
+    [selectedColor],
+  )
+
+  // Click-to-place pin (mouse)
+  const handlePageClick = useCallback(
+    (e: MouseEvent) => {
+      if (!isActive) return
+      e.preventDefault()
+      e.stopPropagation()
+      placePin(e, e.target as Element)
+    },
+    [isActive, placePin],
+  )
+
+  // Touch-to-place pin (mobile)
+  const handleTouchEnd = useCallback(
+    (e: TouchEvent) => {
+      if (!isActive) return
+      const touch = e.changedTouches[0]
+      if (!touch) return
+      const target = document.elementFromPoint(touch.clientX, touch.clientY)
+      if (!target) return
+      e.preventDefault()
+      placePin(touch, target)
+    },
+    [isActive, placePin],
   )
 
   useEffect(() => {
     if (disabled) return
     document.addEventListener('click', handlePageClick, true)
-    return () => document.removeEventListener('click', handlePageClick, true)
-  }, [handlePageClick, disabled])
+    document.addEventListener('touchend', handleTouchEnd, true)
+    return () => {
+      document.removeEventListener('click', handlePageClick, true)
+      document.removeEventListener('touchend', handleTouchEnd, true)
+    }
+  }, [handlePageClick, handleTouchEnd, disabled])
 
   return {
     isActive,

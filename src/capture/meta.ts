@@ -30,7 +30,7 @@ export function getDeviceMeta(): FeedtackDeviceMeta {
   }
 }
 
-export function getPinCoords(event: MouseEvent): {
+export function getPinCoords(event: { clientX: number; clientY: number }): {
   x: number
   y: number
   xPct: number
