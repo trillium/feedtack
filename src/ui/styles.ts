@@ -1,6 +1,7 @@
+import { FEEDTACK_MODAL_STYLES } from './modalStyles.js'
 /** CSS custom property defaults — overridden by the theme prop */
 export const FEEDTACK_DEFAULT_TOKENS = `
-  #feedtack-root, .feedtack-form, .feedtack-thread {
+  #feedtack-root, .feedtack-form, .feedtack-thread, .feedtack-modal {
     --ft-primary: #2563eb;
     --ft-primary-hover: #1d4ed8;
     --ft-bg: #ffffff;
@@ -15,7 +16,8 @@ export const FEEDTACK_DEFAULT_TOKENS = `
 `
 
 /** Injected once into <head> — all styles scoped to .feedtack-* using CSS tokens */
-export const FEEDTACK_STYLES = `
+export const FEEDTACK_STYLES =
+  `
   #feedtack-root * {
     box-sizing: border-box;
     margin: 0;
@@ -238,12 +240,4 @@ export const FEEDTACK_STYLES = `
     overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
-  .feedtack-loading {
-    position: fixed;
-    bottom: 70px;
-    right: 24px;
-    font-size: 12px;
-    color: var(--ft-text-muted);
-    z-index: 2147483640;
-  }
-`
+` + FEEDTACK_MODAL_STYLES

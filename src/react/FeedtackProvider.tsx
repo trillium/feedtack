@@ -7,6 +7,8 @@ import type { FeedtackTheme } from '../types/theme.js'
 import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
 import { FeedtackContext } from './context.js'
+import { FeedbackModal } from './FeedbackModal.js'
+import { PinOverlay } from './PinOverlay.js'
 import { ThreadPanel } from './ThreadPanel.js'
 import { useAnchoredPins } from './useAnchoredPins.js'
 import type { FeedtackFlushEvent } from './useFeedtackFlush.js'
@@ -85,6 +87,11 @@ export function FeedtackProvider({
     ? state.feedbackItems.find((i) => i.payload.id === state.openThreadId)
     : null
 
+  const handlePlacePin = () => {
+    state.closeModal()
+    state.activatePinMode()
+  }
+
   return (
     <FeedtackContext.Provider
       value={{
@@ -94,6 +101,9 @@ export function FeedtackProvider({
         selectedColor: state.selectedColor,
         setSelectedColor: disabled ? () => {} : state.setSelectedColor,
         pinPalette: PIN_PALETTE,
+        openModal: disabled ? () => {} : state.openModal,
+        closeModal: disabled ? () => {} : state.closeModal,
+        isModalOpen: disabled ? false : state.isModalOpen,
       }}
     >
       {children}
@@ -103,19 +113,14 @@ export function FeedtackProvider({
           type="button"
           className={cx(
             'feedtack-btn',
-            state.isPinModeActive && 'active',
+            (state.isPinModeActive || state.isModalOpen) && 'active',
             classes.button,
           )}
-          onClick={() =>
-            state.isPinModeActive
-              ? state.deactivatePinMode()
-              : state.activatePinMode()
-          }
-          title="Toggle feedback pin mode"
-          aria-label="Toggle feedback pin mode"
-          aria-pressed={state.isPinModeActive}
+          onClick={() => state.openModal()}
+          title="Open feedback"
+          aria-label="Open feedback"
         >
-          Drop Pin [Shift+{hotkey.toUpperCase()}]
+          Feedback
         </button>
       )}
 
@@ -169,59 +174,20 @@ export function FeedtackProvider({
         />
       )}
 
-      {!state.loading &&
-        state.feedbackItems
-          .filter((item) => item.payload.page.pathname === state.pathname)
-          .filter((item) => !state.isArchivedForUser(item))
-          .filter((item) => state.hasValidPins(item))
-          .map((item) => {
-            const pin = item.payload.pins[0]
-            const pos = getPosition(item.payload.id, pin)
-            return (
-              <button
-                type="button"
-                key={item.payload.id}
-                className={cx(
-                  'feedtack-pin-marker',
-                  item.resolutions.length > 0 && 'feedtack-pin-resolved',
-                  classes.pinMarker,
-                )}
-                style={{
-                  background: pin.color,
-                  left: pos.x,
-                  top: pos.y,
-                  position: 'absolute',
-                  cursor: 'pointer',
-                }}
-                onClick={() =>
-                  state.setOpenThreadId(
-                    state.openThreadId === item.payload.id
-                      ? null
-                      : item.payload.id,
-                  )
-                }
-              >
-                {renderPinIcon ? (
-                  <span className="feedtack-pin-icon">
-                    {renderPinIcon(item)}
-                  </span>
-                ) : (
-                  item.resolutions.length > 0 && (
-                    <span
-                      className="feedtack-pin-icon"
-                      role="img"
-                      aria-label="Resolved"
-                    >
-                      ✓
-                    </span>
-                  )
-                )}
-                {state.hasUnread(item) && (
-                  <div className="feedtack-pin-badge" />
-                )}
-              </button>
-            )
-          })}
+      {!state.loading && (
+        <PinOverlay
+          feedbackItems={state.feedbackItems}
+          pathname={state.pathname}
+          isArchivedForUser={state.isArchivedForUser}
+          hasValidPins={state.hasValidPins}
+          hasUnread={state.hasUnread}
+          openThreadId={state.openThreadId}
+          setOpenThreadId={state.setOpenThreadId}
+          getPosition={getPosition}
+          renderPinIcon={renderPinIcon}
+          pinMarkerClass={classes.pinMarker}
+        />
+      )}
 
       {openItem && (
         <ThreadPanel
@@ -237,6 +203,35 @@ export function FeedtackProvider({
             openItem.payload.pins[0],
           )}
           className={classes.thread}
+        />
+      )}
+
+      {!disabled && (
+        <FeedbackModal
+          isOpen={state.isModalOpen}
+          onClose={state.closeModal}
+          activeTab={state.composeScope}
+          onTabChange={state.setComposeScope}
+          siteFeedback={state.siteFeedback}
+          pageFeedback={state.pageFeedback}
+          comment={state.comment}
+          onCommentChange={(v) => {
+            state.setComment(v)
+            state.setCommentError(false)
+          }}
+          commentError={state.commentError}
+          sentiment={state.sentiment}
+          onSentimentChange={state.setSentiment}
+          submitting={state.submitting}
+          onSubmit={state.handleModalSubmit}
+          onPlacePin={handlePlacePin}
+          replyBody={state.replyBody}
+          onReplyBodyChange={state.setReplyBody}
+          onReply={(id) => state.handleReply(id)}
+          onResolve={(id) => state.handleResolve(id)}
+          onArchive={(id) => state.handleArchive(id)}
+          openThreadId={state.openThreadId}
+          onOpenThread={state.setOpenThreadId}
         />
       )}
 

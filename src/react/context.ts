@@ -7,6 +7,9 @@ export interface FeedtackContextValue {
   selectedColor: string
   setSelectedColor: (color: string) => void
   pinPalette: readonly string[]
+  openModal: () => void
+  closeModal: () => void
+  isModalOpen: boolean
 }
 
 export const FeedtackContext = createContext<FeedtackContextValue | null>(null)

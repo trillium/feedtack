@@ -1,4 +1,6 @@
-export const SCHEMA_VERSION = '1.0.0'
+export const SCHEMA_VERSION = '2.0.0'
+
+export type FeedtackScope = 'site' | 'page' | 'element'
 
 export interface FeedtackUser {
   /** Unique identifier — used for attribution across pins, replies, resolutions, archives */
@@ -90,7 +92,7 @@ export interface FeedtackDeviceMeta {
   touchEnabled: boolean
 }
 
-export type FeedtackSentiment = 'satisfied' | 'dissatisfied' | null
+export type FeedtackSentiment = 'good' | 'bad' | null
 
 export interface FeedtackPayload {
   schemaVersion: string
@@ -98,10 +100,12 @@ export interface FeedtackPayload {
   id: string
   /** ISO 8601 UTC */
   timestamp: string
+  /** Feedback scope: site-wide, page-level, or element-specific */
+  scope: FeedtackScope
   submittedBy: FeedtackUser
   comment: string
   sentiment: FeedtackSentiment
-  /** At least one pin required */
+  /** Pins placed on the page. Empty for site/page scope. */
   pins: FeedtackPin[]
   page: FeedtackPageMeta
   viewport: FeedtackViewportMeta
@@ -142,4 +146,5 @@ export interface FeedtackFilter {
   url?: string
   pathname?: string
   userId?: string
+  scope?: FeedtackScope
 }

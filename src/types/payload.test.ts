@@ -6,6 +6,7 @@ const mockPayload: FeedtackPayload = {
   schemaVersion: SCHEMA_VERSION,
   id: 'ft_01j_test',
   timestamp: '2026-04-09T00:00:00.000Z',
+  scope: 'element',
   submittedBy: { id: 'u1', name: 'Test User', role: 'designer' },
   comment: 'This button is broken',
   sentiment: null,
@@ -20,11 +21,10 @@ const mockPayload: FeedtackPayload = {
       target: {
         selector: '#submit-btn',
         best_effort: false,
-        testId: null,
+        dataTestId: null,
         elementPath: 'button',
         tagName: 'BUTTON',
-        textContent: 'Place Order',
-        attributes: { id: 'submit-btn', class: 'btn-primary' },
+        ancestors: [],
         boundingRect: { x: 420, y: 812, width: 200, height: 44 },
       },
     },
@@ -49,8 +49,8 @@ const mockPayload: FeedtackPayload = {
 }
 
 describe('SCHEMA_VERSION', () => {
-  it('is 1.0.0', () => {
-    expect(SCHEMA_VERSION).toBe('1.0.0')
+  it('is 2.0.0', () => {
+    expect(SCHEMA_VERSION).toBe('2.0.0')
   })
 })
 
@@ -59,9 +59,10 @@ describe('FeedtackPayload', () => {
     expect(mockPayload.schemaVersion).toBe(SCHEMA_VERSION)
   })
 
-  it('includes all required top-level fields', () => {
+  it('includes all required top-level fields including scope', () => {
     expect(mockPayload).toHaveProperty('id')
     expect(mockPayload).toHaveProperty('timestamp')
+    expect(mockPayload).toHaveProperty('scope')
     expect(mockPayload).toHaveProperty('submittedBy')
     expect(mockPayload).toHaveProperty('comment')
     expect(mockPayload).toHaveProperty('sentiment')
@@ -75,11 +76,42 @@ describe('FeedtackPayload', () => {
     expect(mockPayload.sentiment).toBeNull()
   })
 
+  it('scope is element for pin-based feedback', () => {
+    expect(mockPayload.scope).toBe('element')
+  })
+
   it('pin has document-relative coordinates', () => {
     const pin = mockPayload.pins[0]
     expect(typeof pin.x).toBe('number')
     expect(typeof pin.y).toBe('number')
     expect(typeof pin.xPct).toBe('number')
     expect(typeof pin.yPct).toBe('number')
+  })
+
+  it('allows empty pins for site scope', () => {
+    const sitePayload: FeedtackPayload = {
+      ...mockPayload,
+      scope: 'site',
+      pins: [],
+    }
+    expect(sitePayload.pins).toHaveLength(0)
+    expect(sitePayload.scope).toBe('site')
+  })
+
+  it('allows empty pins for page scope', () => {
+    const pagePayload: FeedtackPayload = {
+      ...mockPayload,
+      scope: 'page',
+      pins: [],
+    }
+    expect(pagePayload.pins).toHaveLength(0)
+    expect(pagePayload.scope).toBe('page')
+  })
+
+  it('sentiment values are good/bad', () => {
+    const good: FeedtackPayload = { ...mockPayload, sentiment: 'good' }
+    const bad: FeedtackPayload = { ...mockPayload, sentiment: 'bad' }
+    expect(good.sentiment).toBe('good')
+    expect(bad.sentiment).toBe('bad')
   })
 })

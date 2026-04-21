@@ -11,6 +11,8 @@ export interface UsePinModeOpts {
   disabled?: boolean
   /** When true, suppress arrow-key color cycling (e.g. thread panel is open) */
   isModalOpen?: boolean
+  /** Called when hotkey is pressed — opens modal instead of toggling pin mode directly */
+  onHotkey?: () => void
 }
 
 export function usePinMode({
@@ -18,6 +20,7 @@ export function usePinMode({
   onDeactivate,
   disabled,
   isModalOpen,
+  onHotkey,
 }: UsePinModeOpts) {
   const [isActive, setIsActive] = useState(false)
   const [pendingPins, setPendingPins] = useState<
@@ -50,7 +53,11 @@ export function usePinMode({
     if (disabled) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === hotkey.toUpperCase() && e.shiftKey) {
-        setIsActive((prev) => !prev)
+        if (onHotkey) {
+          onHotkey()
+        } else {
+          setIsActive((prev) => !prev)
+        }
       }
       if (e.key === 'Escape') {
         deactivate()
@@ -73,7 +80,7 @@ export function usePinMode({
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [hotkey, deactivate, isActive, disabled, isModalOpen, showForm])
+  }, [hotkey, deactivate, isActive, disabled, isModalOpen, showForm, onHotkey])
 
   // Shared pin placement logic
   const placePin = useCallback(

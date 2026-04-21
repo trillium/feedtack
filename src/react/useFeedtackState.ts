@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { FeedtackAdapter } from '../types/adapter.js'
 import type {
   FeedbackItem,
+  FeedtackScope,
   FeedtackSentiment,
   FeedtackUser,
 } from '../types/payload.js'
@@ -78,6 +79,17 @@ export function useFeedtackState({
   const [openThreadId, setOpenThreadId] = useState<string | null>(null)
   const [replyBody, setReplyBody] = useState('')
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [composeScope, setComposeScope] = useState<'site' | 'page'>('site')
+
+  // Site/page scoped feedback loaded separately
+  const [siteFeedback, setSiteFeedback] = useState<FeedbackItem[]>([])
+  const [pageFeedback, setPageFeedback] = useState<FeedbackItem[]>([])
+
+  const openModal = useCallback(() => setIsModalOpen(true), [])
+  const closeModal = useCallback(() => setIsModalOpen(false), [])
+
   const resetForm = useCallback(() => {
     setComment('')
     setSentiment(null)
@@ -87,7 +99,8 @@ export function useFeedtackState({
   const pinMode = usePinMode({
     hotkey,
     disabled,
-    isModalOpen: openThreadId !== null,
+    isModalOpen: openThreadId !== null || isModalOpen,
+    onHotkey: openModal,
     onDeactivate: () => {
       resetForm()
       setOpenThreadId(null)
@@ -102,17 +115,37 @@ export function useFeedtackState({
     disabled,
   })
 
+  // Load element-scoped feedback (existing behavior)
   useEffect(() => {
     setLoading(true)
     adapter
       .loadFeedback({ pathname })
-      .then(setFeedbackItems)
+      .then((items) => {
+        const elementItems: FeedbackItem[] = []
+        const siteItems: FeedbackItem[] = []
+        const pageItems: FeedbackItem[] = []
+        for (const item of items) {
+          if (item.payload.scope === 'site') siteItems.push(item)
+          else if (item.payload.scope === 'page') pageItems.push(item)
+          else elementItems.push(item)
+        }
+        setFeedbackItems(elementItems)
+        setSiteFeedback(siteItems)
+        setPageFeedback(pageItems)
+      })
       .catch((err) => onError?.(err))
       .finally(() => setLoading(false))
   }, [adapter, onError, pathname])
 
+  // Derive current scope based on state
+  const getCurrentScope = useCallback((): FeedtackScope => {
+    if (pinMode.isActive || pinMode.pendingPins.length > 0) return 'element'
+    return composeScope
+  }, [pinMode.isActive, pinMode.pendingPins.length, composeScope])
+
   const commentRef = () => comment
   const sentimentRef = () => sentiment
+  const scopeRef = () => getCurrentScope()
   const pinsRef = () => pinMode.pendingPins
   const replyRef = () => replyBody
   const pathRef = () => pathname
@@ -123,6 +156,7 @@ export function useFeedtackState({
     onError,
     getComment: commentRef,
     getSentiment: sentimentRef,
+    getScope: scopeRef,
     getPendingPins: pinsRef,
     getReplyBody: replyRef,
     getPathname: pathRef,
@@ -138,6 +172,30 @@ export function useFeedtackState({
       : undefined,
     hasFlush: !!onFlush,
   })
+
+  // Modal submit wraps actions.handleSubmit but also updates site/page lists
+  const handleModalSubmit = useCallback(async () => {
+    if (!comment.trim()) {
+      setCommentError(true)
+      return
+    }
+    await actions.handleSubmit()
+    // After submit, move the new item from feedbackItems to the right scope list
+    const scope = composeScope
+    setFeedbackItems((prev) => {
+      const newItem = prev[prev.length - 1]
+      if (newItem && newItem.payload.scope === scope) {
+        if (scope === 'site') {
+          setSiteFeedback((s) => [...s, newItem])
+        } else {
+          setPageFeedback((p) => [...p, newItem])
+        }
+        return prev.slice(0, -1)
+      }
+      return prev
+    })
+    resetForm()
+  }, [actions, composeScope, resetForm, comment])
 
   const isArchivedForUser = (item: FeedbackItem) =>
     item.archives.some((a) => a.archivedBy.id === currentUser.id)
@@ -159,11 +217,20 @@ export function useFeedtackState({
     submitting,
     pathname,
     feedbackItems,
+    siteFeedback,
+    pageFeedback,
     loading,
     openThreadId,
     setOpenThreadId,
     replyBody,
     setReplyBody,
+    // Modal state
+    isModalOpen,
+    openModal,
+    closeModal,
+    composeScope,
+    setComposeScope,
+    handleModalSubmit,
     ...actions,
     isArchivedForUser,
     hasUnread,

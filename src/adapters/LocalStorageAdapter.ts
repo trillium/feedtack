@@ -81,6 +81,7 @@ export class LocalStorageAdapter implements FeedtackAdapter {
     const items = this.read()
     if (!filter) return items
     return items.filter((item) => {
+      if (filter.scope && item.payload.scope !== filter.scope) return false
       if (filter.pathname && item.payload.page.pathname !== filter.pathname)
         return false
       if (filter.url && item.payload.page.url !== filter.url) return false

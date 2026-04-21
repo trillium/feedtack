@@ -9,6 +9,7 @@ const mockPayload: FeedtackPayload = {
   schemaVersion: SCHEMA_VERSION,
   id: 'ft_test',
   timestamp: '2026-04-09T00:00:00.000Z',
+  scope: 'element',
   submittedBy: { id: 'u1', name: 'Test', role: 'designer' },
   comment: 'test comment',
   sentiment: null,
@@ -23,11 +24,10 @@ const mockPayload: FeedtackPayload = {
       target: {
         selector: '#btn',
         best_effort: false,
-        testId: null,
+        dataTestId: null,
         elementPath: 'button',
         tagName: 'BUTTON',
-        textContent: 'Click',
-        attributes: {},
+        ancestors: [],
         boundingRect: { x: 100, y: 200, width: 80, height: 36 },
       },
     },
@@ -126,6 +126,24 @@ describe('LocalStorageAdapter', () => {
     const adapter = new LocalStorageAdapter()
     const items = await adapter.loadFeedback()
     expect(items).toEqual([])
+  })
+
+  it('loadFeedback filters by scope', async () => {
+    const adapter = new LocalStorageAdapter()
+    await adapter.submit(mockPayload) // scope: 'element'
+    const sitePayload = {
+      ...mockPayload,
+      id: 'ft_site',
+      scope: 'site' as const,
+      pins: [],
+    }
+    await adapter.submit(sitePayload)
+    const elementOnly = await adapter.loadFeedback({ scope: 'element' })
+    const siteOnly = await adapter.loadFeedback({ scope: 'site' })
+    expect(elementOnly).toHaveLength(1)
+    expect(elementOnly[0].payload.id).toBe('ft_test')
+    expect(siteOnly).toHaveLength(1)
+    expect(siteOnly[0].payload.id).toBe('ft_site')
   })
 })
 

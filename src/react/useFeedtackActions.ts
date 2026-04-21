@@ -11,6 +11,7 @@ import type {
   FeedbackItem,
   FeedtackPayload,
   FeedtackPin,
+  FeedtackScope,
   FeedtackSentiment,
   FeedtackUser,
 } from '../types/payload.js'
@@ -24,6 +25,7 @@ export interface FeedtackActionDeps {
   /** Current form state readers */
   getComment: () => string
   getSentiment: () => FeedtackSentiment
+  getScope: () => FeedtackScope
   getPendingPins: () => Array<Omit<FeedtackPin, 'index'>>
   getReplyBody: () => string
   getPathname: () => string
@@ -62,6 +64,7 @@ export function useFeedtackActions(deps: FeedtackActionDeps) {
       schemaVersion: SCHEMA_VERSION,
       id: generateId(),
       timestamp: new Date().toISOString(),
+      scope: deps.getScope(),
       submittedBy: currentUser,
       comment: comment.trim(),
       sentiment: deps.getSentiment(),

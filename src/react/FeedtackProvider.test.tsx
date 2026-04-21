@@ -31,7 +31,7 @@ describe('FeedtackProvider', () => {
     expect(screen.getByTestId('child')).toBeInTheDocument()
   })
 
-  it('renders the activation button with hotkey label', async () => {
+  it('renders the Feedback button', async () => {
     await act(async () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
@@ -39,10 +39,10 @@ describe('FeedtackProvider', () => {
         </FeedtackProvider>,
       )
     })
-    expect(screen.getByText(/Drop Pin \[Shift\+P\]/i)).toBeInTheDocument()
+    expect(screen.getByText('Feedback')).toBeInTheDocument()
   })
 
-  it('activates pin mode on button click', async () => {
+  it('opens modal on button click', async () => {
     await act(async () => {
       render(
         <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
@@ -50,11 +50,48 @@ describe('FeedtackProvider', () => {
         </FeedtackProvider>,
       )
     })
-    const btn = screen.getByText(/Drop Pin/i)
+    const btn = screen.getByText('Feedback')
     await act(async () => {
       fireEvent.click(btn)
     })
     expect(btn.className).toContain('active')
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('modal has Site and Page tabs', async () => {
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
+          <div />
+        </FeedtackProvider>,
+      )
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Feedback'))
+    })
+    expect(screen.getByText('Site')).toBeInTheDocument()
+    expect(screen.getByText('Page')).toBeInTheDocument()
+  })
+
+  it('modal has Place a pin button that activates pin mode', async () => {
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
+          <div />
+        </FeedtackProvider>,
+      )
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Feedback'))
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Place a pin'))
+    })
+    // Modal should close, crosshair should be active
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(
+      document.documentElement.classList.contains('feedtack-crosshair'),
+    ).toBe(true)
   })
 
   it('hides button when adminOnly and user role is not admin', async () => {
@@ -69,7 +106,7 @@ describe('FeedtackProvider', () => {
         </FeedtackProvider>,
       )
     })
-    expect(screen.queryByText(/Drop Pin/i)).not.toBeInTheDocument()
+    expect(screen.queryByText('Feedback')).not.toBeInTheDocument()
   })
 
   it('renders only children when disabled', async () => {
@@ -81,24 +118,37 @@ describe('FeedtackProvider', () => {
       )
     })
     expect(screen.getByTestId('child')).toBeInTheDocument()
-    expect(screen.queryByText(/Drop Pin/i)).not.toBeInTheDocument()
+    expect(screen.queryByText('Feedback')).not.toBeInTheDocument()
     expect(document.getElementById('feedtack-root')).not.toBeInTheDocument()
   })
 
-  it('useFeedtack does not throw when disabled', async () => {
+  it('useFeedtack exposes modal controls', async () => {
     const { useFeedtack } = await import('./useFeedtack.js')
     function Consumer() {
       const ctx = useFeedtack()
-      return <div data-testid="active">{String(ctx.isPinModeActive)}</div>
+      return (
+        <div>
+          <div data-testid="active">{String(ctx.isPinModeActive)}</div>
+          <div data-testid="modal">{String(ctx.isModalOpen)}</div>
+          <button type="button" data-testid="open" onClick={ctx.openModal}>
+            open
+          </button>
+        </div>
+      )
     }
     await act(async () => {
       render(
-        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
           <Consumer />
         </FeedtackProvider>,
       )
     })
     expect(screen.getByTestId('active')).toHaveTextContent('false')
+    expect(screen.getByTestId('modal')).toHaveTextContent('false')
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('open'))
+    })
+    expect(screen.getByTestId('modal')).toHaveTextContent('true')
   })
 
   it('loads feedback on mount', async () => {
@@ -119,7 +169,8 @@ describe('FeedtackProvider', () => {
         {
           payload: {
             id: 'ft_bad',
-            schemaVersion: '0.2.0',
+            schemaVersion: '2.0.0',
+            scope: 'page',
             timestamp: '2026-04-14T00:00:00.000Z',
             submittedBy: mockUser,
             comment: 'missing pins',

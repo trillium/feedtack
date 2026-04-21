@@ -66,23 +66,19 @@ export function CommentForm({
       <div className="feedtack-sentiment">
         <button
           type="button"
-          className={sentiment === 'satisfied' ? 'selected' : ''}
+          className={sentiment === 'good' ? 'selected' : ''}
           onClick={() =>
-            onSentimentChange(sentiment === 'satisfied' ? null : 'satisfied')
+            onSentimentChange(sentiment === 'good' ? null : 'good')
           }
         >
-          {sentimentLabels.satisfied ?? '😊 Satisfied'}
+          {sentimentLabels.satisfied ?? 'Good'}
         </button>
         <button
           type="button"
-          className={sentiment === 'dissatisfied' ? 'selected' : ''}
-          onClick={() =>
-            onSentimentChange(
-              sentiment === 'dissatisfied' ? null : 'dissatisfied',
-            )
-          }
+          className={sentiment === 'bad' ? 'selected' : ''}
+          onClick={() => onSentimentChange(sentiment === 'bad' ? null : 'bad')}
         >
-          {sentimentLabels.dissatisfied ?? '😞 Dissatisfied'}
+          {sentimentLabels.dissatisfied ?? 'Bad'}
         </button>
       </div>
       <div className="feedtack-form-actions">
