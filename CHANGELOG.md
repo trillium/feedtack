@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1](https://github.com/trillium/feedtack/compare/v1.0.0...v1.0.1) (2026-04-21)
+
+### Bug Fixes
+
+* modal as anchored panel above feedback button, not screen overlay ([c2a175c](https://github.com/trillium/feedtack/commit/c2a175ce32bb403bba454573c31a561a1da77844))
+
 ## [1.0.0](https://github.com/trillium/feedtack/compare/v0.5.1...v1.0.0) (2026-04-21)
 
 ### ⚠ BREAKING CHANGES

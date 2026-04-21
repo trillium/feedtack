@@ -1,6 +1,6 @@
 {
   "name": "feedtack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Click anywhere. Drop a pin. Get a payload a developer can act on.",
   "type": "module",
   "license": "MIT",
