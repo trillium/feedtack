@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1](https://github.com/trillium/feedtack/compare/v0.5.0...v0.5.1) (2026-04-21)
+
+### Bug Fixes
+
+* store boundingRect as document-relative and expose color API ([#19](https://github.com/trillium/feedtack/issues/19), [#20](https://github.com/trillium/feedtack/issues/20)) ([5dd10a4](https://github.com/trillium/feedtack/commit/5dd10a455c9520498ab3c35a2c3ad54b2731d4c4))
+
 ## [0.5.0](https://github.com/trillium/feedtack/compare/v0.4.0...v0.5.0) (2026-04-21)
 
 ### Features
