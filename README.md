@@ -1,8 +1,8 @@
 # feedtack
 
-> Click anywhere. Drop a pin. Get a payload a developer can act on.
+> Click anywhere. Drop a pin. Leave a note. Get a payload a developer can act on.
 
-**feedtack** is a drop-in React feedback overlay. Non-technical stakeholders click anywhere on a page, leave a comment, and feedtack emits a structured JSON payload so complete that an LLM can attempt a first-pass fix before consuming developer hours.
+**feedtack** is a drop-in React feedback overlay. A "Feedback" button opens a modal where anyone can leave site-wide notes, page-level comments, or place a pin on a specific element — all from one entry point. feedtack emits a structured JSON payload so complete that an LLM can attempt a first-pass fix before consuming developer hours.
 
 ## Install
 
@@ -166,16 +166,19 @@ class SupabaseAdapter implements FeedtackAdapter {
 
 ## The payload
 
-Every pin emits a versioned JSON payload:
+Every submission emits a versioned JSON payload. The `scope` field indicates where the feedback lives.
+
+**Element-scoped (pinned to a specific element):**
 
 ```json
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "2.0.0",
   "id": "ft_01j...",
   "timestamp": "2026-04-09T13:42:00.000Z",
   "submittedBy": { "id": "u1", "name": "Alice", "role": "designer" },
+  "scope": "element",
   "comment": "This button doesn't do anything",
-  "sentiment": "dissatisfied",
+  "sentiment": "bad",
   "pins": [{
     "index": 1,
     "color": "#ef4444",
@@ -185,8 +188,8 @@ Every pin emits a versioned JSON payload:
       "selector": "#submit-btn",
       "best_effort": false,
       "tagName": "BUTTON",
-      "textContent": "Place Order",
-      "attributes": { "id": "submit-btn", "disabled": "true" },
+      "dataTestId": "submit-btn",
+      "ancestors": ["form#checkout", "main"],
       "boundingRect": { "x": 420, "y": 812, "width": 200, "height": 44 }
     }
   }],
@@ -196,14 +199,47 @@ Every pin emits a versioned JSON payload:
 }
 ```
 
+**Page or site-scoped (no pin):**
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "id": "ft_01k...",
+  "scope": "page",
+  "comment": "This page is really confusing — too many steps",
+  "sentiment": "bad",
+  "pins": [],
+  "page": { "url": "https://app.example.com/checkout", "pathname": "/checkout", "title": "Checkout" },
+  ...
+}
+```
+
+`sentiment` values: `"good"` | `"bad"` | `null`
+
+## Feedback scopes
+
+Feedtack supports three levels of feedback, all accessible from the modal:
+
+| Scope | When to use | Pins |
+|-------|-------------|------|
+| `site` | Config-level feedback affecting the whole site (e.g. "change the font everywhere") | None |
+| `page` | Feedback specific to the current page (e.g. "this page is confusing") | None |
+| `element` | Feedback pinned to a specific element (e.g. "this button doesn't work") | One or more |
+
+**How it works:**
+- Clicking "Feedback" opens the modal
+- The modal has **Site** and **Page** tabs for scope-level feedback
+- "Place a pin" in the modal footer activates crosshair mode — useful on mobile too
+- `Shift+P` anywhere on the page opens the modal
+
 ## `useFeedtack` hook
 
 ```tsx
 import { useFeedtack } from 'feedtack/react'
 
 function MyButton() {
-  const { activatePinMode, isPinModeActive } = useFeedtack()
-  return <button onClick={activatePinMode}>{isPinModeActive ? 'Cancel' : 'Give Feedback'}</button>
+  const { openModal, closeModal, isModalOpen, activatePinMode, isPinModeActive } = useFeedtack()
+  return <button onClick={openModal}>{isModalOpen ? 'Close' : 'Give Feedback'}</button>
 }
 ```
 
