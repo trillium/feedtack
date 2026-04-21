@@ -1,6 +1,6 @@
 npx lint-staged
 
-MAX_LINES=300
+MAX_LINES=250
 FAILED=0
 
 # Check staged ts/tsx source files (exclude tests, configs, lock files)
