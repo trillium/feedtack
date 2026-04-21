@@ -173,8 +173,8 @@ export function getTargetMeta(element: Element): FeedtackPinTarget {
     tagName: resolved.tagName,
     ancestors,
     boundingRect: {
-      x: rect.x,
-      y: rect.y,
+      x: rect.x + window.scrollX,
+      y: rect.y + window.scrollY,
       width: rect.width,
       height: rect.height,
     },

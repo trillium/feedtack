@@ -1,3 +1,6 @@
+export type { PinColor } from '../ui/colors.js'
+export { PIN_PALETTE } from '../ui/colors.js'
+export type { FeedtackContextValue } from './context.js'
 export type {
   FeedtackClasses,
   FeedtackProviderProps,

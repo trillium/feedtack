@@ -91,6 +91,9 @@ export function FeedtackProvider({
         activatePinMode: disabled ? () => {} : state.activatePinMode,
         deactivatePinMode: disabled ? () => {} : state.deactivatePinMode,
         isPinModeActive: disabled ? false : state.isPinModeActive,
+        selectedColor: state.selectedColor,
+        setSelectedColor: disabled ? () => {} : state.setSelectedColor,
+        pinPalette: PIN_PALETTE,
       }}
     >
       {children}

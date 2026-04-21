@@ -4,6 +4,9 @@ export interface FeedtackContextValue {
   activatePinMode: () => void
   deactivatePinMode: () => void
   isPinModeActive: boolean
+  selectedColor: string
+  setSelectedColor: (color: string) => void
+  pinPalette: readonly string[]
 }
 
 export const FeedtackContext = createContext<FeedtackContextValue | null>(null)
