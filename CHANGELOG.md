@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0](https://github.com/trillium/feedtack/compare/v0.5.1...v1.0.0) (2026-04-21)
+
+### ⚠ BREAKING CHANGES
+
+* feedback scope modal with site/page/element levels
+
+### Features
+
+* feedback scope modal with site/page/element levels ([bcce2c2](https://github.com/trillium/feedtack/commit/bcce2c27faa5dacdf83fdf256d78c9d9a43ef8db))
+
 ## [0.5.1](https://github.com/trillium/feedtack/compare/v0.5.0...v0.5.1) (2026-04-21)
 
 ### Bug Fixes
