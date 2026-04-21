@@ -9,24 +9,17 @@ export const FEEDTACK_MODAL_STYLES = `
     z-index: 2147483640;
   }
 
-  .feedtack-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 2147483643;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-
   .feedtack-modal {
+    position: fixed;
+    bottom: 72px;
+    right: 24px;
+    width: 360px;
+    max-height: 70vh;
     background: var(--ft-bg);
+    border: 1px solid var(--ft-border);
     border-radius: calc(var(--ft-radius) + 4px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.24);
-    width: 100%;
-    max-width: 420px;
-    max-height: 80vh;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    z-index: 2147483643;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -233,13 +226,14 @@ export const FEEDTACK_MODAL_STYLES = `
 
   @media (max-width: 480px) {
     .feedtack-modal {
-      max-width: 100%;
-      max-height: 90vh;
+      right: 0;
+      bottom: 64px;
+      width: 100vw;
+      max-height: 85vh;
       border-radius: var(--ft-radius) var(--ft-radius) 0 0;
-    }
-    .feedtack-modal-overlay {
-      align-items: flex-end;
-      padding: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
     }
   }
 `

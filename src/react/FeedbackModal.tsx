@@ -1,8 +1,7 @@
 'use client'
 
-import type React from 'react'
-import { useCallback, useEffect } from 'react'
-import type { FeedtackSentiment } from '../types/payload.js'
+import { useEffect, useRef } from 'react'
+import type { FeedbackItem, FeedtackSentiment } from '../types/payload.js'
 import { ThreadView } from './ThreadView.js'
 import { cx } from './utils.js'
 
@@ -21,7 +20,6 @@ interface FeedbackModalProps {
   submitting: boolean
   onSubmit: () => void
   onPlacePin: () => void
-  // Thread interaction
   replyBody: string
   onReplyBodyChange: (value: string) => void
   onReply: (feedbackId: string) => void
@@ -54,22 +52,28 @@ export function FeedbackModal({
   openThreadId,
   onOpenThread,
 }: FeedbackModalProps) {
-  // Escape to close
+  const panelRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!isOpen) return
-    const handler = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
+    const onDown = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        // Don't close if click was on the toggle button itself
+        const btn = document.querySelector('.feedtack-btn')
+        if (btn?.contains(e.target as Node)) return
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    document.addEventListener('mousedown', onDown)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('mousedown', onDown)
+    }
   }, [isOpen, onClose])
-
-  const handleOverlayClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) onClose()
-    },
-    [onClose],
-  )
 
   if (!isOpen) return null
 
@@ -79,164 +83,147 @@ export function FeedbackModal({
     : null
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: overlay click-to-dismiss is standard modal UX
     <div
-      className="feedtack-modal-overlay"
-      role="presentation"
-      onClick={handleOverlayClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') onClose()
-      }}
+      ref={panelRef}
+      className="feedtack-modal"
+      role="dialog"
+      aria-label="Feedback"
+      aria-modal="true"
     >
-      <div
-        className="feedtack-modal"
-        role="dialog"
-        aria-label="Feedback"
-        aria-modal="true"
-      >
-        <div className="feedtack-modal-header">
-          <span className="feedtack-modal-title">Feedback</span>
-          <button
-            type="button"
-            className="feedtack-modal-close"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            &times;
-          </button>
-        </div>
+      <div className="feedtack-modal-header">
+        <span className="feedtack-modal-title">Feedback</span>
+        <button
+          type="button"
+          className="feedtack-modal-close"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
 
-        <div className="feedtack-modal-tabs">
-          <button
-            type="button"
-            className={cx(
-              'feedtack-modal-tab',
-              activeTab === 'site' && 'active',
-            )}
-            onClick={() => onTabChange('site')}
-          >
-            Site
-            {siteFeedback.length > 0 && (
-              <span className="feedtack-tab-count">{siteFeedback.length}</span>
-            )}
-          </button>
-          <button
-            type="button"
-            className={cx(
-              'feedtack-modal-tab',
-              activeTab === 'page' && 'active',
-            )}
-            onClick={() => onTabChange('page')}
-          >
-            Page
-            {pageFeedback.length > 0 && (
-              <span className="feedtack-tab-count">{pageFeedback.length}</span>
-            )}
-          </button>
-        </div>
+      <div className="feedtack-modal-tabs">
+        <button
+          type="button"
+          className={cx('feedtack-modal-tab', activeTab === 'site' && 'active')}
+          onClick={() => onTabChange('site')}
+        >
+          Site
+          {siteFeedback.length > 0 && (
+            <span className="feedtack-tab-count">{siteFeedback.length}</span>
+          )}
+        </button>
+        <button
+          type="button"
+          className={cx('feedtack-modal-tab', activeTab === 'page' && 'active')}
+          onClick={() => onTabChange('page')}
+        >
+          Page
+          {pageFeedback.length > 0 && (
+            <span className="feedtack-tab-count">{pageFeedback.length}</span>
+          )}
+        </button>
+      </div>
 
-        <div className="feedtack-modal-body">
-          {openItem ? (
-            <ThreadView
-              item={openItem}
-              replyBody={replyBody}
-              onReplyBodyChange={onReplyBodyChange}
-              onReply={() => onReply(openItem.payload.id)}
-              onResolve={() => onResolve(openItem.payload.id)}
-              onArchive={() => onArchive(openItem.payload.id)}
-              onBack={() => onOpenThread(null)}
-            />
-          ) : (
-            <>
-              {threads.length > 0 && (
-                <div className="feedtack-modal-threads">
-                  {threads.map((item) => (
-                    <button
-                      type="button"
-                      key={item.payload.id}
-                      className="feedtack-modal-thread-item"
-                      onClick={() => onOpenThread(item.payload.id)}
-                    >
-                      <span className="feedtack-thread-author">
-                        {item.payload.submittedBy.name}
-                      </span>
-                      <span className="feedtack-thread-comment">
-                        {item.payload.comment}
-                      </span>
-                      <span className="feedtack-thread-meta">
-                        {item.replies.length > 0 &&
-                          `${item.replies.length} ${item.replies.length === 1 ? 'reply' : 'replies'}`}
-                        {item.resolutions.length > 0 && ' · resolved'}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
+      <div className="feedtack-modal-body">
+        {openItem ? (
+          <ThreadView
+            item={openItem}
+            replyBody={replyBody}
+            onReplyBodyChange={onReplyBodyChange}
+            onReply={() => onReply(openItem.payload.id)}
+            onResolve={() => onResolve(openItem.payload.id)}
+            onArchive={() => onArchive(openItem.payload.id)}
+            onBack={() => onOpenThread(null)}
+          />
+        ) : (
+          <>
+            {threads.length > 0 && (
+              <div className="feedtack-modal-threads">
+                {threads.map((item) => (
+                  <button
+                    type="button"
+                    key={item.payload.id}
+                    className="feedtack-modal-thread-item"
+                    onClick={() => onOpenThread(item.payload.id)}
+                  >
+                    <span className="feedtack-thread-author">
+                      {item.payload.submittedBy.name}
+                    </span>
+                    <span className="feedtack-thread-comment">
+                      {item.payload.comment}
+                    </span>
+                    <span className="feedtack-thread-meta">
+                      {item.replies.length > 0 &&
+                        `${item.replies.length} ${item.replies.length === 1 ? 'reply' : 'replies'}`}
+                      {item.resolutions.length > 0 && ' · resolved'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
 
-              <div className="feedtack-modal-compose">
-                <textarea
-                  className={cx(
-                    'feedtack-modal-textarea',
-                    commentError && 'error',
-                  )}
-                  placeholder="What's on your mind? (required)"
-                  value={comment}
-                  onChange={(e) => onCommentChange(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                      e.preventDefault()
-                      onSubmit()
-                    }
-                  }}
-                  aria-invalid={commentError || undefined}
-                />
-                {commentError && (
-                  <span className="feedtack-error-msg">
-                    Comment is required
-                  </span>
+            <div className="feedtack-modal-compose">
+              <textarea
+                className={cx(
+                  'feedtack-modal-textarea',
+                  commentError && 'error',
                 )}
-                <div className="feedtack-sentiment">
-                  <button
-                    type="button"
-                    className={sentiment === 'good' ? 'selected' : ''}
-                    onClick={() =>
-                      onSentimentChange(sentiment === 'good' ? null : 'good')
-                    }
-                  >
-                    Good
-                  </button>
-                  <button
-                    type="button"
-                    className={sentiment === 'bad' ? 'selected' : ''}
-                    onClick={() =>
-                      onSentimentChange(sentiment === 'bad' ? null : 'bad')
-                    }
-                  >
-                    Bad
-                  </button>
-                </div>
+                placeholder="What's on your mind? (required)"
+                value={comment}
+                onChange={(e) => onCommentChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault()
+                    onSubmit()
+                  }
+                }}
+                aria-invalid={commentError || undefined}
+              />
+              {commentError && (
+                <span className="feedtack-error-msg">Comment is required</span>
+              )}
+              <div className="feedtack-sentiment">
                 <button
                   type="button"
-                  className="feedtack-btn-submit"
-                  onClick={onSubmit}
-                  disabled={submitting}
+                  className={sentiment === 'good' ? 'selected' : ''}
+                  onClick={() =>
+                    onSentimentChange(sentiment === 'good' ? null : 'good')
+                  }
                 >
-                  {submitting ? 'Sending…' : 'Submit'}
+                  Good
+                </button>
+                <button
+                  type="button"
+                  className={sentiment === 'bad' ? 'selected' : ''}
+                  onClick={() =>
+                    onSentimentChange(sentiment === 'bad' ? null : 'bad')
+                  }
+                >
+                  Bad
                 </button>
               </div>
-            </>
-          )}
-        </div>
+              <button
+                type="button"
+                className="feedtack-btn-submit"
+                onClick={onSubmit}
+                disabled={submitting}
+              >
+                {submitting ? 'Sending…' : 'Submit'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
-        <div className="feedtack-modal-footer">
-          <button
-            type="button"
-            className="feedtack-modal-pin-btn"
-            onClick={onPlacePin}
-          >
-            Place a pin
-          </button>
-        </div>
+      <div className="feedtack-modal-footer">
+        <button
+          type="button"
+          className="feedtack-modal-pin-btn"
+          onClick={onPlacePin}
+        >
+          Place a pin
+        </button>
       </div>
     </div>
   )
