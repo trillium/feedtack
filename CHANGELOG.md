@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0](https://github.com/trillium/feedtack/compare/v0.4.0...v0.5.0) (2026-04-21)
+
+### Features
+
+* anchor pin markers to DOM nodes via selector resolution ([#18](https://github.com/trillium/feedtack/issues/18)) ([358c667](https://github.com/trillium/feedtack/commit/358c6677dd69f6f6f4218cc63640efecfad562bb))
+
 ## [0.4.0](https://github.com/trillium/feedtack/compare/v0.3.1...v0.4.0) (2026-04-20)
 
 ### Features
