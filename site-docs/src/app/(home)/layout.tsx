@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         title: <FeedtackLogo />,
         url: '/',
       }}
+      links={[{ text: 'Pricing', url: '/pricing' }]}
     >
       {children}
     </HomeLayout>
