@@ -1,9 +1,7 @@
 import { PIN_PALETTE, PinSvg } from '@/components/pin-svg'
+import { type Tier, TierCard } from '@/components/tier-card'
 
-const CHECK = '\u2713'
-const LOCK = '\uD83D\uDD12'
-
-const TIERS = [
+const TIERS: Tier[] = [
   {
     name: 'Free',
     price: '$0',
@@ -19,7 +17,6 @@ const TIERS = [
       'Community GitHub Issues',
     ],
     cta: 'npm install feedtack',
-    ctaHref: undefined,
   },
   {
     name: 'Pro',
@@ -36,7 +33,6 @@ const TIERS = [
       'A warm feeling inside',
     ],
     cta: 'npm install feedtack',
-    ctaHref: undefined,
   },
   {
     name: 'Enterprise',
@@ -58,107 +54,54 @@ const TIERS = [
   },
 ]
 
-function TierCard({ tier }: { tier: (typeof TIERS)[number] }) {
-  const isLocked = 'locked' in tier && tier.locked
-  const isFeatured = 'featured' in tier && tier.featured
-
-  return (
-    <div
-      className={`relative flex flex-col rounded-xl border p-6 shadow-sm ${
-        isLocked
-          ? 'border-fd-border bg-fd-card/60 opacity-80'
-          : isFeatured
-            ? 'border-fd-primary bg-fd-primary/5 ring-2 ring-fd-primary/20'
-            : 'border-fd-border bg-fd-card'
-      }`}
-    >
-      {isFeatured && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-fd-primary px-3 py-0.5 text-xs font-semibold text-fd-primary-foreground">
-          Most Popular
-        </span>
-      )}
-      {isLocked && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-fd-background/40 backdrop-blur-[1px]">
-          <div className="text-center">
-            <span className="text-4xl">{LOCK}</span>
-            <p className="mt-2 text-xs font-medium text-fd-muted-foreground">
-              Submit a PR to unlock
-            </p>
-          </div>
-        </div>
-      )}
-      <div className="mb-4 flex items-center gap-3">
-        <PinSvg color={tier.pinColor} size={28} />
-        <h2 className="text-xl font-bold text-fd-foreground">{tier.name}</h2>
-      </div>
-      <div className="mb-1">
-        <span className="text-4xl font-extrabold text-fd-foreground">
-          {tier.price}
-        </span>
-        <span className="text-fd-muted-foreground"> / forever</span>
-      </div>
-      <p className="mb-6 text-sm text-fd-muted-foreground italic">
-        {tier.subtitle}
-      </p>
-      <ul className="mb-8 flex-1 space-y-2">
-        {tier.features.map((feature) => (
-          <li
-            key={feature}
-            className="flex items-start gap-2 text-sm text-fd-foreground"
-          >
-            <span className="mt-0.5 font-bold text-fd-primary">{CHECK}</span>
-            {feature}
-          </li>
-        ))}
-      </ul>
-      {tier.ctaHref ? (
-        <a
-          href={tier.ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative z-10 block w-full rounded-lg bg-fd-muted px-4 py-2.5 text-center text-sm font-semibold text-fd-foreground transition-colors hover:bg-fd-accent"
-        >
-          {tier.cta}
-        </a>
-      ) : (
-        <code className="block w-full rounded-lg bg-fd-muted px-4 py-2.5 text-center text-sm font-mono text-fd-foreground transition-colors hover:bg-fd-accent cursor-pointer">
-          {tier.cta}
-        </code>
-      )}
-    </div>
-  )
-}
-
 export default function PricingPage() {
   return (
     <>
-      {/* Header */}
-      <section className="relative px-6 pt-24 pb-12 text-center sm:pt-32">
+      {/* Hero */}
+      <section className="relative overflow-hidden px-6 pt-24 pb-14 text-center sm:pt-32">
+        {/* Subtle radial gradient behind the heading */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 50% at 50% 30%, rgba(37,99,235,0.06) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Scattered decorative pins */}
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden="true"
         >
-          <div className="absolute left-[10%] top-[15%] opacity-40 rotate-[-15deg]">
+          <div className="absolute left-[8%] top-[12%] opacity-40 rotate-[-18deg]">
             <PinSvg color={PIN_PALETTE[4]} size={30} />
           </div>
-          <div className="absolute right-[12%] top-[20%] opacity-35 rotate-[12deg]">
+          <div className="absolute right-[10%] top-[18%] opacity-35 rotate-[14deg]">
             <PinSvg color={PIN_PALETTE[0]} size={26} />
           </div>
-          <div className="absolute left-[25%] top-[8%] opacity-30 rotate-[8deg]">
+          <div className="absolute left-[22%] top-[6%] opacity-25 rotate-[8deg]">
             <PinSvg color={PIN_PALETTE[5]} size={22} />
           </div>
+          <div className="absolute right-[25%] top-[8%] opacity-20 rotate-[-10deg]">
+            <PinSvg color={PIN_PALETTE[1]} size={18} />
+          </div>
+          <div className="absolute left-[45%] top-[4%] opacity-15 rotate-[22deg]">
+            <PinSvg color={PIN_PALETTE[3]} size={20} />
+          </div>
         </div>
-        <h1 className="text-4xl font-extrabold tracking-tight text-fd-foreground sm:text-5xl">
+
+        <h1 className="relative text-4xl font-black tracking-tight text-fd-foreground sm:text-5xl">
           Pricing
         </h1>
-        <p className="mx-auto mt-4 max-w-lg text-lg text-fd-muted-foreground">
+        <p className="relative mx-auto mt-4 max-w-lg text-lg text-fd-muted-foreground">
           Choose the plan that&apos;s right for you. Spoiler: they&apos;re all
           the same.
         </p>
       </section>
 
-      {/* Tiers */}
-      <section className="mx-auto max-w-6xl px-6 pb-20">
+      {/* Tier cards */}
+      <section className="mx-auto max-w-6xl px-6 pb-24">
         <div className="grid gap-8 sm:grid-cols-3">
           {TIERS.map((tier) => (
             <TierCard key={tier.name} tier={tier} />
@@ -167,30 +110,45 @@ export default function PricingPage() {
       </section>
 
       {/* Open Source callout */}
-      <section className="border-t border-fd-border px-6 py-16 text-center">
-        <PinSvg color="#2563eb" size={40} className="mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-fd-foreground">
+      <section className="relative border-t border-fd-border px-6 py-20 text-center">
+        {/* Faint gradient wash */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(ellipse 50% 60% at 50% 0%, rgba(37,99,235,0.04) 0%, transparent 70%)',
+          }}
+        />
+
+        <PinSvg color="#2563eb" size={44} className="relative mx-auto mb-5" />
+        <h2 className="relative text-2xl font-black tracking-tight text-fd-foreground sm:text-3xl">
           Feedtack is free and open source.
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-fd-muted-foreground">
+        <p className="relative mx-auto mt-3 max-w-md text-fd-muted-foreground">
           MIT licensed. No strings attached. No credit card. No &quot;call us
           for pricing.&quot; Just{' '}
-          <code className="text-fd-foreground">npm install</code> and go.
+          <code className="rounded bg-fd-muted px-1.5 py-0.5 text-fd-foreground">
+            npm install
+          </code>{' '}
+          and go.
         </p>
-        <div className="mx-auto mt-8 max-w-sm">
-          <p className="mb-4 text-sm font-semibold text-fd-foreground">
-            But if you want to support the project...
+
+        <div className="relative mx-auto mt-10 max-w-sm">
+          <p className="mb-5 text-sm font-bold uppercase tracking-wider text-fd-muted-foreground">
+            Support the project
           </p>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            {/* GitHub Sponsors — pink accent */}
             <a
               href="https://github.com/sponsors/trillium"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-fd-border px-5 py-2.5 text-sm font-semibold text-fd-foreground transition-colors hover:bg-fd-accent"
+              className="inline-flex items-center gap-2 rounded-xl border border-pink-300/40 bg-pink-50/50 px-5 py-2.5 text-sm font-semibold text-fd-foreground transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-pink-200/30 dark:border-pink-500/20 dark:bg-pink-950/20 dark:hover:shadow-pink-900/20"
             >
               <svg
                 viewBox="0 0 16 16"
-                className="size-4"
+                className="size-4 text-pink-500"
                 fill="currentColor"
                 aria-hidden="true"
               >
@@ -198,13 +156,16 @@ export default function PricingPage() {
               </svg>
               GitHub Sponsors
             </a>
+            {/* Buy Me a Coffee — amber accent */}
             <a
               href="https://buymeacoffee.com/trillium"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-fd-border px-5 py-2.5 text-sm font-semibold text-fd-foreground transition-colors hover:bg-fd-accent"
+              className="inline-flex items-center gap-2 rounded-xl border border-amber-300/40 bg-amber-50/50 px-5 py-2.5 text-sm font-semibold text-fd-foreground transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-amber-200/30 dark:border-amber-500/20 dark:bg-amber-950/20 dark:hover:shadow-amber-900/20"
             >
-              <span aria-hidden="true">&#9749;</span>
+              <span className="text-amber-500" aria-hidden="true">
+                &#9749;
+              </span>
               Buy Me a Coffee
             </a>
           </div>
