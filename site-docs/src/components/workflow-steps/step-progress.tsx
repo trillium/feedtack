@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 const DURATION_MS = 16_000
 
@@ -24,6 +24,20 @@ function getProgress(elapsed: number) {
   return { pct, activeIndex }
 }
 
+/** How full is the segment between step i and step i+1? (0–1) */
+function segmentFill(
+  segIndex: number,
+  activeIndex: number | null,
+  pct: number,
+): number {
+  if (activeIndex == null) return 0 // reset gap — clear bar
+  if (segIndex < activeIndex) return 1 // completed segment
+  if (segIndex > activeIndex) return 0 // future segment
+  // Active segment — partial fill
+  const step = STEPS[activeIndex]
+  return (pct - step.start) / (step.end - step.start)
+}
+
 export function StepProgress() {
   const [state, setState] = useState({
     pct: 0,
@@ -39,101 +53,98 @@ export function StepProgress() {
   }, [])
 
   const { pct, activeIndex } = state
-  // Clamp progress to the active range (0-90%), scale to 0-100% for the bar
-  const barPct = Math.min(pct / 0.9, 1) * 100
 
   return (
-    <div className="mb-6" aria-live="polite">
-      {/* Step names with tick connectors */}
-      <div className="flex items-end justify-between px-1">
+    <div className="mb-6 overflow-visible px-6" aria-live="polite">
+      {/* Labels row — mirrors the dots+segments layout below */}
+      <div className="flex items-end">
         {STEPS.map((step, i) => {
           const isActive = i === activeIndex
-          const isReached = pct >= step.start
+          const isReached = activeIndex != null && pct >= step.start
           return (
-            <div key={step.name} className="flex flex-col items-center gap-1">
-              <span
-                className="text-sm font-semibold sm:text-base"
-                style={{
-                  color: isActive
-                    ? 'var(--color-fd-primary, #2563eb)'
-                    : isReached
-                      ? 'var(--color-fd-foreground, #374151)'
-                      : 'var(--color-fd-muted-foreground, #9ca3af)',
-                  opacity: isActive ? 1 : isReached ? 0.7 : 0.35,
-                  transition: 'color 0.3s ease, opacity 0.3s ease',
-                  textShadow: isActive
-                    ? '0 0 12px color-mix(in srgb, var(--color-fd-primary, #2563eb) 40%, transparent)'
-                    : 'none',
-                }}
-              >
-                {step.name}
-              </span>
-              {/* Tick connector from label to bar */}
+            <Fragment key={step.name}>
+              {/* Wrapper matches dot width, positions label centered above */}
               <div
-                className="h-2 w-px"
-                style={{
-                  background: isReached
-                    ? 'var(--color-fd-primary, #2563eb)'
-                    : 'var(--color-fd-border, #e5e7eb)',
-                  opacity: isActive ? 1 : isReached ? 0.6 : 0.4,
-                  transition: 'background 0.3s ease, opacity 0.3s ease',
-                }}
-              />
-            </div>
+                className="relative shrink-0 flex justify-center"
+                style={{ width: isActive ? '14px' : '10px' }}
+              >
+                <span
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 text-sm font-semibold whitespace-nowrap sm:text-base"
+                  style={{
+                    color: isActive
+                      ? 'var(--color-fd-primary, #2563eb)'
+                      : isReached
+                        ? 'var(--color-fd-foreground, #374151)'
+                        : 'var(--color-fd-muted-foreground, #9ca3af)',
+                    opacity: isActive ? 1 : isReached ? 0.7 : 0.35,
+                    transition: 'color 0.3s ease, opacity 0.3s ease',
+                    textShadow: isActive
+                      ? '0 0 12px color-mix(in srgb, var(--color-fd-primary, #2563eb) 40%, transparent)'
+                      : 'none',
+                  }}
+                >
+                  {step.name}
+                </span>
+              </div>
+              {i < STEPS.length - 1 && <div className="flex-1" />}
+            </Fragment>
           )
         })}
       </div>
 
-      {/* Progress track with dots */}
-      <div
-        className="relative h-1 w-full rounded-full"
-        style={{ background: 'var(--color-fd-border, #e5e7eb)' }}
-      >
-        {/* Filled bar — continuously advances */}
-        <div
-          className="absolute left-0 top-0 h-full rounded-full"
-          style={{
-            background: 'var(--color-fd-primary, #2563eb)',
-            width: `${barPct}%`,
-            transition: 'width 0.15s linear',
-            opacity: activeIndex != null ? 1 : 0.3,
-            boxShadow:
-              activeIndex != null
-                ? '0 0 6px color-mix(in srgb, var(--color-fd-primary, #2563eb) 50%, transparent)'
-                : 'none',
-          }}
-        />
-
-        {/* Dots at each step boundary */}
+      {/* Dots + segment tracks — flexbox, no absolute positioning */}
+      <div className="mt-3 flex items-center">
         {STEPS.map((step, i) => {
-          const dotPos = (step.start / 0.9) * 100
-          const reached = pct >= step.start
           const isActive = i === activeIndex
+          const isReached = activeIndex != null && pct >= step.start
+          const fill =
+            i < STEPS.length - 1 ? segmentFill(i, activeIndex, pct) : 0
           return (
-            <div
-              key={step.name}
-              className="absolute rounded-full"
-              style={{
-                left: `${dotPos}%`,
-                width: isActive ? '14px' : '10px',
-                height: isActive ? '14px' : '10px',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: reached
-                  ? 'var(--color-fd-primary, #2563eb)'
-                  : 'var(--color-fd-card, #ffffff)',
-                borderWidth: '2px',
-                borderStyle: 'solid',
-                borderColor: reached
-                  ? 'var(--color-fd-primary, #2563eb)'
-                  : 'var(--color-fd-border, #e5e7eb)',
-                boxShadow: isActive
-                  ? '0 0 0 3px color-mix(in srgb, var(--color-fd-primary, #2563eb) 25%, transparent)'
-                  : 'none',
-                transition:
-                  'width 0.3s ease, height 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease',
-              }}
-            />
+            <Fragment key={step.name}>
+              {/* Dot */}
+              <div
+                className="shrink-0 rounded-full"
+                style={{
+                  width: isActive ? '14px' : '10px',
+                  height: isActive ? '14px' : '10px',
+                  background: isReached
+                    ? 'var(--color-fd-primary, #2563eb)'
+                    : 'var(--color-fd-card, #ffffff)',
+                  borderWidth: '2px',
+                  borderStyle: 'solid',
+                  borderColor: isReached
+                    ? 'var(--color-fd-primary, #2563eb)'
+                    : 'var(--color-fd-border, #e5e7eb)',
+                  boxShadow: isActive
+                    ? '0 0 0 3px color-mix(in srgb, var(--color-fd-primary, #2563eb) 25%, transparent)'
+                    : 'none',
+                  transition:
+                    'width 0.3s, height 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s',
+                }}
+              />
+              {/* Segment track between dots */}
+              {i < STEPS.length - 1 && (
+                <div
+                  className="relative mx-0.5 h-1.5 flex-1 overflow-hidden rounded-full"
+                  style={{
+                    background: 'var(--color-fd-border, #d1d5db)',
+                  }}
+                >
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full"
+                    style={{
+                      width: `${fill * 100}%`,
+                      background: 'var(--color-fd-primary, #2563eb)',
+                      transition: 'width 0.15s linear',
+                      boxShadow:
+                        fill > 0
+                          ? '0 0 6px color-mix(in srgb, var(--color-fd-primary, #2563eb) 50%, transparent)'
+                          : 'none',
+                    }}
+                  />
+                </div>
+              )}
+            </Fragment>
           )
         })}
       </div>
