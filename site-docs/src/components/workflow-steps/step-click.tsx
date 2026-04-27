@@ -6,10 +6,11 @@ export function StepClick() {
     <>
       <g className="wfa-cursor" style={{ transformOrigin: '110px 128px' }}>
         <path
-          d="M110 128 l0 16 l5 -5 l4 9 l3 -1.5 l-4 -9 l7 -1.5 Z"
+          d="M110 128 l0 18 l4.5 -4.5 l3.5 7 l2.5 -1.2 l-3.5 -7 l5.5 -0.8 Z"
           fill="var(--color-fd-foreground, #111827)"
           stroke="var(--color-fd-card, #fff)"
-          strokeWidth="1.2"
+          strokeWidth="1"
+          strokeLinejoin="round"
         />
       </g>
       <g className="wfa-pin" style={{ transformOrigin: '109px 128px' }}>

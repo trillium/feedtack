@@ -50,30 +50,31 @@ export function WorkflowAnimation() {
 }
 
 function StepLabels() {
+  const y = 280
   return (
     <>
       <g className="wfa-browser">
-        <text className="wfa-label" x="140" y="215">
+        <text className="wfa-label" x="60" y={y}>
           1. Browse
         </text>
       </g>
       <g className="wfa-pin" style={{ transformOrigin: '109px 128px' }}>
-        <text className="wfa-label" x="109" y="215">
+        <text className="wfa-label" x="160" y={y}>
           2. Click
         </text>
       </g>
       <g className="wfa-form" style={{ transformOrigin: '198px 120px' }}>
-        <text className="wfa-label" x="230" y="215">
+        <text className="wfa-label" x="260" y={y}>
           3. Describe
         </text>
       </g>
       <g className="wfa-check" style={{ transformOrigin: '300px 130px' }}>
-        <text className="wfa-label" x="300" y="215">
+        <text className="wfa-label" x="360" y={y}>
           4. Submit
         </text>
       </g>
       <g className="wfa-catalogue">
-        <text className="wfa-label" x="410" y="240">
+        <text className="wfa-label" x="460" y={y}>
           5. Catalogue
         </text>
       </g>
