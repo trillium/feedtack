@@ -2,6 +2,9 @@
  * WorkflowAnimation — pure CSS/SVG animated visualization of the
  * Feedtack workflow in 5 steps. Loops infinitely, respects
  * prefers-reduced-motion, and uses fd-* CSS variables for dark mode.
+ *
+ * All steps share a single centered stage area. Each step fades in,
+ * plays its animation, then fades out before the next appears.
  */
 import './workflow-animation.css'
 
@@ -19,11 +22,11 @@ export function WorkflowAnimation() {
     >
       <div className="wfa-root w-full max-w-2xl">
         <svg
-          viewBox="0 0 520 300"
+          viewBox="0 0 300 250"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           role="img"
-          aria-label="Feedtack workflow: click, pin, feedback, submit, catalogue"
+          aria-label="Feedtack workflow: browse, click, describe, submit, catalogue"
           className="h-auto w-full"
         >
           <StepBrowser />
@@ -31,7 +34,6 @@ export function WorkflowAnimation() {
           <StepForm />
           <StepSubmit />
           <StepCatalogue />
-          <StepLabels />
           <defs>
             <filter id="wfaShadow" x="-4%" y="-4%" width="108%" height="112%">
               <feDropShadow
@@ -46,38 +48,5 @@ export function WorkflowAnimation() {
         </svg>
       </div>
     </section>
-  )
-}
-
-function StepLabels() {
-  const y = 280
-  return (
-    <>
-      <g className="wfa-browser">
-        <text className="wfa-label" x="60" y={y}>
-          1. Browse
-        </text>
-      </g>
-      <g className="wfa-pin" style={{ transformOrigin: '109px 128px' }}>
-        <text className="wfa-label" x="160" y={y}>
-          2. Click
-        </text>
-      </g>
-      <g className="wfa-form" style={{ transformOrigin: '198px 120px' }}>
-        <text className="wfa-label" x="260" y={y}>
-          3. Describe
-        </text>
-      </g>
-      <g className="wfa-check" style={{ transformOrigin: '300px 130px' }}>
-        <text className="wfa-label" x="360" y={y}>
-          4. Submit
-        </text>
-      </g>
-      <g className="wfa-catalogue">
-        <text className="wfa-label" x="460" y={y}>
-          5. Catalogue
-        </text>
-      </g>
-    </>
   )
 }

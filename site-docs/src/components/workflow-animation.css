@@ -1,5 +1,6 @@
 /* WorkflowAnimation — CSS keyframes for the 5-step Feedtack workflow. */
-/* Total cycle = 16s. Loops infinitely with a pause at the end.       */
+/* Total cycle = 16s. Each step fades into a shared central stage.     */
+/* viewBox is 300x250; all steps are centered in that space.           */
 
 .wfa-root {
   --dur: 16s;
@@ -15,68 +16,95 @@
   .wfa-catalogue { opacity: 1 !important; transform: translateY(0) !important; }
 }
 
+/* Step 1 — Browse: visible 0–20% */
 .wfa-browser { animation: wfaBrowserIn var(--dur) infinite; }
 @keyframes wfaBrowserIn {
   0% { opacity: 0; transform: scale(0.96); }
-  6% { opacity: 1; transform: scale(1); }
-  88% { opacity: 1; }
-  95%, 100% { opacity: 0; }
+  5% { opacity: 1; transform: scale(1); }
+  16% { opacity: 1; }
+  20%, 100% { opacity: 0; }
+}
+
+/* Step 2 — Click: visible 16–36% */
+.wfa-pin-step { animation: wfaPinStep var(--dur) infinite; }
+@keyframes wfaPinStep {
+  0%, 16% { opacity: 0; }
+  20% { opacity: 1; }
+  32% { opacity: 1; }
+  36%, 100% { opacity: 0; }
 }
 
 .wfa-cursor { animation: wfaCursor var(--dur) infinite; }
 @keyframes wfaCursor {
-  0%, 10% { opacity: 0; transform: translate(60px, -30px); }
-  15% { opacity: 1; transform: translate(30px, -10px); }
-  22% { opacity: 1; transform: translate(0, 0); }
-  25% { opacity: 1; transform: translate(0, 2px); }
-  27% { opacity: 1; transform: translate(0, 0); }
-  32%, 100% { opacity: 0; transform: translate(0, 0); }
+  0%, 16% { opacity: 0; transform: translate(60px, -30px); }
+  22% { opacity: 1; transform: translate(30px, -10px); }
+  26% { opacity: 1; transform: translate(0, 0); }
+  28% { opacity: 1; transform: translate(0, 2px); }
+  30% { opacity: 1; transform: translate(0, 0); }
+  34%, 100% { opacity: 0; transform: translate(0, 0); }
 }
 
 .wfa-pin { animation: wfaPin var(--dur) infinite; }
 @keyframes wfaPin {
-  0%, 22% { opacity: 0; transform: translateY(-18px) scale(0.5); }
-  27% { opacity: 1; transform: translateY(0) scale(1.15); }
-  30% { opacity: 1; transform: translateY(0) scale(1); }
-  88% { opacity: 1; }
-  95%, 100% { opacity: 0; }
+  0%, 25% { opacity: 0; transform: translateY(-18px) scale(0.5); }
+  29% { opacity: 1; transform: translateY(0) scale(1.15); }
+  32% { opacity: 1; transform: translateY(0) scale(1); }
+  36%, 100% { opacity: 0; }
 }
 
 .wfa-ring { animation: wfaRing var(--dur) infinite; }
 @keyframes wfaRing {
-  0%, 27% { opacity: 0; transform: scale(0); }
-  30% { opacity: 0.6; transform: scale(1); }
-  35%, 100% { opacity: 0; transform: scale(2); }
+  0%, 29% { opacity: 0; transform: scale(0); }
+  32% { opacity: 0.6; transform: scale(1); }
+  36%, 100% { opacity: 0; transform: scale(2); }
 }
 
+/* Step 2 label follows pin-step timing */
+.wfa-pin-label { animation: wfaPinStep var(--dur) infinite; }
+
+/* Step 3 — Describe: visible 32–56% */
 .wfa-form { animation: wfaForm var(--dur) infinite; }
 @keyframes wfaForm {
-  0%, 30% { opacity: 0; transform: scale(0.8) translateY(6px); }
-  35%, 50% { opacity: 1; transform: scale(1) translateY(0); }
-  55%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
+  0%, 32% { opacity: 0; transform: scale(0.8) translateY(6px); }
+  38%, 52% { opacity: 1; transform: scale(1) translateY(0); }
+  56%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
 }
 
-.wfa-typing { animation: wfaTyping var(--dur) infinite steps(1); }
-@keyframes wfaTyping {
-  0%, 36% { width: 0; }
-  38% { width: 30%; }
-  40% { width: 55%; }
-  42% { width: 75%; }
-  44%, 100% { width: 90%; }
+/* Typing lines — four rows appearing sequentially */
+.wfa-typing-1, .wfa-typing-2, .wfa-typing-3, .wfa-typing-4 {
+  animation: wfaTypeLine var(--dur) infinite;
+}
+.wfa-typing-1 { animation-name: wfaType1; }
+.wfa-typing-2 { animation-name: wfaType2; }
+.wfa-typing-3 { animation-name: wfaType3; }
+.wfa-typing-4 { animation-name: wfaType4; }
+@keyframes wfaType1 {
+  0%, 38% { width: 0; } 41% { width: 40; } 43%, 100% { width: 72; }
+}
+@keyframes wfaType2 {
+  0%, 41% { width: 0; } 44% { width: 36; } 46%, 100% { width: 68; }
+}
+@keyframes wfaType3 {
+  0%, 44% { width: 0; } 47% { width: 30; } 49%, 100% { width: 58; }
+}
+@keyframes wfaType4 {
+  0%, 47% { width: 0; } 50%, 100% { width: 40; }
 }
 
+/* Step 4 — Submit: visible 52–70% */
 .wfa-check { animation: wfaCheck var(--dur) infinite; }
 @keyframes wfaCheck {
-  0%, 50% { opacity: 0; transform: scale(0); }
-  54% { opacity: 1; transform: scale(1.2); }
-  57%, 65% { opacity: 1; transform: scale(1); }
-  68%, 100% { opacity: 0; transform: scale(0.8); }
+  0%, 52% { opacity: 0; transform: scale(0); }
+  56% { opacity: 1; transform: scale(1.2); }
+  60%, 66% { opacity: 1; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(0.8); }
 }
 
+/* Step 5 — Catalogue: visible 66–92% */
 .wfa-catalogue { animation: wfaCatalogue var(--dur) infinite; }
 @keyframes wfaCatalogue {
-  0%, 65% { opacity: 0; transform: translateY(12px); }
-  72%, 85% { opacity: 1; transform: translateY(0); }
+  0%, 66% { opacity: 0; transform: translateY(12px); }
+  72%, 86% { opacity: 1; transform: translateY(0); }
   92%, 100% { opacity: 0; transform: translateY(-6px); }
 }
 
@@ -85,13 +113,13 @@
 .wfa-cat-row-2 { animation-delay: 0.3s; }
 .wfa-cat-row-3 { animation-delay: 0.6s; }
 @keyframes wfaCatRow {
-  0%, 68% { opacity: 0; transform: translateX(-8px); }
-  74%, 85% { opacity: 1; transform: translateX(0); }
+  0%, 69% { opacity: 0; transform: translateX(-8px); }
+  75%, 86% { opacity: 1; transform: translateX(0); }
   92%, 100% { opacity: 0; }
 }
 
 .wfa-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-anchor: middle;
   fill: var(--color-fd-muted-foreground, #6b7280);
