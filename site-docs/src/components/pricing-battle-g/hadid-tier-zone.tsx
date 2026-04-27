@@ -167,10 +167,7 @@ export function HadidTierZone({ tier }: { tier: Tier }) {
         <p className="hadid-subtitle">{tier.subtitle}</p>
 
         {/* Curved divider */}
-        <hr
-          className="hadid-divider"
-          style={{ background: accent.gradient }}
-        />
+        <hr className="hadid-divider" style={{ background: accent.gradient }} />
 
         {/* Features */}
         <ul className="hadid-features">
@@ -209,16 +206,12 @@ export function HadidTierZone({ tier }: { tier: Tier }) {
             className="block text-center cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
             style={{
               background: tier.featured ? accent.gradient : accent.glow,
-              color: tier.featured
-                ? '#fff'
-                : 'var(--color-fd-foreground)',
+              color: tier.featured ? '#fff' : 'var(--color-fd-foreground)',
               padding: '0.75rem 1.5rem',
               borderRadius: '16px 50px 16px 50px',
               fontSize: '0.85rem',
               fontFamily: 'monospace',
-              border: tier.featured
-                ? 'none'
-                : `1px solid ${accent.color}25`,
+              border: tier.featured ? 'none' : `1px solid ${accent.color}25`,
             }}
           >
             {tier.cta}

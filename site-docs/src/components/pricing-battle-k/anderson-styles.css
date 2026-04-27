@@ -3,29 +3,29 @@
    A Wes Anderson Production
    ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap");
 
 /* ── Anderson Palette ─────────────────────────────── */
 .anderson-scene {
-  --wa-cream: #F5EFE0;
-  --wa-cream-dark: #2A2520;
-  --wa-pink: #E8B4B8;
-  --wa-pink-muted: #D4949A;
-  --wa-blue: #A8C8D8;
-  --wa-blue-muted: #7BAABB;
-  --wa-mustard: #D4A843;
-  --wa-mustard-muted: #B8922F;
-  --wa-burgundy: #8B4553;
-  --wa-sage: #B8C4A8;
-  --wa-paper: #FAF6ED;
-  --wa-paper-dark: #1E1B17;
-  --wa-ink: #3A3228;
-  --wa-ink-light: #F0EAE0;
-  --wa-border: #C8B89A;
-  --wa-border-dark: #5A4E3E;
+  --wa-cream: #f5efe0;
+  --wa-cream-dark: #2a2520;
+  --wa-pink: #e8b4b8;
+  --wa-pink-muted: #d4949a;
+  --wa-blue: #a8c8d8;
+  --wa-blue-muted: #7baabb;
+  --wa-mustard: #d4a843;
+  --wa-mustard-muted: #b8922f;
+  --wa-burgundy: #8b4553;
+  --wa-sage: #b8c4a8;
+  --wa-paper: #faf6ed;
+  --wa-paper-dark: #1e1b17;
+  --wa-ink: #3a3228;
+  --wa-ink-light: #f0eae0;
+  --wa-border: #c8b89a;
+  --wa-border-dark: #5a4e3e;
   --wa-shadow: rgba(58, 50, 40, 0.08);
-  --wa-font-display: 'Josefin Sans', var(--fd-font-sans, sans-serif);
-  --wa-font-body: 'Cormorant Garamond', var(--fd-font-serif, Georgia, serif);
+  --wa-font-display: "Josefin Sans", var(--fd-font-sans, sans-serif);
+  --wa-font-body: "Cormorant Garamond", var(--fd-font-serif, Georgia, serif);
 }
 
 /* ── Dark mode overrides ──────────────────────────── */
@@ -35,9 +35,9 @@
   --wa-ink: var(--wa-ink-light);
   --wa-border: var(--wa-border-dark);
   --wa-shadow: rgba(0, 0, 0, 0.3);
-  --wa-pink: #C4878D;
-  --wa-blue: #6A9AAE;
-  --wa-mustard: #C49A30;
+  --wa-pink: #c4878d;
+  --wa-blue: #6a9aae;
+  --wa-mustard: #c49a30;
 }
 
 /* ── Scene Background ─────────────────────────────── */
@@ -66,7 +66,7 @@
 }
 
 .anderson-scene::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--wa-cream);
@@ -86,12 +86,14 @@
   position: relative;
   padding: 2.5rem 2rem 2rem;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 20px var(--wa-shadow);
 }
 
 .anderson-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 6px;
   border: 1px solid var(--wa-border);
@@ -114,7 +116,7 @@
 }
 
 .anderson-card-featured::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 12px;
   border: 1px dashed var(--wa-mustard);
@@ -132,7 +134,7 @@
 
 .anderson-divider::before,
 .anderson-divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
   background: var(--wa-border);
@@ -176,13 +178,15 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
   position: relative;
 }
 
 .anderson-cta::before,
 .anderson-cta::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   width: 8px;
@@ -235,7 +239,7 @@
 
 .anderson-badge::before,
 .anderson-badge::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   width: 0;
@@ -246,13 +250,15 @@
 .anderson-badge::before {
   left: 0;
   border-width: 4px 0 0 4px;
-  border-color: var(--wa-mustard-muted) transparent transparent var(--wa-mustard-muted);
+  border-color: var(--wa-mustard-muted) transparent transparent
+    var(--wa-mustard-muted);
 }
 
 .anderson-badge::after {
   right: 0;
   border-width: 4px 4px 0 0;
-  border-color: var(--wa-mustard-muted) var(--wa-mustard-muted) transparent transparent;
+  border-color: var(--wa-mustard-muted) var(--wa-mustard-muted) transparent
+    transparent;
 }
 
 /* ── Locked Overlay ───────────────────────────────── */
@@ -285,6 +291,12 @@
   animation: anderson-fade-up 0.6s ease-out both;
 }
 
-.anderson-animate-delay-1 { animation-delay: 0.15s; }
-.anderson-animate-delay-2 { animation-delay: 0.3s; }
-.anderson-animate-delay-3 { animation-delay: 0.45s; }
+.anderson-animate-delay-1 {
+  animation-delay: 0.15s;
+}
+.anderson-animate-delay-2 {
+  animation-delay: 0.3s;
+}
+.anderson-animate-delay-3 {
+  animation-delay: 0.45s;
+}

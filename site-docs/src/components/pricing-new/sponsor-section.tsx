@@ -16,7 +16,10 @@ export function SponsorSectionNew() {
 
       <div className="relative mx-auto max-w-2xl">
         {/* Decorative dots cluster */}
-        <div className="mb-10 flex items-center justify-center gap-2" aria-hidden="true">
+        <div
+          className="mb-10 flex items-center justify-center gap-2"
+          aria-hidden="true"
+        >
           <div className="size-1.5 rounded-full bg-blue-500/40" />
           <div className="size-2 rounded-full bg-blue-500/60" />
           <div className="size-3 rounded-full bg-blue-500" />

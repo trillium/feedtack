@@ -12,14 +12,33 @@ export function BrodyHero() {
 
       {/* Geometric navigation symbols */}
       <div className={styles.symbolRow} aria-hidden="true">
-        <svg viewBox="0 0 24 24" className={styles.symbol}>
-          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
+        <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.symbol}>
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
         </svg>
-        <svg viewBox="0 0 24 24" className={styles.symbol}>
-          <rect x="4" y="4" width="16" height="16" fill="currentColor" opacity="0.3" />
+        <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.symbol}>
+          <rect
+            x="4"
+            y="4"
+            width="16"
+            height="16"
+            fill="currentColor"
+            opacity="0.3"
+          />
         </svg>
-        <svg viewBox="0 0 24 24" className={styles.symbol}>
-          <polygon points="12,2 22,22 2,22" fill="none" stroke="currentColor" strokeWidth="2" />
+        <svg aria-hidden="true" viewBox="0 0 24 24" className={styles.symbol}>
+          <polygon
+            points="12,2 22,22 2,22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
         </svg>
       </div>
 

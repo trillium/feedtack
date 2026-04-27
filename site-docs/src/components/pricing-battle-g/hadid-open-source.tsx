@@ -5,6 +5,7 @@ export function HadidOpenSource() {
       {/* Curved top border */}
       <div className="absolute inset-x-0 top-0 h-px" aria-hidden="true">
         <svg
+          aria-hidden="true"
           viewBox="0 0 1440 4"
           preserveAspectRatio="none"
           className="h-full w-full"
@@ -35,8 +36,7 @@ export function HadidOpenSource() {
           className="mx-auto mt-4 max-w-md text-fd-muted-foreground"
           style={{ fontSize: '0.95rem', lineHeight: 1.7, fontWeight: 300 }}
         >
-          Feedtack is MIT-licensed. No telemetry. No vendor lock-in.
-          Just{' '}
+          Feedtack is MIT-licensed. No telemetry. No vendor lock-in. Just{' '}
           <code
             className="text-fd-foreground"
             style={{

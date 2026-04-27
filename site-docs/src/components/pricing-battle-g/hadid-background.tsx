@@ -13,6 +13,7 @@ export function HadidWaveDivider() {
   return (
     <div className="hadid-wave" aria-hidden="true">
       <svg
+        aria-hidden="true"
         viewBox="0 0 1440 120"
         preserveAspectRatio="none"
         fill="none"

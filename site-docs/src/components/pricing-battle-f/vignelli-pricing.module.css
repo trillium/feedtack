@@ -1,7 +1,7 @@
 /* Massimo Vignelli — The grid is sacred. Alignment is everything. */
 
 .page {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--color-fd-foreground, #000);
   background: var(--color-fd-background, #fff);
   -webkit-font-smoothing: antialiased;
@@ -157,7 +157,7 @@
 .cta {
   display: inline-block;
   margin-top: 40px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -258,7 +258,7 @@
 
   .tier {
     padding: 40px 0;
-    border-right: none !important;
+    border-right: none;
   }
 
   .tier:not(:first-child) {

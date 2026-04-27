@@ -13,18 +13,16 @@ interface BrodyGlyphProps {
 
 function FreeLetter({ accent }: { accent: string }) {
   return (
-    <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 120 120"
+      fill="none"
+      className="w-full h-full"
+    >
       {/* Deconstructed F — three bars, angular displacement */}
       <rect x="15" y="10" width="12" height="100" fill={accent} />
       <rect x="15" y="10" width="80" height="12" fill={accent} />
-      <rect
-        x="15"
-        y="50"
-        width="55"
-        height="10"
-        fill={accent}
-        opacity={0.6}
-      />
+      <rect x="15" y="50" width="55" height="10" fill={accent} opacity={0.6} />
       {/* Geometric accent — displaced triangle */}
       <polygon points="100,25 100,55 80,55" fill={accent} opacity={0.3} />
     </svg>
@@ -33,7 +31,12 @@ function FreeLetter({ accent }: { accent: string }) {
 
 function ProLetter({ accent }: { accent: string }) {
   return (
-    <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 120 120"
+      fill="none"
+      className="w-full h-full"
+    >
       {/* Deconstructed P — vertical + circular bowl */}
       <rect x="15" y="10" width="12" height="100" fill={accent} />
       <path
@@ -50,18 +53,16 @@ function ProLetter({ accent }: { accent: string }) {
 
 function EnterpriseLetter({ accent }: { accent: string }) {
   return (
-    <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 120 120"
+      fill="none"
+      className="w-full h-full"
+    >
       {/* Deconstructed E — three horizontal bars + vertical */}
       <rect x="15" y="10" width="12" height="100" fill={accent} />
       <rect x="15" y="10" width="85" height="12" fill={accent} />
-      <rect
-        x="15"
-        y="55"
-        width="65"
-        height="10"
-        fill={accent}
-        opacity={0.7}
-      />
+      <rect x="15" y="55" width="65" height="10" fill={accent} opacity={0.7} />
       <rect x="15" y="98" width="85" height="12" fill={accent} />
       {/* Geometric accent — rotated square */}
       <rect
@@ -100,7 +101,12 @@ export function BrodyGlyph({
       {LetterComponent ? (
         <LetterComponent accent={accent} />
       ) : (
-        <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 120 120"
+          fill="none"
+          className="w-full h-full"
+        >
           <rect x="10" y="10" width="100" height="100" fill={accent} />
         </svg>
       )}

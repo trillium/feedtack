@@ -50,11 +50,7 @@ export function CornerOrnament({
         opacity: 0.4,
       }}
     >
-      <path
-        d="M0 0L0 6M0 0L6 0"
-        stroke="var(--wa-border)"
-        strokeWidth="1.5"
-      />
+      <path d="M0 0L0 6M0 0L6 0" stroke="var(--wa-border)" strokeWidth="1.5" />
     </svg>
   )
 }

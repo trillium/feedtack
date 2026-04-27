@@ -29,9 +29,7 @@ export function VignelliTier({ tier }: VignelliTierProps) {
     .filter(Boolean)
     .join(' ')
 
-  const href =
-    tier.ctaHref ??
-    `https://www.npmjs.com/package/feedtack`
+  const href = tier.ctaHref ?? `https://www.npmjs.com/package/feedtack`
 
   return (
     <div className={tierClass}>

@@ -1,4 +1,7 @@
-import { HadidBackground, HadidWaveDivider } from '@/components/pricing-battle-g/hadid-background'
+import {
+  HadidBackground,
+  HadidWaveDivider,
+} from '@/components/pricing-battle-g/hadid-background'
 import { HadidGrid } from '@/components/pricing-battle-g/hadid-grid'
 import { HadidOpenSource } from '@/components/pricing-battle-g/hadid-open-source'
 import { HadidTierZone } from '@/components/pricing-battle-g/hadid-tier-zone'
@@ -35,9 +38,7 @@ export default function PricingBattleGPage() {
             opacity="0.2"
           />
         </svg>
-        <h1 className="hadid-hero-title">
-          Pricing
-        </h1>
+        <h1 className="hadid-hero-title">Pricing</h1>
         <p className="hadid-hero-subtitle">
           Three tiers. One price. Zero compromise.
         </p>

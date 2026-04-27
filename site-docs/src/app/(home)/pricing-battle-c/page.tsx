@@ -1,8 +1,8 @@
-import { TIERS } from '@/data/pricing-tiers'
 import { AsciiHeader } from '@/components/pricing-battle-c/ascii-header'
 import { BootSequence } from '@/components/pricing-battle-c/boot-sequence'
 import { TerminalTier } from '@/components/pricing-battle-c/terminal-tier'
 import { TerminalWindow } from '@/components/pricing-battle-c/terminal-window'
+import { TIERS } from '@/data/pricing-tiers'
 import '@/components/pricing-battle-c/crt-effects.css'
 
 export default function PricingBattleCPage() {
@@ -49,7 +49,9 @@ export default function PricingBattleCPage() {
               <span className="crt-text-bright">OPERATIONAL</span>
             </div>
             <div className="crt-text-dim">
-              {'Run `npm install feedtack` to get started. No credit card. No trials. No gotchas.'}
+              {
+                'Run `npm install feedtack` to get started. No credit card. No trials. No gotchas.'
+              }
             </div>
             <div className="mt-4">
               <span className="crt-text-amber">{'>'}</span>

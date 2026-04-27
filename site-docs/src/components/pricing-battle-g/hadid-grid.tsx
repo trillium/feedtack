@@ -7,6 +7,7 @@ export function HadidGrid() {
       style={{ opacity: 0.04 }}
     >
       <svg
+        aria-hidden="true"
         className="absolute inset-0 h-full w-full"
         preserveAspectRatio="none"
         viewBox="0 0 1200 800"

@@ -32,8 +32,8 @@ export function BassPricingPage() {
           </span>
         </h1>
         <p className={styles.heroSubtitle}>
-          Choose the plan that&apos;s right for you. Spoiler:
-          they&apos;re all the same.
+          Choose the plan that&apos;s right for you. Spoiler: they&apos;re all
+          the same.
         </p>
       </section>
 

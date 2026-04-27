@@ -28,7 +28,9 @@ export function AndoTier({
   const delayClass = `ando-emerge-${index + 3}`
 
   return (
-    <div className={`ando-tier ando-emerge ${delayClass} relative flex flex-col`}>
+    <div
+      className={`ando-tier ando-emerge ${delayClass} relative flex flex-col`}
+    >
       {/* Tier name */}
       <p className="mb-8 text-[0.6875rem] font-medium uppercase tracking-[0.25em] text-fd-muted-foreground">
         {name}

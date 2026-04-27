@@ -8,7 +8,7 @@
 }
 
 @property --gradient-angle {
-  syntax: '<angle>';
+  syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
@@ -19,7 +19,7 @@
 }
 
 .tier-card-featured::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -1px;
   z-index: -1;
@@ -51,7 +51,7 @@
 }
 
 .lock-shimmer::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(

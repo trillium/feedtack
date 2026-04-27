@@ -12,7 +12,7 @@ export function BrodyFooter() {
       <div className={styles.content}>
         {/* Geometric accent */}
         <div className={styles.geoAccent} aria-hidden="true">
-          <svg viewBox="0 0 80 80" className={styles.geoSvg}>
+          <svg aria-hidden="true" viewBox="0 0 80 80" className={styles.geoSvg}>
             <circle
               cx="40"
               cy="40"

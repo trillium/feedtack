@@ -1,9 +1,5 @@
 import s from '@/components/pricing-battle-b/editorial.module.css'
 import { EditorialColophon } from '@/components/pricing-battle-b/editorial-colophon'
-import {
-  sansFont,
-  serifFont,
-} from '@/components/pricing-battle-b/editorial-fonts'
 import { EditorialHero } from '@/components/pricing-battle-b/editorial-hero'
 import { EditorialPullQuote } from '@/components/pricing-battle-b/editorial-pull-quote'
 import { TierSection } from '@/components/pricing-battle-b/tier-section'
@@ -18,10 +14,12 @@ export default function PricingBattleBPage() {
   return (
     <div
       className={s.page}
-      style={{
-        '--font-serif': "'Cormorant Garamond', Georgia, serif",
-        '--font-sans': "'DM Sans', 'Helvetica Neue', sans-serif",
-      } as React.CSSProperties}
+      style={
+        {
+          '--font-serif': "'Cormorant Garamond', Georgia, serif",
+          '--font-sans': "'DM Sans', 'Helvetica Neue', sans-serif",
+        } as React.CSSProperties
+      }
     >
       <EditorialHero />
 

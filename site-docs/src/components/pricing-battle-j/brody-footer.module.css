@@ -35,7 +35,7 @@
   letter-spacing: 0.2em;
   color: var(--fd-foreground);
   margin-bottom: 0.75rem;
-  font-family: var(--font-heading, 'Georgia', serif);
+  font-family: var(--font-heading, "Georgia", serif);
 }
 
 .subtitle {

@@ -7,7 +7,10 @@ const BOOT_LINES = [
   { text: 'Copyright (c) 2026 Trillium Smith. MIT License.', speed: 15 },
   { text: '', speed: 0 },
   { text: 'Initializing pricing engine...', speed: 25 },
-  { text: 'Loading adapters: console, localStorage, supabase, webhooks', speed: 20 },
+  {
+    text: 'Loading adapters: console, localStorage, supabase, webhooks',
+    speed: 20,
+  },
   { text: 'All systems nominal. 0 charges detected.', speed: 25 },
   { text: '', speed: 0 },
   { text: '$ feedtack pricing --list --format=ascii', speed: 40, cmd: true },
@@ -34,9 +37,7 @@ export function BootSequence() {
 
         return (
           <div key={delay}>
-            {line.cmd && (
-              <span className="crt-text-amber mr-1">{'>'}</span>
-            )}
+            {line.cmd && <span className="crt-text-amber mr-1">{'>'}</span>}
             <Typewriter
               text={line.text}
               delay={delay}

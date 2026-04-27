@@ -48,13 +48,18 @@ function LockedTier({ tier }: { tier: Tier }) {
   return (
     <AsciiBox label="[ACCESS DENIED]">
       <div className="crt-text-red glitch-text my-2 text-lg font-bold">
-        {'>>> '}{tier.name.toUpperCase()}{' <<<'}
+        {'>>> '}
+        {tier.name.toUpperCase()}
+        {' <<<'}
       </div>
       <div className="crt-text-dim text-xs">
-        {'  price: '}{tier.price}{'/mo'}
+        {'  price: '}
+        {tier.price}
+        {'/mo'}
       </div>
       <div className="crt-text-dim mb-2 text-xs italic">
-        {'  // '}{tier.subtitle}
+        {'  // '}
+        {tier.subtitle}
       </div>
       <div className="crt-text-red my-1 text-xs">
         {'  STATUS: LOCKED -- contribute to unlock'}
@@ -62,7 +67,8 @@ function LockedTier({ tier }: { tier: Tier }) {
       <div className="my-2 space-y-0.5">
         {tier.features.map((f) => (
           <div key={f} className="crt-text-dim text-xs">
-            {'  [x] '}{scramble(f)}
+            {'  [x] '}
+            {scramble(f)}
           </div>
         ))}
       </div>
@@ -74,7 +80,8 @@ function LockedTier({ tier }: { tier: Tier }) {
           className="crt-text-red inline-block border border-[#ff3333]/40 px-3 py-1 text-xs
             transition-all hover:bg-[#ff3333]/10 hover:shadow-[0_0_12px_rgba(255,51,51,0.3)]"
         >
-          {'$ '}{tier.cta.toLowerCase()}
+          {'$ '}
+          {tier.cta.toLowerCase()}
         </a>
       </div>
     </AsciiBox>
@@ -85,18 +92,24 @@ function FeaturedTier({ tier }: { tier: Tier }) {
   return (
     <AsciiBox label="[SELECTED] *" bright>
       <div className="crt-text-bright glow-pulse my-2 text-lg font-bold">
-        {'>>> '}{tier.name.toUpperCase()}{' <<<'}
+        {'>>> '}
+        {tier.name.toUpperCase()}
+        {' <<<'}
       </div>
       <div className="crt-text text-xs">
-        {'  price: '}{tier.price}{'/mo  (yes, really)'}
+        {'  price: '}
+        {tier.price}
+        {'/mo  (yes, really)'}
       </div>
       <div className="crt-text-amber mb-2 text-xs italic">
-        {'  // '}{tier.subtitle}
+        {'  // '}
+        {tier.subtitle}
       </div>
       <div className="my-2 space-y-0.5">
         {tier.features.map((f) => (
           <div key={f} className="crt-text text-xs">
-            {'  [*] '}{f}
+            {'  [*] '}
+            {f}
           </div>
         ))}
       </div>
@@ -106,7 +119,8 @@ function FeaturedTier({ tier }: { tier: Tier }) {
             text-xs transition-all hover:bg-[#33ff33]/10
             hover:shadow-[0_0_16px_rgba(51,255,51,0.3)]"
         >
-          {'$ '}{tier.cta}
+          {'$ '}
+          {tier.cta}
           <span className="blink-cursor" />
         </span>
       </div>
@@ -118,18 +132,24 @@ function FreeTier({ tier }: { tier: Tier }) {
   return (
     <AsciiBox label={tier.name.toUpperCase()}>
       <div className="crt-text my-2 text-lg font-bold">
-        {'>>> '}{tier.name.toUpperCase()}{' <<<'}
+        {'>>> '}
+        {tier.name.toUpperCase()}
+        {' <<<'}
       </div>
       <div className="crt-text-dim text-xs">
-        {'  price: '}{tier.price}{'/mo'}
+        {'  price: '}
+        {tier.price}
+        {'/mo'}
       </div>
       <div className="crt-text-dim mb-2 text-xs italic">
-        {'  // '}{tier.subtitle}
+        {'  // '}
+        {tier.subtitle}
       </div>
       <div className="my-2 space-y-0.5">
         {tier.features.map((f) => (
           <div key={f} className="crt-text text-xs">
-            {'  [+] '}{f}
+            {'  [+] '}
+            {f}
           </div>
         ))}
       </div>
@@ -139,7 +159,8 @@ function FreeTier({ tier }: { tier: Tier }) {
             transition-all hover:bg-[#33ff33]/10
             hover:shadow-[0_0_12px_rgba(51,255,51,0.2)]"
         >
-          {'$ '}{tier.cta}
+          {'$ '}
+          {tier.cta}
         </span>
       </div>
     </AsciiBox>
@@ -150,10 +171,7 @@ export function TerminalTier({ tier, index }: TerminalTierProps) {
   const delayMs = index * 600
 
   return (
-    <div
-      className="boot-line"
-      style={{ animationDelay: `${delayMs}ms` }}
-    >
+    <div className="boot-line" style={{ animationDelay: `${delayMs}ms` }}>
       {tier.locked ? (
         <LockedTier tier={tier} />
       ) : tier.featured ? (

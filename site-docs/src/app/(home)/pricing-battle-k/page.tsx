@@ -1,7 +1,10 @@
 import '@/components/pricing-battle-k/anderson-styles.css'
 import { FooterK } from '@/components/pricing-battle-k/footer-k'
 import { HeaderK } from '@/components/pricing-battle-k/header-k'
-import { type TierK, TierCardK } from '@/components/pricing-battle-k/tier-card-k'
+import {
+  TierCardK,
+  type TierK,
+} from '@/components/pricing-battle-k/tier-card-k'
 
 /* ── Tier Data ────────────────────────────────────── */
 const TIERS: TierK[] = [
@@ -53,7 +56,7 @@ const TIERS: TierK[] = [
       'White-glove npm install',
       'Dedicated Slack channel (make your own)',
       'SOC 2 Type II (you handle that)',
-      'On-prem deployment (it\'s an npm package)',
+      "On-prem deployment (it's an npm package)",
     ],
     cta: 'Contribute to Unlock',
     ctaHref: 'https://github.com/trillium/feedtack',

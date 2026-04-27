@@ -5,13 +5,7 @@ import { FeatureList } from './feature-list'
 
 const TIER_NUMBERS = ['01', '02', '03']
 
-export function TierSection({
-  tier,
-  index,
-}: {
-  tier: Tier
-  index: number
-}) {
+export function TierSection({ tier, index }: { tier: Tier; index: number }) {
   if (tier.featured) return <FeaturedTier tier={tier} index={index} />
   if (tier.locked) return <LockedTier tier={tier} index={index} />
   return <StandardTier tier={tier} index={index} />

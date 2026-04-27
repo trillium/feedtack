@@ -3,212 +3,256 @@
    ============================================================ */
 
 @keyframes kusama-drift {
-	0% { background-position: 0 0, 20px 20px; }
-	100% { background-position: 40px 40px, 60px 60px; }
+  0% {
+    background-position:
+      0 0,
+      20px 20px;
+  }
+  100% {
+    background-position:
+      40px 40px,
+      60px 60px;
+  }
 }
 
 @keyframes kusama-pulse {
-	0%, 100% { opacity: 0.6; transform: scale(1); }
-	50% { opacity: 1; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 @keyframes kusama-float {
-	0%, 100% { transform: translateY(0) rotate(0deg); }
-	33% { transform: translateY(-8px) rotate(1deg); }
-	66% { transform: translateY(4px) rotate(-1deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(4px) rotate(-1deg);
+  }
 }
 
 @keyframes kusama-spin {
-	from { transform: rotate(0deg); }
-	to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes dot-appear {
-	from { opacity: 0; transform: scale(0); }
-	to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .kusama-page {
-	--kusama-red: #e42b2b;
-	--kusama-yellow: #ffd700;
-	--kusama-black: #1a1a1a;
-	--kusama-white: #fafaf5;
-	--kusama-pink: #ff6b9d;
-	--kusama-dot-sm: 8px;
-	--kusama-dot-md: 14px;
-	--kusama-dot-lg: 24px;
-	position: relative;
-	overflow: hidden;
-	min-height: 100vh;
+  --kusama-red: #e42b2b;
+  --kusama-yellow: #ffd700;
+  --kusama-black: #1a1a1a;
+  --kusama-white: #fafaf5;
+  --kusama-pink: #ff6b9d;
+  --kusama-dot-sm: 8px;
+  --kusama-dot-md: 14px;
+  --kusama-dot-lg: 24px;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
 }
 
 /* --- Dot field layer --- */
 .kusama-dotfield {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 0;
-	background:
-		radial-gradient(circle var(--kusama-dot-sm), var(--kusama-red) 99%, transparent 100%) 0 0 / 40px 40px,
-		radial-gradient(circle 5px, var(--kusama-yellow) 99%, transparent 100%) 20px 20px / 40px 40px;
-	opacity: 0.12;
-	animation: kusama-drift 12s linear infinite;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      circle var(--kusama-dot-sm),
+      var(--kusama-red) 99%,
+      transparent 100%
+    )
+    0 0 / 40px 40px,
+    radial-gradient(circle 5px, var(--kusama-yellow) 99%, transparent 100%) 20px
+    20px / 40px 40px;
+  opacity: 0.12;
+  animation: kusama-drift 12s linear infinite;
 }
 
 /* --- Infinity net overlay --- */
 .kusama-net {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 0;
-	opacity: 0.06;
-	background-image:
-		radial-gradient(circle 18px, transparent 14px, var(--color-fd-foreground, #111) 14px, var(--color-fd-foreground, #111) 16px, transparent 16px);
-	background-size: 36px 36px;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background-image: radial-gradient(
+    circle 18px,
+    transparent 14px,
+    var(--color-fd-foreground, #111) 14px,
+    var(--color-fd-foreground, #111) 16px,
+    transparent 16px
+  );
+  background-size: 36px 36px;
 }
 
 /* --- Floating pumpkin dots --- */
 .kusama-orb {
-	position: absolute;
-	border-radius: 50%;
-	pointer-events: none;
-	z-index: 1;
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .kusama-orb--red {
-	background: radial-gradient(circle at 35% 35%, #ff6b6b, var(--kusama-red));
-	box-shadow: 0 0 30px rgba(228, 43, 43, 0.3);
-	animation: kusama-float 8s ease-in-out infinite;
+  background: radial-gradient(circle at 35% 35%, #ff6b6b, var(--kusama-red));
+  box-shadow: 0 0 30px rgba(228, 43, 43, 0.3);
+  animation: kusama-float 8s ease-in-out infinite;
 }
 
 .kusama-orb--yellow {
-	background: radial-gradient(circle at 35% 35%, #ffe066, var(--kusama-yellow));
-	box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-	animation: kusama-float 10s ease-in-out infinite 2s;
+  background: radial-gradient(circle at 35% 35%, #ffe066, var(--kusama-yellow));
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+  animation: kusama-float 10s ease-in-out infinite 2s;
 }
 
 .kusama-orb--pink {
-	background: radial-gradient(circle at 35% 35%, #ff9ec5, var(--kusama-pink));
-	box-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
-	animation: kusama-float 9s ease-in-out infinite 4s;
+  background: radial-gradient(circle at 35% 35%, #ff9ec5, var(--kusama-pink));
+  box-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
+  animation: kusama-float 9s ease-in-out infinite 4s;
 }
 
 .kusama-orb::after {
-	content: '';
-	position: absolute;
-	inset: 0;
-	border-radius: 50%;
-	background:
-		radial-gradient(circle 3px, rgba(0,0,0,0.25) 99%, transparent 100%) 0 0 / 12px 12px;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle 3px, rgba(0, 0, 0, 0.25) 99%, transparent 100%) 0 0 /
+    12px 12px;
 }
 
 /* --- Hero --- */
 .kusama-hero {
-	position: relative;
-	z-index: 2;
-	text-align: center;
-	padding: 7rem 1.5rem 3rem;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 7rem 1.5rem 3rem;
 }
 
 .kusama-title {
-	font-family: 'Georgia', 'Times New Roman', serif;
-	font-size: clamp(3.5rem, 10vw, 8rem);
-	font-weight: 900;
-	letter-spacing: -0.04em;
-	line-height: 0.9;
-	color: var(--color-fd-foreground, #111);
-	position: relative;
-	display: inline-block;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: var(--color-fd-foreground, #111);
+  position: relative;
+  display: inline-block;
 }
 
 .kusama-title-ring {
-	position: absolute;
-	inset: -30px -50px;
-	border: 4px dotted var(--kusama-red);
-	border-radius: 50%;
-	opacity: 0.35;
-	animation: kusama-spin 60s linear infinite;
-	pointer-events: none;
+  position: absolute;
+  inset: -30px -50px;
+  border: 4px dotted var(--kusama-red);
+  border-radius: 50%;
+  opacity: 0.35;
+  animation: kusama-spin 60s linear infinite;
+  pointer-events: none;
 }
 
 .kusama-title-ring::before {
-	content: '';
-	position: absolute;
-	inset: -18px;
-	border: 3px dotted var(--kusama-yellow);
-	border-radius: 50%;
-	opacity: 0.25;
-	animation: kusama-spin 45s linear infinite reverse;
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border: 3px dotted var(--kusama-yellow);
+  border-radius: 50%;
+  opacity: 0.25;
+  animation: kusama-spin 45s linear infinite reverse;
 }
 
 .kusama-title-ring::after {
-	content: '';
-	position: absolute;
-	inset: -34px;
-	border: 2px dotted var(--kusama-pink);
-	border-radius: 50%;
-	opacity: 0.15;
-	animation: kusama-spin 80s linear infinite;
+  content: "";
+  position: absolute;
+  inset: -34px;
+  border: 2px dotted var(--kusama-pink);
+  border-radius: 50%;
+  opacity: 0.15;
+  animation: kusama-spin 80s linear infinite;
 }
 
 .kusama-subtitle {
-	margin-top: 1.5rem;
-	font-size: 1.15rem;
-	color: var(--color-fd-muted-foreground, #666);
-	max-width: 28rem;
-	margin-inline: auto;
-	line-height: 1.6;
+  margin-top: 1.5rem;
+  font-size: 1.15rem;
+  color: var(--color-fd-muted-foreground, #666);
+  max-width: 28rem;
+  margin-inline: auto;
+  line-height: 1.6;
 }
 
 .kusama-subtitle-dot {
-	display: inline-block;
-	width: 8px;
-	height: 8px;
-	background: var(--kusama-red);
-	border-radius: 50%;
-	margin: 0 6px;
-	vertical-align: middle;
-	animation: kusama-pulse 2s ease-in-out infinite;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--kusama-red);
+  border-radius: 50%;
+  margin: 0 6px;
+  vertical-align: middle;
+  animation: kusama-pulse 2s ease-in-out infinite;
 }
 
 /* --- Tier grid --- */
 .kusama-grid {
-	position: relative;
-	z-index: 2;
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 2rem;
-	max-width: 72rem;
-	margin: 0 auto;
-	padding: 0 1.5rem 5rem;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
 }
 
 @media (min-width: 1024px) {
-	.kusama-grid {
-		grid-template-columns: repeat(3, 1fr);
-		align-items: center;
-	}
+  .kusama-grid {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+  }
 }
 
 /* --- Bottom infinity --- */
 .kusama-infinity {
-	position: relative;
-	z-index: 2;
-	text-align: center;
-	padding: 2rem 1.5rem 5rem;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem 1.5rem 5rem;
 }
 
 .kusama-infinity__symbol {
-	font-size: 4rem;
-	line-height: 1;
-	color: var(--kusama-red);
-	opacity: 0.6;
-	animation: kusama-pulse 3s ease-in-out infinite;
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--kusama-red);
+  opacity: 0.6;
+  animation: kusama-pulse 3s ease-in-out infinite;
 }
 
 .kusama-infinity__text {
-	font-size: 0.9rem;
-	color: var(--color-fd-muted-foreground, #888);
-	margin-top: 0.5rem;
-	font-style: italic;
+  font-size: 0.9rem;
+  color: var(--color-fd-muted-foreground, #888);
+  margin-top: 0.5rem;
+  font-style: italic;
 }

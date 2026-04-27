@@ -44,9 +44,7 @@ export function Typewriter({
   return (
     <span className={className}>
       {displayed}
-      {!done && (
-        <span className="blink-cursor" />
-      )}
+      {!done && <span className="blink-cursor" />}
     </span>
   )
 }

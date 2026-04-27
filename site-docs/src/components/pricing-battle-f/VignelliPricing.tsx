@@ -18,8 +18,8 @@ export function VignelliPricing() {
         <hr className={styles.headerRule} />
         <h1 className={styles.title}>Pricing</h1>
         <p className={styles.subtitle}>
-          Three plans. One price. Zero compromise.
-          Open source means everyone gets everything.
+          Three plans. One price. Zero compromise. Open source means everyone
+          gets everything.
         </p>
       </header>
 
@@ -40,9 +40,8 @@ export function VignelliPricing() {
             Source
           </h2>
           <p className={styles.footerText}>
-            Feedtack is MIT-licensed. No vendor lock-in,
-            no usage limits, no surprise invoices.
-            Fork it, extend it, ship it.{' '}
+            Feedtack is MIT-licensed. No vendor lock-in, no usage limits, no
+            surprise invoices. Fork it, extend it, ship it.{' '}
             <a
               href="https://github.com/trillium/feedtack"
               className={styles.footerLink}

@@ -2,11 +2,7 @@
  * Anderson-style vintage tier card — each tier presented as
  * a hotel menu card or vintage label with ornamental borders.
  */
-import {
-  CornerOrnament,
-  OrnamentalDivider,
-  TierPlaque,
-} from './ornament'
+import { CornerOrnament, OrnamentalDivider, TierPlaque } from './ornament'
 
 export interface TierK {
   name: string
@@ -85,7 +81,10 @@ export function TierCardK({ tier, delay }: { tier: TierK; delay: number }) {
     .join(' ')
 
   return (
-    <div className={cardClasses} style={{ maxWidth: 350, width: '100%', flex: '1 1 280px' }}>
+    <div
+      className={cardClasses}
+      style={{ maxWidth: 350, width: '100%', flex: '1 1 280px' }}
+    >
       {/* Corner ornaments */}
       <CornerOrnament position="top-left" />
       <CornerOrnament position="top-right" />
@@ -184,7 +183,10 @@ export function TierCardK({ tier, delay }: { tier: TierK; delay: number }) {
               lineHeight: 1.4,
             }}
           >
-            <span className="anderson-check" style={{ borderColor: tier.color }}>
+            <span
+              className="anderson-check"
+              style={{ borderColor: tier.color }}
+            >
               &#10003;
             </span>
             <span>{feature}</span>

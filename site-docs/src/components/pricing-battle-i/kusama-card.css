@@ -1,197 +1,307 @@
 /* KUSAMA — Card, Features, CTA, Lock, Badge */
 
 .kusama-card {
-	position: relative;
-	border-radius: 2rem;
-	padding: 2.5rem 2rem;
-	display: flex;
-	flex-direction: column;
-	transition: transform 0.4s ease, box-shadow 0.4s ease;
-	overflow: hidden;
-	background: var(--color-fd-card, #fff);
-	border: 2px solid var(--color-fd-border, #e5e7eb);
+  position: relative;
+  border-radius: 2rem;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+  overflow: hidden;
+  background: var(--color-fd-card, #fff);
+  border: 2px solid var(--color-fd-border, #e5e7eb);
 }
-.kusama-card:hover { transform: translateY(-4px) scale(1.01); }
-.kusama-card > * { position: relative; z-index: 1; }
+.kusama-card:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+.kusama-card > * {
+  position: relative;
+  z-index: 1;
+}
 
 .kusama-card::before {
-	content: '';
-	position: absolute;
-	inset: 0;
-	border-radius: 2rem;
-	background: radial-gradient(circle var(--kusama-dot-md), currentColor 99%, transparent 100%) 0 0 / 32px 32px;
-	opacity: 0.05;
-	pointer-events: none;
-	z-index: 0;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2rem;
+  background:
+    radial-gradient(
+      circle var(--kusama-dot-md),
+      currentColor 99%,
+      transparent 100%
+    )
+    0 0 / 32px 32px;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .kusama-card--featured {
-	border-color: var(--kusama-red);
-	border-width: 3px;
-	box-shadow:
-		0 0 0 3px var(--kusama-red), 0 0 0 7px rgba(228,43,43,0.2),
-		0 0 0 11px rgba(228,43,43,0.1), 0 0 0 16px rgba(228,43,43,0.05),
-		0 0 0 22px rgba(228,43,43,0.02), 0 20px 60px rgba(228,43,43,0.15);
+  border-color: var(--kusama-red);
+  border-width: 3px;
+  box-shadow:
+    0 0 0 3px var(--kusama-red),
+    0 0 0 7px rgba(228, 43, 43, 0.2),
+    0 0 0 11px rgba(228, 43, 43, 0.1),
+    0 0 0 16px rgba(228, 43, 43, 0.05),
+    0 0 0 22px rgba(228, 43, 43, 0.02),
+    0 20px 60px rgba(228, 43, 43, 0.15);
 }
 .kusama-card--featured::after {
-	content: '';
-	position: absolute;
-	inset: -4px;
-	border-radius: 2.25rem;
-	background: radial-gradient(circle 4px, rgba(228,43,43,0.12) 99%, transparent 100%) 0 0 / 16px 16px;
-	z-index: -1;
-	pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 2.25rem;
+  background:
+    radial-gradient(circle 4px, rgba(228, 43, 43, 0.12) 99%, transparent 100%) 0
+    0 / 16px 16px;
+  z-index: -1;
+  pointer-events: none;
 }
 @media (min-width: 1024px) {
-	.kusama-card--featured { transform: scale(1.06); }
-	.kusama-card--featured:hover { transform: scale(1.08) translateY(-4px); }
+  .kusama-card--featured {
+    transform: scale(1.06);
+  }
+  .kusama-card--featured:hover {
+    transform: scale(1.08) translateY(-4px);
+  }
 }
 
-.kusama-card--locked { border-style: dashed; opacity: 0.8; }
+.kusama-card--locked {
+  border-style: dashed;
+  opacity: 0.8;
+}
 
 .kusama-card__dot-badge {
-	width: 48px; height: 48px; border-radius: 50%;
-	margin-bottom: 1rem; display: flex;
-	align-items: center; justify-content: center;
-	font-weight: 900; font-size: 1.1rem;
-	color: white; position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: white;
+  position: relative;
 }
 .kusama-card__dot-badge::after {
-	content: '';
-	position: absolute; inset: -6px; border-radius: 50%;
-	border: 2px dotted currentColor; opacity: 0.3;
-	animation: kusama-spin 20s linear infinite;
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dotted currentColor;
+  opacity: 0.3;
+  animation: kusama-spin 20s linear infinite;
 }
 
 .kusama-card__name {
-	font-family: 'Georgia', 'Times New Roman', serif;
-	font-size: 1.35rem; font-weight: 800;
-	letter-spacing: -0.02em; color: var(--color-fd-foreground, #111);
-	margin-bottom: 0.25rem;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-fd-foreground, #111);
+  margin-bottom: 0.25rem;
 }
 .kusama-card__price {
-	font-family: 'Georgia', 'Times New Roman', serif;
-	font-size: 4rem; font-weight: 900;
-	letter-spacing: -0.05em; line-height: 1;
-	color: var(--color-fd-foreground, #111);
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--color-fd-foreground, #111);
 }
 .kusama-card__price-suffix {
-	font-size: 1rem; font-weight: 500;
-	color: var(--color-fd-muted-foreground, #888); margin-left: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-fd-muted-foreground, #888);
+  margin-left: 4px;
 }
 .kusama-card__subtitle {
-	font-size: 0.875rem; color: var(--color-fd-muted-foreground, #888);
-	font-style: italic; margin-top: 0.25rem; margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-fd-muted-foreground, #888);
+  font-style: italic;
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .kusama-divider {
-	display: flex; align-items: center; justify-content: center;
-	gap: 6px; margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 1.5rem;
 }
 .kusama-divider__dot {
-	width: 6px; height: 6px; border-radius: 50%;
-	background: var(--color-fd-border, #ddd);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-fd-border, #ddd);
 }
 
 .kusama-features {
-	list-style: none; padding: 0; margin: 0 0 2rem;
-	flex: 1; display: flex; flex-direction: column; gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 .kusama-feature {
-	display: flex; align-items: flex-start; gap: 0.75rem;
-	font-size: 0.875rem; color: var(--color-fd-muted-foreground, #666);
-	line-height: 1.5; animation: dot-appear 0.4s ease both;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-fd-muted-foreground, #666);
+  line-height: 1.5;
+  animation: dot-appear 0.4s ease both;
 }
 .kusama-feature__dot {
-	width: 10px; height: 10px; min-width: 10px;
-	border-radius: 50%; margin-top: 4px;
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
 }
 
 .kusama-cta {
-	display: block; width: 100%; padding: 0.875rem 1.5rem;
-	border-radius: 999px; text-align: center;
-	font-weight: 700; font-size: 0.875rem;
-	text-decoration: none; transition: all 0.3s ease;
-	cursor: pointer; border: 2px solid transparent;
-	position: relative; overflow: hidden;
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
 .kusama-cta--primary {
-	background: var(--kusama-red); color: white;
-	border-color: var(--kusama-red);
+  background: var(--kusama-red);
+  color: white;
+  border-color: var(--kusama-red);
 }
 .kusama-cta--primary:hover {
-	background: #c92020;
-	box-shadow: 0 8px 30px rgba(228,43,43,0.35);
-	transform: translateY(-2px);
+  background: #c92020;
+  box-shadow: 0 8px 30px rgba(228, 43, 43, 0.35);
+  transform: translateY(-2px);
 }
 .kusama-cta--primary::before {
-	content: '';
-	position: absolute; inset: 0;
-	background: radial-gradient(circle 3px, rgba(255,255,255,0.15) 99%, transparent 100%) 0 0 / 14px 14px;
-	pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle 3px, rgba(255, 255, 255, 0.15) 99%, transparent 100%)
+    0 0 / 14px 14px;
+  pointer-events: none;
 }
 .kusama-cta--secondary {
-	background: var(--color-fd-muted, #f3f4f6);
-	color: var(--color-fd-foreground, #111);
-	border-color: var(--color-fd-border, #e5e7eb);
-	font-family: 'Courier New', monospace;
+  background: var(--color-fd-muted, #f3f4f6);
+  color: var(--color-fd-foreground, #111);
+  border-color: var(--color-fd-border, #e5e7eb);
+  font-family: "Courier New", monospace;
 }
 .kusama-cta--secondary:hover {
-	border-color: var(--kusama-red); color: var(--kusama-red);
+  border-color: var(--kusama-red);
+  color: var(--kusama-red);
 }
 .kusama-cta--locked {
-	background: linear-gradient(135deg, var(--kusama-yellow), #f0c000);
-	color: var(--kusama-black); border-color: var(--kusama-yellow);
+  background: linear-gradient(135deg, var(--kusama-yellow), #f0c000);
+  color: var(--kusama-black);
+  border-color: var(--kusama-yellow);
 }
 .kusama-cta--locked:hover {
-	box-shadow: 0 8px 30px rgba(255,215,0,0.35);
-	transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.35);
+  transform: translateY(-2px);
 }
 
 .kusama-badge {
-	position: absolute; top: -1px; left: 50%;
-	transform: translateX(-50%); background: var(--kusama-red);
-	color: white; font-size: 0.7rem; font-weight: 800;
-	letter-spacing: 0.12em; text-transform: uppercase;
-	padding: 0.4rem 1.25rem; border-radius: 0 0 1rem 1rem; z-index: 5;
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--kusama-red);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 1.25rem;
+  border-radius: 0 0 1rem 1rem;
+  z-index: 5;
 }
 
 .kusama-lock-overlay {
-	position: absolute; inset: 0; z-index: 10;
-	display: flex; align-items: center; justify-content: center;
-	border-radius: 2rem; overflow: hidden; pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2rem;
+  overflow: hidden;
+  pointer-events: none;
 }
 .kusama-lock-overlay__frost {
-	position: absolute; inset: 0;
-	background: var(--color-fd-background, #fff);
-	opacity: 0.7; backdrop-filter: blur(6px);
+  position: absolute;
+  inset: 0;
+  background: var(--color-fd-background, #fff);
+  opacity: 0.7;
+  backdrop-filter: blur(6px);
 }
 .kusama-lock-overlay__frost::after {
-	content: '';
-	position: absolute; inset: 0;
-	background: radial-gradient(circle 4px, var(--color-fd-foreground, #111) 99%, transparent 100%) 0 0 / 24px 24px;
-	opacity: 0.04;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle 4px,
+      var(--color-fd-foreground, #111) 99%,
+      transparent 100%
+    )
+    0 0 / 24px 24px;
+  opacity: 0.04;
 }
 .kusama-lock-overlay__content {
-	position: relative; text-align: center; padding: 1.5rem;
+  position: relative;
+  text-align: center;
+  padding: 1.5rem;
 }
 .kusama-lock-icon {
-	width: 56px; height: 56px; border-radius: 50%;
-	background: var(--kusama-yellow);
-	display: flex; align-items: center; justify-content: center;
-	margin: 0 auto 1rem; position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--kusama-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  position: relative;
 }
 .kusama-lock-icon::after {
-	content: '';
-	position: absolute; inset: -8px; border-radius: 50%;
-	border: 2px dotted var(--kusama-yellow);
-	opacity: 0.4; animation: kusama-spin 15s linear infinite;
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px dotted var(--kusama-yellow);
+  opacity: 0.4;
+  animation: kusama-spin 15s linear infinite;
 }
 .kusama-lock-text {
-	font-weight: 800; font-size: 0.95rem;
-	color: var(--color-fd-foreground, #111);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--color-fd-foreground, #111);
 }
 .kusama-lock-sub {
-	font-size: 0.8rem; color: var(--color-fd-muted-foreground, #888);
-	margin-top: 0.25rem; max-width: 200px; margin-inline: auto;
+  font-size: 0.8rem;
+  color: var(--color-fd-muted-foreground, #888);
+  margin-top: 0.25rem;
+  max-width: 200px;
+  margin-inline: auto;
 }

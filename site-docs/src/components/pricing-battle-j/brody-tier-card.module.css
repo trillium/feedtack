@@ -5,12 +5,15 @@
   padding: 2.5rem 2rem 2rem;
   border: 2px solid color-mix(in srgb, var(--fd-border) 50%, transparent);
   background: var(--fd-card);
-  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    transform 0.3s,
+    box-shadow 0.3s;
   overflow: hidden;
 }
 
 .card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -18,21 +21,19 @@
   height: 100%;
   background: var(--tier-accent);
   opacity: 0.5;
-  transition: opacity 0.3s, width 0.3s;
+  transition:
+    opacity 0.3s,
+    width 0.3s;
 }
 
 .card::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--tier-accent) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, var(--tier-accent) 0%, transparent 100%);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -54,12 +55,11 @@
 
 .featured {
   border-color: color-mix(in srgb, var(--tier-accent) 40%, transparent);
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--tier-accent) 5%, transparent) 0%,
-      var(--fd-card) 50%
-    );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tier-accent) 5%, transparent) 0%,
+    var(--fd-card) 50%
+  );
 }
 
 .featured::before {
@@ -96,7 +96,7 @@
   text-transform: uppercase;
   color: var(--fd-foreground);
   line-height: 1;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 .accentRule {
@@ -118,7 +118,7 @@
   letter-spacing: -0.06em;
   line-height: 1;
   color: var(--fd-foreground);
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 .pricePeriod {
@@ -202,7 +202,7 @@
   transition: all 0.2s;
   position: relative;
   z-index: 20;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 .ctaFeatured {
@@ -253,7 +253,7 @@
   font-weight: 900;
   letter-spacing: 0.25em;
   color: #1a1a2e;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 /* Lock overlay */
@@ -271,14 +271,13 @@
   position: absolute;
   inset: 0;
   opacity: 0.04;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      currentColor 0,
-      currentColor 1px,
-      transparent 0,
-      transparent 5px
-    );
+  background-image: repeating-linear-gradient(
+    0deg,
+    currentColor 0,
+    currentColor 1px,
+    transparent 0,
+    transparent 5px
+  );
 }
 
 .lockFrost {
@@ -307,7 +306,7 @@
   letter-spacing: 0.25em;
   color: var(--fd-foreground);
   margin-bottom: 0.35rem;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 .lockSubtitle {

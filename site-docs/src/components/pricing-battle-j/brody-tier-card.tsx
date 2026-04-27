@@ -29,9 +29,7 @@ function LockOverlay() {
           <circle cx="24" cy="33" r="3" fill="currentColor" />
         </svg>
         <p className={styles.lockTitle}>SUBMIT A PR</p>
-        <p className={styles.lockSubtitle}>
-          Open source contribution required
-        </p>
+        <p className={styles.lockSubtitle}>Open source contribution required</p>
       </div>
     </div>
   )
