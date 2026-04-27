@@ -8,6 +8,7 @@
  */
 import './workflow-animation.css'
 
+import { ShimmerGradient } from './workflow-steps/shimmer-bar'
 import { StepBrowser } from './workflow-steps/step-browser'
 import { StepCatalogue } from './workflow-steps/step-catalogue'
 import { StepClick } from './workflow-steps/step-click'
@@ -46,6 +47,7 @@ export function WorkflowAnimation() {
                 floodOpacity="0.08"
               />
             </filter>
+            <ShimmerGradient />
           </defs>
         </svg>
       </div>

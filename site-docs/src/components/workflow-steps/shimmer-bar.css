@@ -1,0 +1,27 @@
+/* ShimmerBar — skeleton loading shimmer scoped to Browse and Catalogue steps */
+/* Requires parent .wfa-root to provide --dur (default 16s)                  */
+
+.wfa-shimmer {
+  animation: wfaShimmer var(--dur, 16s) infinite linear;
+  will-change: transform;
+  pointer-events: none;
+}
+
+@keyframes wfaShimmer {
+  /* Browse: 2 sweeps across 0–17% */
+  0%        { transform: translateX(-300px); }
+  8%        { transform: translateX(300px); }
+  8.01%     { transform: translateX(-300px); }
+  17%       { transform: translateX(300px); }
+  /* Park off-screen during Click/Describe/Submit */
+  17.01%    { transform: translateX(-300px); }
+  67%       { transform: translateX(-300px); }
+  /* Catalogue: 2 sweeps across 68–89% */
+  68%       { transform: translateX(-300px); }
+  78%       { transform: translateX(300px); }
+  78.01%    { transform: translateX(-300px); }
+  89%       { transform: translateX(300px); }
+  /* Park off-screen for reset gap */
+  89.01%    { transform: translateX(-300px); }
+  100%      { transform: translateX(-300px); }
+}

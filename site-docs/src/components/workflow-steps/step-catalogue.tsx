@@ -1,3 +1,4 @@
+import { ShimmerBar } from './browser-icons'
 import { fd, PIN_PATH, WFA_COLORS } from './constants'
 
 /** Step 5 — Feedback catalogue showing stored items */
@@ -90,23 +91,23 @@ function CatalogueRow({
       <g transform={`translate(15, ${ty})`}>
         <path d={PIN_PATH} fill={color} transform="scale(0.4)" />
       </g>
-      <rect
-        x="30"
+      <ShimmerBar
+        x={30}
         y={ty + 2}
         width={titleW}
-        height="5"
-        rx="1.5"
+        height={5}
+        rx={1.5}
         style={{ fill: 'var(--color-fd-muted-foreground, #9ca3af)' }}
-        opacity="0.4"
+        opacity={0.4}
       />
-      <rect
-        x="30"
+      <ShimmerBar
+        x={30}
         y={ty + 11}
         width={descW}
-        height="4"
-        rx="1.5"
+        height={4}
+        rx={1.5}
         style={{ fill: 'var(--color-fd-muted-foreground, #9ca3af)' }}
-        opacity="0.25"
+        opacity={0.25}
       />
       <rect
         x="148"
