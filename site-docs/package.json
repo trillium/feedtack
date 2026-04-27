@@ -1,0 +1,40 @@
+{
+  "name": "feedtack-docs",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "next dev --turbopack --port 3737",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check .",
+    "format": "biome check --write ."
+  },
+  "dependencies": {
+    "feedtack": "^1.0.1",
+    "fumadocs-core": "^16.8.5",
+    "fumadocs-mdx": "^14.3.2",
+    "fumadocs-ui": "^16.8.5",
+    "next": "^16.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.0",
+    "@types/mdx": "^2.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.7.0"
+  },
+  "pnpm": {
+    "executionEnv": {
+      "nodeVersion": ""
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
+}
