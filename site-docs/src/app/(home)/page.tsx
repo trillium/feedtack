@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FeedtackLogo } from '@/components/logo'
 import { PIN_PALETTE, PinSvg } from '@/components/pin-svg'
+import { WorkflowAnimation } from '@/components/workflow-animation'
 
 const SCATTERED_PINS: {
   x: string
@@ -184,6 +185,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Workflow animation */}
+      <WorkflowAnimation />
 
       {/* Features */}
       <section className="border-t border-fd-border bg-fd-card/50 px-6 py-20 sm:py-28">

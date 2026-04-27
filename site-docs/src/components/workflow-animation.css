@@ -1,0 +1,98 @@
+/* WorkflowAnimation — CSS keyframes for the 5-step Feedtack workflow. */
+/* Total cycle = 16s. Loops infinitely with a pause at the end.       */
+
+.wfa-root {
+  --dur: 16s;
+}
+
+/* reduced-motion: show static final frame */
+@media (prefers-reduced-motion: reduce) {
+  .wfa-root * { animation: none !important; }
+  .wfa-cursor { opacity: 0 !important; }
+  .wfa-pin { opacity: 1 !important; transform: translate(0,0) scale(1) !important; }
+  .wfa-form { opacity: 1 !important; transform: scale(1) !important; }
+  .wfa-check { opacity: 1 !important; }
+  .wfa-catalogue { opacity: 1 !important; transform: translateY(0) !important; }
+}
+
+.wfa-browser { animation: wfaBrowserIn var(--dur) infinite; }
+@keyframes wfaBrowserIn {
+  0% { opacity: 0; transform: scale(0.96); }
+  6% { opacity: 1; transform: scale(1); }
+  88% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+.wfa-cursor { animation: wfaCursor var(--dur) infinite; }
+@keyframes wfaCursor {
+  0%, 10% { opacity: 0; transform: translate(60px, -30px); }
+  15% { opacity: 1; transform: translate(30px, -10px); }
+  22% { opacity: 1; transform: translate(0, 0); }
+  25% { opacity: 1; transform: translate(0, 2px); }
+  27% { opacity: 1; transform: translate(0, 0); }
+  32%, 100% { opacity: 0; transform: translate(0, 0); }
+}
+
+.wfa-pin { animation: wfaPin var(--dur) infinite; }
+@keyframes wfaPin {
+  0%, 22% { opacity: 0; transform: translateY(-18px) scale(0.5); }
+  27% { opacity: 1; transform: translateY(0) scale(1.15); }
+  30% { opacity: 1; transform: translateY(0) scale(1); }
+  88% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+.wfa-ring { animation: wfaRing var(--dur) infinite; }
+@keyframes wfaRing {
+  0%, 27% { opacity: 0; transform: scale(0); }
+  30% { opacity: 0.6; transform: scale(1); }
+  35%, 100% { opacity: 0; transform: scale(2); }
+}
+
+.wfa-form { animation: wfaForm var(--dur) infinite; }
+@keyframes wfaForm {
+  0%, 30% { opacity: 0; transform: scale(0.8) translateY(6px); }
+  35%, 50% { opacity: 1; transform: scale(1) translateY(0); }
+  55%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
+}
+
+.wfa-typing { animation: wfaTyping var(--dur) infinite steps(1); }
+@keyframes wfaTyping {
+  0%, 36% { width: 0; }
+  38% { width: 30%; }
+  40% { width: 55%; }
+  42% { width: 75%; }
+  44%, 100% { width: 90%; }
+}
+
+.wfa-check { animation: wfaCheck var(--dur) infinite; }
+@keyframes wfaCheck {
+  0%, 50% { opacity: 0; transform: scale(0); }
+  54% { opacity: 1; transform: scale(1.2); }
+  57%, 65% { opacity: 1; transform: scale(1); }
+  68%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+.wfa-catalogue { animation: wfaCatalogue var(--dur) infinite; }
+@keyframes wfaCatalogue {
+  0%, 65% { opacity: 0; transform: translateY(12px); }
+  72%, 85% { opacity: 1; transform: translateY(0); }
+  92%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+
+.wfa-cat-row { animation: wfaCatRow var(--dur) infinite; }
+.wfa-cat-row-1 { animation-delay: 0s; }
+.wfa-cat-row-2 { animation-delay: 0.3s; }
+.wfa-cat-row-3 { animation-delay: 0.6s; }
+@keyframes wfaCatRow {
+  0%, 68% { opacity: 0; transform: translateX(-8px); }
+  74%, 85% { opacity: 1; transform: translateX(0); }
+  92%, 100% { opacity: 0; }
+}
+
+.wfa-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--color-fd-muted-foreground, #6b7280);
+}
