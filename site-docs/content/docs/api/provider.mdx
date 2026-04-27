@@ -1,0 +1,126 @@
+---
+title: FeedtackProvider
+description: The main React component that wraps your app with Feedtack
+---
+
+`FeedtackProvider` is the root component that enables Feedtack in your application. It renders the feedback button, modal, pin overlay, comment form, and thread panel.
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+```
+
+## Props
+
+### Required
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Your application |
+| `adapter` | `FeedtackAdapter` | Backend adapter for persistence |
+| `currentUser` | `FeedtackUser` | The currently logged-in user |
+
+### Optional
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `hotkey` | `string` | `"p"` | Key for the keyboard shortcut (`Shift+{hotkey}`) |
+| `adminOnly` | `boolean` | `false` | Only show the feedback button to users with `role === "admin"` |
+| `theme` | `FeedtackTheme` | — | Override default styling via CSS custom properties |
+| `classes` | `FeedtackClasses` | `{}` | Add CSS classes to Feedtack UI elements |
+| `sentimentLabels` | `FeedtackSentimentLabels` | — | Custom labels for the sentiment buttons |
+| `onError` | `(err: Error) => void` | — | Error callback for adapter failures |
+| `disabled` | `boolean` | `false` | Suppress all Feedtack UI (useful for CI/tests) |
+| `renderPinIcon` | `(item: FeedbackItem) => ReactNode` | — | Custom content inside submitted pin markers |
+| `onFlush` | `(event: FeedtackFlushEvent) => void` | — | Called when feedback is batched on idle or page unload |
+| `flushIdleMs` | `number` | `300000` | Idle timeout in ms before flushing (default 5 min) |
+| `rescopeRoles` | `string[]` | — | User roles that trigger re-scope on reply |
+
+## FeedtackUser
+
+```ts
+interface FeedtackUser {
+  id: string;        // Unique identifier
+  name: string;      // Display name
+  role: string;      // e.g. "admin", "designer", "stakeholder"
+  avatarUrl?: string; // Shown in threads
+  email?: string;     // Reserved for notifications
+}
+```
+
+## FeedtackTheme
+
+Override Feedtack's appearance with CSS custom properties:
+
+```ts
+interface FeedtackTheme {
+  primary?: string;    // Accent color — active states, focus rings
+  background?: string; // Panel background
+  surface?: string;    // Input and card surfaces
+  text?: string;       // Primary text color
+  textMuted?: string;  // Secondary text color
+  border?: string;     // Border color
+  radius?: string;     // Border radius
+  badge?: string;      // Notification badge color
+}
+```
+
+```tsx
+<FeedtackProvider
+  adapter={adapter}
+  currentUser={user}
+  theme={{
+    primary: "#6366f1",
+    background: "#1e1b4b",
+    text: "#e0e7ff",
+    radius: "12px",
+  }}
+>
+```
+
+## FeedtackClasses
+
+Add CSS classes to specific Feedtack elements:
+
+```ts
+interface FeedtackClasses {
+  button?: string;      // The "Feedback" button
+  form?: string;        // The comment form
+  thread?: string;      // The thread panel
+  colorPicker?: string; // The color picker bar
+  pinMarker?: string;   // Individual pin markers
+}
+```
+
+## DOM isolation
+
+Feedtack renders all UI inside a `#feedtack-root` div injected at the body level. It does not modify your app's DOM. All CSS classes are namespaced with `feedtack-` and use `!important` to avoid Tailwind conflicts.
+
+## Example: full production setup
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { WebhookAdapter } from "feedtack";
+
+const adapter = new WebhookAdapter({
+  submitUrl: "/api/feedtack",
+  loadFeedback: async (filter) => {
+    const res = await fetch(`/api/feedtack?pathname=${filter?.pathname ?? ""}`);
+    return res.json();
+  },
+});
+
+export default function App() {
+  return (
+    <FeedtackProvider
+      adapter={adapter}
+      currentUser={{ id: "u1", name: "Alice", role: "designer", avatarUrl: "/alice.jpg" }}
+      hotkey="p"
+      adminOnly
+      onError={console.error}
+      theme={{ primary: "#6366f1" }}
+    >
+      <YourApp />
+    </FeedtackProvider>
+  );
+}
+```

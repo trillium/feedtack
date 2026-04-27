@@ -1,0 +1,77 @@
+---
+title: WebhookAdapter
+description: Production adapter that POSTs feedback to your API
+---
+
+The `WebhookAdapter` sends feedback as JSON to your API endpoints via `fetch`. This is the recommended adapter for production use.
+
+## Usage
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { WebhookAdapter } from "feedtack";
+
+const adapter = new WebhookAdapter({
+  submitUrl: "https://your-app.com/api/feedtack",
+  updateUrl: "https://your-app.com/api/feedtack/update",
+  loadFeedback: async (filter) => {
+    const res = await fetch(`/api/feedtack?pathname=${filter?.pathname ?? ""}`);
+    return res.json();
+  },
+});
+
+<FeedtackProvider
+  adapter={adapter}
+  currentUser={{ id: "u1", name: "Alice", role: "designer" }}
+>
+  <App />
+</FeedtackProvider>
+```
+
+## Configuration
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `submitUrl` | `string` | Yes | URL to POST new feedback payloads |
+| `updateUrl` | `string` | No | URL to POST replies, resolutions, and archives. Falls back to `submitUrl`. |
+| `loadFeedback` | `(filter?) => Promise<FeedbackItem[]>` | Yes | Async function that returns persisted feedback items |
+
+## Request format
+
+### Submit
+
+POST to `submitUrl` with the full `FeedtackPayload` as the JSON body.
+
+### Reply / Resolve / Archive
+
+POST to `updateUrl` (or `submitUrl` if not set) with a typed envelope:
+
+```json
+// Reply
+{ "type": "reply", "feedbackId": "ft_01j...", "author": { ... }, "body": "...", "timestamp": "..." }
+
+// Resolve
+{ "type": "resolve", "feedbackId": "ft_01j...", "resolvedBy": { ... }, "timestamp": "..." }
+
+// Archive
+{ "type": "archive", "feedbackId": "ft_01j...", "userId": "u1" }
+```
+
+## Error handling
+
+The adapter throws on network errors and non-2xx responses:
+
+```
+[feedtack] Network error: Failed to fetch
+[feedtack] Webhook responded with 500
+```
+
+Use the `onError` prop on `FeedtackProvider` to catch these:
+
+```tsx
+<FeedtackProvider
+  adapter={adapter}
+  currentUser={user}
+  onError={(err) => console.error("Feedtack error:", err)}
+>
+```

@@ -1,0 +1,128 @@
+---
+title: Production Setup
+description: Deploy Feedtack with a webhook adapter and API route
+---
+
+This guide walks through a production-ready Feedtack setup with a Next.js API route, Zod validation, and rate limiting.
+
+## 1. Install Feedtack
+
+```bash
+pnpm add feedtack
+```
+
+## 2. Create the API route
+
+```ts
+// app/api/feedtack/route.ts
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+const PayloadSchema = z.object({
+  schemaVersion: z.string(),
+  id: z.string(),
+  timestamp: z.string(),
+  scope: z.enum(["site", "page", "element"]),
+  submittedBy: z.object({
+    id: z.string(),
+    name: z.string(),
+    role: z.string(),
+  }),
+  comment: z.string().min(1).max(5000),
+  sentiment: z.enum(["good", "bad"]).nullable(),
+  pins: z.array(z.any()),
+  page: z.object({
+    url: z.string(),
+    pathname: z.string(),
+    title: z.string(),
+  }),
+  viewport: z.any(),
+  device: z.any(),
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const result = PayloadSchema.safeParse(body);
+
+  if (!result.success) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+
+  // Store the feedback — database, file, etc.
+  // await db.insert("feedtack_submissions", result.data);
+
+  return NextResponse.json({ ok: true });
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const pathname = searchParams.get("pathname");
+
+  // Load feedback from your database
+  // const items = await db.query("feedtack_submissions", { pathname });
+
+  return NextResponse.json([]);
+}
+```
+
+## 3. Wire up the provider
+
+```tsx
+// app/layout.tsx or providers/FeedtackProvider.tsx
+"use client";
+
+import { FeedtackProvider } from "feedtack/react";
+import { WebhookAdapter } from "feedtack";
+
+const adapter = new WebhookAdapter({
+  submitUrl: "/api/feedtack",
+  loadFeedback: async (filter) => {
+    const res = await fetch(`/api/feedtack?pathname=${filter?.pathname ?? ""}`);
+    return res.json();
+  },
+});
+
+export function FeedtackWrapper({ children, user }: { children: React.ReactNode; user: any }) {
+  return (
+    <FeedtackProvider
+      adapter={adapter}
+      currentUser={user}
+      adminOnly
+      onError={console.error}
+    >
+      {children}
+    </FeedtackProvider>
+  );
+}
+```
+
+## 4. Gate visibility
+
+Use `adminOnly` to restrict the feedback button to admin users. Non-admin users won't see the button, but they can still use the `useFeedtack` hook if you build custom UI for them.
+
+For more granular control, conditionally render the provider:
+
+```tsx
+{user.role === "admin" || user.role === "designer" ? (
+  <FeedtackProvider adapter={adapter} currentUser={user}>
+    {children}
+  </FeedtackProvider>
+) : (
+  children
+)}
+```
+
+## 5. Error handling
+
+Always pass `onError` in production to catch adapter failures:
+
+```tsx
+<FeedtackProvider
+  adapter={adapter}
+  currentUser={user}
+  onError={(err) => {
+    // Send to your error tracking service
+    Sentry.captureException(err);
+  }}
+>
+```

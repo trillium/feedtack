@@ -1,0 +1,208 @@
+---
+title: Payload Schema
+description: The versioned JSON structure emitted by every Feedtack submission
+---
+
+Every Feedtack submission emits a `FeedtackPayload` — a versioned JSON object with enough context for developers or LLMs to act on the feedback without additional investigation.
+
+Current schema version: **2.0.0**
+
+## FeedtackPayload
+
+```ts
+interface FeedtackPayload {
+  schemaVersion: string;       // "2.0.0"
+  id: string;                  // Unique ID, e.g. "ft_01j..."
+  timestamp: string;           // ISO 8601 UTC
+  scope: "site" | "page" | "element";
+  submittedBy: FeedtackUser;
+  comment: string;
+  sentiment: "good" | "bad" | null;
+  pins: FeedtackPin[];         // Empty for site/page scope
+  page: FeedtackPageMeta;
+  viewport: FeedtackViewportMeta;
+  device: FeedtackDeviceMeta;
+}
+```
+
+## Nested types
+
+### FeedtackPin
+
+```ts
+interface FeedtackPin {
+  index: number;    // 1-based
+  color: string;    // Hex color
+  x: number;        // Document-relative X (px)
+  y: number;        // Document-relative Y (px)
+  xPct: number;     // X as % of document width
+  yPct: number;     // Y as % of document height
+  target: FeedtackPinTarget;
+}
+```
+
+### FeedtackPinTarget
+
+```ts
+interface FeedtackPinTarget {
+  selector: string;         // CSS selector to the element
+  best_effort: boolean;     // True if selector is unreliable
+  dataTestId: string | null;
+  elementPath: string | null;
+  tagName: string;
+  ancestors: AncestorNode[];
+  boundingRect: FeedtackBoundingRect;
+}
+```
+
+### AncestorNode
+
+```ts
+interface AncestorNode {
+  tag: string;
+  id: string | null;
+  ariaLabel: string | null;
+  role: string | null;
+  type: string | null;
+  name: string | null;
+  title: string | null;
+  alt: string | null;
+  dataTestId: string | null;
+  dataFeedtackComponent: string | null;
+  nthChild: number | null;
+  nthOfType: number | null;
+  componentName: string | null;
+}
+```
+
+### Page, Viewport, Device metadata
+
+```ts
+interface FeedtackPageMeta {
+  url: string;       // Full URL
+  pathname: string;  // Path only
+  title: string;     // document.title
+}
+
+interface FeedtackViewportMeta {
+  width: number;
+  height: number;
+  scrollX: number;
+  scrollY: number;
+  devicePixelRatio: number;
+}
+
+interface FeedtackDeviceMeta {
+  userAgent: string;
+  platform: string;
+  touchEnabled: boolean;
+}
+```
+
+## Lifecycle types
+
+### FeedbackItem
+
+The full feedback record including replies, resolutions, and archives:
+
+```ts
+interface FeedbackItem {
+  payload: FeedtackPayload;
+  replies: FeedtackReply[];
+  resolutions: FeedtackResolution[];
+  archives: FeedtackArchive[];
+}
+```
+
+### FeedtackReply
+
+```ts
+interface FeedtackReply {
+  id: string;
+  feedbackId: string;
+  author: FeedtackUser;
+  body: string;
+  timestamp: string;  // ISO 8601 UTC
+}
+```
+
+### FeedtackResolution / FeedtackArchive
+
+```ts
+interface FeedtackResolution {
+  feedbackId: string;
+  resolvedBy: FeedtackUser;
+  timestamp: string;
+}
+
+interface FeedtackArchive {
+  feedbackId: string;
+  archivedBy: FeedtackUser;
+  timestamp: string;
+}
+```
+
+### FeedtackFilter
+
+Used by `loadFeedback` to scope which items to load:
+
+```ts
+interface FeedtackFilter {
+  url?: string;
+  pathname?: string;
+  userId?: string;
+  scope?: FeedtackScope;
+}
+```
+
+## Full payload example
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "id": "ft_01j...",
+  "timestamp": "2026-04-09T13:42:00.000Z",
+  "submittedBy": { "id": "u1", "name": "Alice", "role": "designer" },
+  "scope": "element",
+  "comment": "This button doesn't do anything",
+  "sentiment": "bad",
+  "pins": [{
+    "index": 1,
+    "color": "#ef4444",
+    "x": 420, "y": 812,
+    "xPct": 29.2, "yPct": 78.4,
+    "target": {
+      "selector": "#submit-btn",
+      "best_effort": false,
+      "tagName": "BUTTON",
+      "dataTestId": "submit-btn",
+      "elementPath": "main > form#checkout > button#submit-btn",
+      "ancestors": [
+        {
+          "tag": "FORM", "id": "checkout",
+          "ariaLabel": null, "role": null,
+          "dataTestId": "checkout-form",
+          "componentName": "CheckoutForm",
+          "nthChild": null, "nthOfType": null
+        }
+      ],
+      "boundingRect": { "x": 420, "y": 812, "width": 200, "height": 44 }
+    }
+  }],
+  "page": {
+    "url": "https://app.example.com/checkout",
+    "pathname": "/checkout",
+    "title": "Checkout"
+  },
+  "viewport": {
+    "width": 1440, "height": 900,
+    "scrollX": 0, "scrollY": 812,
+    "devicePixelRatio": 2
+  },
+  "device": {
+    "userAgent": "Mozilla/5.0...",
+    "platform": "MacIntel",
+    "touchEnabled": false
+  }
+}
+```

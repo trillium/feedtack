@@ -1,0 +1,50 @@
+---
+title: Getting Started
+description: Install Feedtack and add it to your React app in under a minute
+---
+
+## Installation
+
+```bash
+npm install feedtack
+# or
+pnpm add feedtack
+```
+
+Feedtack requires React 18+ as a peer dependency.
+
+## Minimal setup
+
+Wrap your app with `FeedtackProvider` and pass an adapter and user:
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { ConsoleAdapter } from "feedtack";
+
+export default function App() {
+  return (
+    <FeedtackProvider
+      adapter={new ConsoleAdapter()}
+      currentUser={{ id: "u1", name: "Trillium", role: "admin" }}
+    >
+      <YourApp />
+    </FeedtackProvider>
+  );
+}
+```
+
+This renders a floating "Feedback" button. Clicking it opens the feedback modal. The `ConsoleAdapter` logs payloads to `console.log` — perfect for development.
+
+## Try it out
+
+1. Click the **Feedback** button
+2. Choose **Site**, **Page**, or click **Place a pin**
+3. In pin mode, click any element on the page
+4. Write a comment, pick a sentiment, and submit
+5. Check your browser console for the emitted JSON payload
+
+## Next steps
+
+- Swap `ConsoleAdapter` for a production adapter — see [Adapters](/docs/adapters)
+- Understand feedback scopes — see [Scopes](/docs/concepts/scopes)
+- See the full provider API — see [FeedtackProvider](/docs/api/provider)

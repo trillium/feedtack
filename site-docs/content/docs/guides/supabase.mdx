@@ -1,0 +1,151 @@
+---
+title: Supabase Integration
+description: Store Feedtack submissions in Supabase with Row Level Security
+---
+
+This guide sets up Feedtack with Supabase PostgreSQL, including the database migration, RLS policies, and a complete adapter implementation.
+
+## 1. Create the migration
+
+```sql
+-- supabase/migrations/XXXXXX_feedtack_submissions.sql
+
+create table feedtack_submissions (
+  id text primary key,
+  data jsonb not null,
+  created_at timestamptz default now()
+);
+
+create table feedtack_replies (
+  id text primary key default gen_random_uuid()::text,
+  feedback_id text references feedtack_submissions(id) on delete cascade,
+  author jsonb not null,
+  body text not null,
+  timestamp timestamptz not null,
+  created_at timestamptz default now()
+);
+
+create table feedtack_resolutions (
+  id bigint generated always as identity primary key,
+  feedback_id text references feedtack_submissions(id) on delete cascade,
+  resolved_by jsonb not null,
+  timestamp timestamptz not null,
+  created_at timestamptz default now()
+);
+
+create table feedtack_archives (
+  id bigint generated always as identity primary key,
+  feedback_id text references feedtack_submissions(id) on delete cascade,
+  user_id text not null,
+  created_at timestamptz default now()
+);
+
+-- RLS: authenticated users can insert, admins can read all
+alter table feedtack_submissions enable row level security;
+
+create policy "Authenticated users can insert feedback"
+  on feedtack_submissions for insert
+  to authenticated
+  with check (true);
+
+create policy "Authenticated users can read feedback"
+  on feedtack_submissions for select
+  to authenticated
+  using (true);
+```
+
+Run the migration:
+
+```bash
+supabase db push
+```
+
+## 2. Build the adapter
+
+```ts
+import type { FeedtackAdapter, FeedbackItem, FeedtackFilter, FeedtackPayload } from "feedtack";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export class SupabaseAdapter implements FeedtackAdapter {
+  constructor(private supabase: SupabaseClient) {}
+
+  async submit(payload: FeedtackPayload) {
+    const { error } = await this.supabase
+      .from("feedtack_submissions")
+      .insert({ id: payload.id, data: payload });
+    if (error) throw new Error(`[feedtack] Supabase insert failed: ${error.message}`);
+  }
+
+  async reply(
+    feedbackId: string,
+    reply: Omit<FeedbackItem["replies"][0], "id" | "feedbackId">,
+  ) {
+    const { error } = await this.supabase
+      .from("feedtack_replies")
+      .insert({ feedback_id: feedbackId, ...reply });
+    if (error) throw new Error(`[feedtack] Reply insert failed: ${error.message}`);
+  }
+
+  async resolve(
+    feedbackId: string,
+    resolution: Omit<FeedbackItem["resolutions"][0], "feedbackId">,
+  ) {
+    const { error } = await this.supabase
+      .from("feedtack_resolutions")
+      .insert({ feedback_id: feedbackId, ...resolution });
+    if (error) throw new Error(`[feedtack] Resolution insert failed: ${error.message}`);
+  }
+
+  async archive(feedbackId: string, userId: string) {
+    const { error } = await this.supabase
+      .from("feedtack_archives")
+      .insert({ feedback_id: feedbackId, user_id: userId });
+    if (error) throw new Error(`[feedtack] Archive insert failed: ${error.message}`);
+  }
+
+  async loadFeedback(filter?: FeedtackFilter): Promise<FeedbackItem[]> {
+    let query = this.supabase
+      .from("feedtack_submissions")
+      .select("*, feedtack_replies(*), feedtack_resolutions(*), feedtack_archives(*)");
+
+    if (filter?.pathname) {
+      query = query.eq("data->>page->>pathname", filter.pathname);
+    }
+
+    const { data, error } = await query;
+    if (error) throw new Error(`[feedtack] Load failed: ${error.message}`);
+
+    return (data ?? []).map((row) => ({
+      payload: row.data,
+      replies: row.feedtack_replies ?? [],
+      resolutions: row.feedtack_resolutions ?? [],
+      archives: row.feedtack_archives ?? [],
+    }));
+  }
+}
+```
+
+## 3. Wire it up
+
+```tsx
+"use client";
+
+import { FeedtackProvider } from "feedtack/react";
+import { createBrowserClient } from "@supabase/ssr";
+import { SupabaseAdapter } from "@/lib/feedtack-adapter";
+
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
+
+const adapter = new SupabaseAdapter(supabase);
+
+export function FeedtackWrapper({ children, user }: { children: React.ReactNode; user: any }) {
+  return (
+    <FeedtackProvider adapter={adapter} currentUser={user} adminOnly>
+      {children}
+    </FeedtackProvider>
+  );
+}
+```

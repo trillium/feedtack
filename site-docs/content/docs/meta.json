@@ -1,0 +1,11 @@
+{
+  "title": "Feedtack",
+  "pages": [
+    "index",
+    "getting-started",
+    "...concepts",
+    "...adapters",
+    "...api",
+    "...guides"
+  ]
+}

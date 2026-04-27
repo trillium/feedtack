@@ -1,0 +1,43 @@
+---
+title: LocalStorageAdapter
+description: Zero-infrastructure adapter that persists feedback to localStorage
+---
+
+The `LocalStorageAdapter` stores feedback in the browser's `localStorage`. It supports all five adapter methods — submit, reply, resolve, archive, and load — making it a fully functional adapter without any server infrastructure.
+
+## Usage
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { LocalStorageAdapter } from "feedtack";
+
+<FeedtackProvider
+  adapter={new LocalStorageAdapter()}
+  currentUser={{ id: "u1", name: "Demo User", role: "admin" }}
+>
+  <App />
+</FeedtackProvider>
+```
+
+## Configuration
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `key` | `string` | `"feedtack"` | localStorage key for storing feedback items |
+
+```tsx
+const adapter = new LocalStorageAdapter({ key: "my-app-feedback" });
+```
+
+## Limitations
+
+- Data is per-browser, per-origin — no cross-device sync
+- Subject to localStorage size limits (~5-10 MB depending on browser)
+- No multi-user support — all feedback is stored in one array
+- Clearing browser data deletes all feedback
+
+## When to use
+
+- Prototyping and demos where you want persistent feedback without a server
+- Single-user workflows (e.g. a designer reviewing their own work)
+- Testing the full feedback lifecycle (threading, resolution, archiving)

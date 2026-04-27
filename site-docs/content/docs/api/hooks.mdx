@@ -1,0 +1,78 @@
+---
+title: useFeedtack Hook
+description: Programmatic control over the Feedtack modal and pin mode
+---
+
+The `useFeedtack` hook gives your components programmatic access to Feedtack's UI state. Use it to build custom feedback triggers, integrate with your app's navigation, or respond to Feedtack state changes.
+
+```tsx
+import { useFeedtack } from "feedtack/react";
+```
+
+## Return value
+
+```ts
+interface FeedtackContextValue {
+  activatePinMode: () => void;
+  deactivatePinMode: () => void;
+  isPinModeActive: boolean;
+  selectedColor: string;
+  setSelectedColor: (color: string) => void;
+  pinPalette: readonly string[];
+  openModal: () => void;
+  closeModal: () => void;
+  isModalOpen: boolean;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `activatePinMode` | `() => void` | Enter crosshair pin placement mode |
+| `deactivatePinMode` | `() => void` | Exit pin mode |
+| `isPinModeActive` | `boolean` | Whether pin mode is currently active |
+| `selectedColor` | `string` | Currently selected pin color (hex) |
+| `setSelectedColor` | `(color: string) => void` | Change the pin color |
+| `pinPalette` | `readonly string[]` | Available pin colors |
+| `openModal` | `() => void` | Open the feedback modal |
+| `closeModal` | `() => void` | Close the feedback modal |
+| `isModalOpen` | `boolean` | Whether the modal is currently open |
+
+## Usage
+
+### Custom feedback button
+
+```tsx
+function MyFeedbackButton() {
+  const { openModal, isModalOpen } = useFeedtack();
+
+  return (
+    <button onClick={openModal}>
+      {isModalOpen ? "Close Feedback" : "Give Feedback"}
+    </button>
+  );
+}
+```
+
+### Trigger pin mode from a menu
+
+```tsx
+function ReviewMenu() {
+  const { activatePinMode, isPinModeActive, deactivatePinMode } = useFeedtack();
+
+  return (
+    <button onClick={isPinModeActive ? deactivatePinMode : activatePinMode}>
+      {isPinModeActive ? "Cancel Pin" : "Drop a Pin"}
+    </button>
+  );
+}
+```
+
+## Requirements
+
+`useFeedtack` must be called inside a `<FeedtackProvider>`. Calling it outside will throw:
+
+```
+Error: useFeedtack must be used inside <FeedtackProvider>
+```
+
+When `disabled` is `true` on the provider, all methods become no-ops and boolean states return `false`.

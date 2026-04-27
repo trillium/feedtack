@@ -1,0 +1,43 @@
+---
+title: Pins
+description: Spatial feedback markers anchored to DOM elements
+---
+
+Pins are Feedtack's core interaction primitive. When a user enters pin mode (via the modal or `Shift+P`), they can click anywhere on the page to drop a colored marker that captures both the spatial position and the underlying DOM element.
+
+## Pin data
+
+Each pin captures:
+
+| Field | Description |
+|-------|-------------|
+| `index` | 1-based position within the session |
+| `color` | Hex color chosen from the palette |
+| `x`, `y` | Document-relative pixel coordinates |
+| `xPct`, `yPct` | Percentage of document width/height |
+| `target` | Rich DOM targeting metadata |
+
+## Color palette
+
+Users pick a pin color from a fixed palette. The palette is available programmatically via:
+
+```tsx
+import { PIN_PALETTE } from "feedtack/react";
+```
+
+## Pin anchoring
+
+After submission, pins are visually anchored to their target elements using CSS selector resolution. If the target element moves (e.g. due to layout shifts or SPA navigation), the pin marker follows it.
+
+Pin positions are recalculated:
+- On initial mount
+- When the current pathname changes (SPA navigation)
+
+## Coordinates
+
+Pins store both absolute and percentage coordinates:
+
+- **`x` / `y`** — Document-relative pixels (`clientX + scrollX`, `clientY + scrollY`). Useful for exact positioning on the same viewport.
+- **`xPct` / `yPct`** — Percentage of total document dimensions. Useful for approximate positioning across different viewport sizes.
+
+For submitted pins, Feedtack prefers anchoring to the resolved DOM element (via `target.selector`) over raw coordinates, so feedback stays attached to the right element even if the layout changes.

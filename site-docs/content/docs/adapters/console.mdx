@@ -1,0 +1,38 @@
+---
+title: ConsoleAdapter
+description: Development adapter that logs feedback to the browser console
+---
+
+The `ConsoleAdapter` logs all feedback operations to `console.log`. It doesn't persist anything — `loadFeedback` always returns an empty array.
+
+## Usage
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { ConsoleAdapter } from "feedtack";
+
+<FeedtackProvider
+  adapter={new ConsoleAdapter()}
+  currentUser={{ id: "u1", name: "Dev", role: "admin" }}
+>
+  <App />
+</FeedtackProvider>
+```
+
+## Console output
+
+Each operation logs a tagged message:
+
+```
+[feedtack] submit { schemaVersion: "2.0.0", id: "ft_01j...", ... }
+[feedtack] reply { feedbackId: "ft_01j...", reply: { ... } }
+[feedtack] resolve { feedbackId: "ft_01j...", resolution: { ... } }
+[feedtack] archive { feedbackId: "ft_01j...", userId: "u1" }
+[feedtack] loadFeedback — ConsoleAdapter returns empty array
+```
+
+## When to use
+
+- Local development to inspect payload structure
+- Testing Feedtack integration without a backend
+- Debugging DOM targeting and selector generation

@@ -1,0 +1,40 @@
+---
+title: Adapters Overview
+description: How Feedtack connects to any backend via the adapter interface
+---
+
+Adapters are Feedtack's plugin system for persistence. Every adapter implements the `FeedtackAdapter` interface — five async methods that handle the full feedback lifecycle:
+
+```ts
+interface FeedtackAdapter {
+  submit(payload: FeedtackPayload): Promise<void>;
+  reply(feedbackId: string, reply: Omit<FeedtackReply, "id" | "feedbackId">): Promise<void>;
+  resolve(feedbackId: string, resolution: Omit<FeedtackResolution, "feedbackId">): Promise<void>;
+  archive(feedbackId: string, userId: string): Promise<void>;
+  loadFeedback(filter?: FeedtackFilter): Promise<FeedbackItem[]>;
+}
+```
+
+## Built-in adapters
+
+Feedtack ships three adapters for common use cases:
+
+| Adapter | Use case | Persistence |
+|---------|----------|-------------|
+| [`ConsoleAdapter`](/docs/adapters/console) | Development / testing | None (logs to console) |
+| [`LocalStorageAdapter`](/docs/adapters/local-storage) | Prototyping / demos | Browser localStorage |
+| [`WebhookAdapter`](/docs/adapters/webhook) | Production | Your API endpoint |
+
+## Choosing an adapter
+
+- **Starting out?** Use `ConsoleAdapter` to see payloads in your browser console.
+- **Building a demo?** Use `LocalStorageAdapter` for zero-infrastructure persistence.
+- **Going to production?** Use `WebhookAdapter` pointed at your API, or [build a custom adapter](/docs/adapters/custom).
+
+## Adapter lifecycle
+
+1. **`loadFeedback(filter?)`** — Called on mount to hydrate existing feedback for the current page
+2. **`submit(payload)`** — Called when the user submits new feedback
+3. **`reply(feedbackId, reply)`** — Called when a user replies to a thread
+4. **`resolve(feedbackId, resolution)`** — Called when feedback is marked as resolved
+5. **`archive(feedbackId, userId)`** — Called when a user archives feedback from their view

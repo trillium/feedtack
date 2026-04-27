@@ -1,0 +1,41 @@
+---
+title: Feedback Scopes
+description: Site, page, and element — three levels of feedback granularity
+---
+
+Feedtack supports three levels of feedback, all accessible from the modal:
+
+| Scope | When to use | Pins |
+|-------|-------------|------|
+| `site` | Config-level feedback affecting the whole site (e.g. "change the font everywhere") | None |
+| `page` | Feedback specific to the current page (e.g. "this page is confusing") | None |
+| `element` | Feedback pinned to a specific element (e.g. "this button doesn't work") | One or more |
+
+## How the modal works
+
+1. Clicking "Feedback" opens the modal
+2. The modal has **Site** and **Page** tabs for scope-level feedback
+3. "Place a pin" in the modal footer activates crosshair mode
+4. `Shift+P` anywhere on the page also opens the modal
+
+## Scope in the payload
+
+The `scope` field in the emitted payload tells you which level the user chose:
+
+```json
+{
+  "scope": "element",
+  "comment": "This button doesn't work",
+  "pins": [{ "index": 1, "target": { "selector": "#submit-btn", ... } }]
+}
+```
+
+For `site` and `page` scopes, the `pins` array is always empty.
+
+## When to use each scope
+
+**Site scope** is for feedback that transcends any single page — brand concerns, navigation structure, global styling, or cross-cutting issues like "the loading spinner is too slow everywhere."
+
+**Page scope** is for feedback about the current page's content, layout, or flow — things like "this page has too many steps" or "the copy here is confusing."
+
+**Element scope** is for feedback tied to a specific DOM element. The user drops a pin on the element, and Feedtack captures rich targeting metadata (CSS selector, ancestor chain, bounding rect) so developers or LLMs can locate exactly what was referenced.

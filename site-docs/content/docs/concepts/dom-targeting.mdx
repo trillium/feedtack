@@ -1,0 +1,90 @@
+---
+title: DOM Targeting
+description: How Feedtack identifies and describes clicked elements
+---
+
+When a user drops a pin, Feedtack captures rich metadata about the target element. This metadata is designed to give both humans and LLMs enough context to locate and act on the element without ambiguity.
+
+## Interactive resolution
+
+Feedtack promotes clicks to the nearest interactive ancestor. If a user clicks on a `<span>` inside a `<button>`, Feedtack targets the `<button>` — because that's what the user meant to reference.
+
+Interactive elements: `button`, `a`, `input`, `select`, `textarea`.
+
+## Selector strategy
+
+Feedtack generates the shortest stable CSS selector it can find, using a priority chain:
+
+1. **`id`** — `#submit-btn`
+2. **`data-testid`** — `[data-testid="submit-btn"]`
+3. **`data-test-id`** — `[data-test-id="submit-btn"]`
+4. **CSS selector** — shortest unique path
+
+If no stable selector exists, the `best_effort` flag is set to `true`, signaling that downstream consumers should not rely on the selector for automated targeting.
+
+## Ancestor chain
+
+Each pin target includes an `ancestors` array (up to 5 levels) from the resolved target upward. Each ancestor node captures:
+
+| Field | Description |
+|-------|-------------|
+| `tag` | HTML tag name |
+| `id` | Element ID if present |
+| `ariaLabel` | `aria-label` attribute |
+| `role` | ARIA role |
+| `type` | Input type (for form elements) |
+| `name` | Input name |
+| `title` | Title attribute |
+| `alt` | Alt text (for images) |
+| `dataTestId` | `data-testid` value |
+| `dataFeedtackComponent` | Explicit component annotation |
+| `nthChild` | 1-indexed sibling position |
+| `nthOfType` | 1-indexed same-tag sibling position |
+| `componentName` | React component name from fiber traversal |
+
+## React component names
+
+Feedtack traverses the React fiber tree to extract component display names. This gives LLMs a higher-level identifier — instead of just `<button class="xyz">`, the payload includes `componentName: "SubmitButton"`.
+
+You can also annotate elements explicitly:
+
+```tsx
+<div data-feedtack-component="CheckoutForm">
+  {/* feedtack will use "CheckoutForm" as the component name */}
+</div>
+```
+
+## Target metadata example
+
+```json
+{
+  "selector": "#submit-btn",
+  "best_effort": false,
+  "dataTestId": "submit-btn",
+  "tagName": "BUTTON",
+  "elementPath": "main > form#checkout > button#submit-btn",
+  "ancestors": [
+    {
+      "tag": "FORM",
+      "id": "checkout",
+      "ariaLabel": null,
+      "role": null,
+      "dataTestId": "checkout-form",
+      "componentName": "CheckoutForm",
+      "nthChild": null,
+      "nthOfType": null
+    },
+    {
+      "tag": "MAIN",
+      "id": null,
+      "ariaLabel": "Main content",
+      "role": "main",
+      "dataTestId": null,
+      "componentName": "MainLayout",
+      "nthChild": 2,
+      "nthOfType": 1
+    }
+  ],
+  "boundingRect": { "x": 420, "y": 812, "width": 200, "height": 44 }
+}
+```

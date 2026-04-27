@@ -1,0 +1,55 @@
+---
+title: Introduction
+description: Drop-in React feedback overlay with structured JSON payloads
+---
+
+**Feedtack** is a drop-in React feedback overlay. A "Feedback" button opens a modal where anyone can leave site-wide notes, page-level comments, or place a pin on a specific element — all from one entry point.
+
+Feedtack emits a structured JSON payload so complete that an LLM can attempt a first-pass fix before consuming developer hours.
+
+## What Feedtack does
+
+- Renders a floating "Feedback" button over your app
+- Opens a modal with **Site**, **Page**, and **Element** feedback tabs
+- Lets users drop spatial pins on any element with crosshair mode
+- Captures rich DOM context: CSS selectors, ancestor chains, bounding rects, React component names
+- Emits a versioned JSON payload (schema v2.0.0) with full page, viewport, and device metadata
+- Supports threaded replies, resolution, and archiving
+- Plugs into any backend via the adapter interface
+
+## What Feedtack does NOT do
+
+- LLM triage or routing — Feedtack emits, others act
+- Developer dashboard or inbox
+- Screenshot annotation
+
+## Architecture
+
+Feedtack ships as two entry points:
+
+| Import | Contents |
+|--------|----------|
+| `feedtack` | Core adapters, capture utilities, TypeScript types |
+| `feedtack/react` | `FeedtackProvider`, `useFeedtack` hook, UI components |
+
+The core package has zero React dependency — you can use the types and adapters in a Node.js API route without pulling in React.
+
+## Quick example
+
+```tsx
+import { FeedtackProvider } from "feedtack/react";
+import { ConsoleAdapter } from "feedtack";
+
+export default function App() {
+  return (
+    <FeedtackProvider
+      adapter={new ConsoleAdapter()}
+      currentUser={{ id: "u1", name: "Trillium", role: "admin" }}
+    >
+      <YourApp />
+    </FeedtackProvider>
+  );
+}
+```
+
+Ready to get started? Head to [Getting Started](/docs/getting-started).
