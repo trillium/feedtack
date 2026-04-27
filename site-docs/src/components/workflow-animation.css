@@ -70,26 +70,46 @@
   56%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
 }
 
-/* Typing lines — four rows appearing sequentially */
-.wfa-typing-1, .wfa-typing-2, .wfa-typing-3, .wfa-typing-4 {
-  animation: wfaTypeLine var(--dur) infinite;
-}
-.wfa-typing-1 { animation-name: wfaType1; }
-.wfa-typing-2 { animation-name: wfaType2; }
-.wfa-typing-3 { animation-name: wfaType3; }
-.wfa-typing-4 { animation-name: wfaType4; }
-@keyframes wfaType1 {
-  0%, 38% { width: 0; } 41% { width: 40; } 43%, 100% { width: 72; }
-}
-@keyframes wfaType2 {
-  0%, 41% { width: 0; } 44% { width: 36; } 46%, 100% { width: 68; }
-}
-@keyframes wfaType3 {
-  0%, 44% { width: 0; } 47% { width: 30; } 49%, 100% { width: 58; }
-}
-@keyframes wfaType4 {
-  0%, 47% { width: 0; } 50%, 100% { width: 40; }
-}
+/* Word dashes — 19 rects appear sequentially to simulate typing */
+.wfa-word-1  { animation: wfaW1  var(--dur) infinite; }
+.wfa-word-2  { animation: wfaW2  var(--dur) infinite; }
+.wfa-word-3  { animation: wfaW3  var(--dur) infinite; }
+.wfa-word-4  { animation: wfaW4  var(--dur) infinite; }
+.wfa-word-5  { animation: wfaW5  var(--dur) infinite; }
+.wfa-word-6  { animation: wfaW6  var(--dur) infinite; }
+.wfa-word-7  { animation: wfaW7  var(--dur) infinite; }
+.wfa-word-8  { animation: wfaW8  var(--dur) infinite; }
+.wfa-word-9  { animation: wfaW9  var(--dur) infinite; }
+.wfa-word-10 { animation: wfaW10 var(--dur) infinite; }
+.wfa-word-11 { animation: wfaW11 var(--dur) infinite; }
+.wfa-word-12 { animation: wfaW12 var(--dur) infinite; }
+.wfa-word-13 { animation: wfaW13 var(--dur) infinite; }
+.wfa-word-14 { animation: wfaW14 var(--dur) infinite; }
+.wfa-word-15 { animation: wfaW15 var(--dur) infinite; }
+.wfa-word-16 { animation: wfaW16 var(--dur) infinite; }
+.wfa-word-17 { animation: wfaW17 var(--dur) infinite; }
+.wfa-word-18 { animation: wfaW18 var(--dur) infinite; }
+.wfa-word-19 { animation: wfaW19 var(--dur) infinite; }
+/* Each word pops in ~0.6% apart (≈0.1s). Visible until 52%. */
+@keyframes wfaW1  { 0%,38.0% { opacity:0 } 38.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW2  { 0%,38.6% { opacity:0 } 39.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW3  { 0%,39.2% { opacity:0 } 39.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW4  { 0%,39.8% { opacity:0 } 40.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW5  { 0%,40.4% { opacity:0 } 41.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW6  { 0%,41.0% { opacity:0 } 41.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW7  { 0%,41.6% { opacity:0 } 42.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW8  { 0%,42.2% { opacity:0 } 42.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW9  { 0%,42.8% { opacity:0 } 43.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW10 { 0%,43.4% { opacity:0 } 44.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW11 { 0%,44.0% { opacity:0 } 44.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW12 { 0%,44.6% { opacity:0 } 45.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW13 { 0%,45.2% { opacity:0 } 45.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW14 { 0%,45.8% { opacity:0 } 46.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW15 { 0%,46.4% { opacity:0 } 47.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW16 { 0%,47.0% { opacity:0 } 47.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW17 { 0%,47.6% { opacity:0 } 48.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW18 { 0%,48.2% { opacity:0 } 48.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+@keyframes wfaW19 { 0%,48.8% { opacity:0 } 49.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
 
 /* Step 4 — Submit: visible 52–70% */
 .wfa-check { animation: wfaCheck var(--dur) infinite; }
