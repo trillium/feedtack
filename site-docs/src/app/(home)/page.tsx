@@ -1,118 +1,9 @@
 import Link from 'next/link'
+import { FeaturesGrid } from '@/components/features-grid'
 import { FeedtackLogo } from '@/components/logo'
-import { PIN_PALETTE, PinSvg } from '@/components/pin-svg'
+import { PinSvg } from '@/components/pin-svg'
+import { ScatteredPins } from '@/components/scattered-pins'
 import { WorkflowAnimation } from '@/components/workflow-animation'
-
-const SCATTERED_PINS: {
-  x: string
-  y: string
-  color: string
-  size: number
-  rotate: number
-  opacity: number
-}[] = [
-  {
-    x: '8%',
-    y: '12%',
-    color: PIN_PALETTE[0],
-    size: 38,
-    rotate: -18,
-    opacity: 0.7,
-  },
-  {
-    x: '22%',
-    y: '6%',
-    color: PIN_PALETTE[1],
-    size: 28,
-    rotate: 12,
-    opacity: 0.5,
-  },
-  {
-    x: '78%',
-    y: '8%',
-    color: PIN_PALETTE[2],
-    size: 34,
-    rotate: -8,
-    opacity: 0.6,
-  },
-  {
-    x: '90%',
-    y: '18%',
-    color: PIN_PALETTE[3],
-    size: 26,
-    rotate: 20,
-    opacity: 0.5,
-  },
-  {
-    x: '5%',
-    y: '55%',
-    color: PIN_PALETTE[4],
-    size: 30,
-    rotate: -25,
-    opacity: 0.45,
-  },
-  {
-    x: '92%',
-    y: '48%',
-    color: PIN_PALETTE[5],
-    size: 32,
-    rotate: 15,
-    opacity: 0.55,
-  },
-  {
-    x: '15%',
-    y: '80%',
-    color: PIN_PALETTE[2],
-    size: 24,
-    rotate: 10,
-    opacity: 0.4,
-  },
-  {
-    x: '85%',
-    y: '75%',
-    color: PIN_PALETTE[0],
-    size: 28,
-    rotate: -12,
-    opacity: 0.45,
-  },
-  {
-    x: '50%',
-    y: '4%',
-    color: PIN_PALETTE[4],
-    size: 22,
-    rotate: 5,
-    opacity: 0.35,
-  },
-  {
-    x: '65%',
-    y: '85%',
-    color: PIN_PALETTE[1],
-    size: 26,
-    rotate: -20,
-    opacity: 0.4,
-  },
-]
-
-const FEATURES = [
-  {
-    title: 'Adapter System',
-    description:
-      'Send feedback anywhere. Console, localStorage, webhooks, Supabase, or build your own adapter in a few lines.',
-    icon: PIN_PALETTE[1],
-  },
-  {
-    title: 'Rich DOM Targeting',
-    description:
-      'Every pin captures CSS selectors, XPath, DOM attributes, and text content so developers know exactly what was clicked.',
-    icon: PIN_PALETTE[2],
-  },
-  {
-    title: 'Feedback Scopes',
-    description:
-      'Users choose whether feedback targets a specific element, the current page, or the whole site. Context comes built in.',
-    icon: PIN_PALETTE[3],
-  },
-]
 
 export default function HomePage() {
   return (
@@ -120,25 +11,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:py-40">
         {/* Scattered decorative pins */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden="true"
-        >
-          {SCATTERED_PINS.map((pin) => (
-            <div
-              key={`${pin.x}-${pin.y}`}
-              className="absolute"
-              style={{
-                left: pin.x,
-                top: pin.y,
-                opacity: pin.opacity,
-                transform: `rotate(${pin.rotate}deg)`,
-              }}
-            >
-              <PinSvg color={pin.color} size={pin.size} />
-            </div>
-          ))}
-        </div>
+        <ScatteredPins />
 
         <div className="relative mx-auto max-w-3xl text-center">
           {/* Brand pin + wordmark */}
@@ -190,28 +63,7 @@ export default function HomePage() {
       <WorkflowAnimation />
 
       {/* Features */}
-      <section className="border-t border-fd-border bg-fd-card/50 px-6 py-20 sm:py-28">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-8 sm:grid-cols-3">
-            {FEATURES.map((feature) => (
-              <div
-                key={feature.title}
-                className="rounded-xl border border-fd-border bg-fd-card p-6 shadow-sm"
-              >
-                <div className="mb-4">
-                  <PinSvg color={feature.icon} size={28} />
-                </div>
-                <h3 className="text-lg font-semibold text-fd-foreground">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-fd-muted-foreground">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturesGrid />
 
       {/* CTA */}
       <section className="px-6 py-16 text-center">
