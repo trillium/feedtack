@@ -14,6 +14,7 @@
   --dur: 16s;
 }
 
+
 /* reduced-motion: show static final frame */
 @media (prefers-reduced-motion: reduce) {
   .wfa-root * { animation: none !important; }
@@ -42,14 +43,11 @@
   34%, 100% { opacity: 0; }
 }
 
-.wfa-cursor { animation: wfaCursor var(--dur) infinite; }
+.wfa-cursor { animation: wfaCursor var(--dur) infinite ease-out; }
 @keyframes wfaCursor {
   0%, 17% { opacity: 0; transform: translate(60px, -30px); }
-  21% { opacity: 1; transform: translate(40px, -18px); }
-  24% { opacity: 1; transform: translate(20px, -6px); }
+  19% { opacity: 1; transform: translate(55px, -27px); }
   27% { opacity: 1; transform: translate(0, 0); }
-  29% { opacity: 1; transform: translate(0, 2px); }
-  31% { opacity: 1; transform: translate(0, 0); }
   33%, 100% { opacity: 0; transform: translate(0, 0); }
 }
 
@@ -124,6 +122,13 @@
   57% { opacity: 1; transform: scale(1.1); }
   60%, 65% { opacity: 1; transform: scale(1); }
   68%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+.wfa-check-pulse { animation: wfaCheckPulse var(--dur) infinite; }
+@keyframes wfaCheckPulse {
+  0%, 57% { transform: scale(1); opacity: 0.15; }
+  67% { transform: scale(1.8); opacity: 0; }
+  68%, 100% { transform: scale(1); opacity: 0; }
 }
 
 /* Step 5 — Catalogue: 68–90% */
