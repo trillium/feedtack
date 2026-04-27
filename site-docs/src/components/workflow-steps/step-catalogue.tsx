@@ -52,10 +52,6 @@ export function StepCatalogue() {
           divider={106}
         />
       </g>
-      {/* Step label */}
-      <text className="wfa-label" x="150" y="210">
-        5. Catalogue
-      </text>
     </g>
   )
 }

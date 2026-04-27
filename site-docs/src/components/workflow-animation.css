@@ -1,6 +1,14 @@
 /* WorkflowAnimation — CSS keyframes for the 5-step Feedtack workflow. */
 /* Total cycle = 16s. Each step fades into a shared central stage.     */
-/* viewBox is 300x250; all steps are centered in that space.           */
+/* viewBox is 300x200; all steps are centered in that space.           */
+
+/* Step windows (normalized ~3s each):                                 */
+/*   Browse:    0–18%   (0–2.9s)                                       */
+/*   Click:     18–34%  (2.9–5.4s)                                     */
+/*   Describe:  34–54%  (5.4–8.6s)                                     */
+/*   Submit:    54–68%  (8.6–10.9s)                                    */
+/*   Catalogue: 68–90%  (10.9–14.4s)                                   */
+/*   Reset gap: 90–100% (14.4–16s)                                     */
 
 .wfa-root {
   --dur: 16s;
@@ -16,58 +24,56 @@
   .wfa-catalogue { opacity: 1 !important; transform: translateY(0) !important; }
 }
 
-/* Step 1 — Browse: visible 0–20% */
+/* Step 1 — Browse: 0–18% */
 .wfa-browser { animation: wfaBrowserIn var(--dur) infinite; }
 @keyframes wfaBrowserIn {
   0% { opacity: 0; transform: scale(0.96); }
-  5% { opacity: 1; transform: scale(1); }
-  16% { opacity: 1; }
-  20%, 100% { opacity: 0; }
+  4% { opacity: 1; transform: scale(1); }
+  15% { opacity: 1; }
+  18%, 100% { opacity: 0; }
 }
 
-/* Step 2 — Click: visible 16–36% */
+/* Step 2 — Click: 18–34% */
 .wfa-pin-step { animation: wfaPinStep var(--dur) infinite; }
 @keyframes wfaPinStep {
-  0%, 16% { opacity: 0; }
-  20% { opacity: 1; }
+  0%, 17% { opacity: 0; }
+  19% { opacity: 1; }
   32% { opacity: 1; }
-  36%, 100% { opacity: 0; }
+  34%, 100% { opacity: 0; }
 }
 
 .wfa-cursor { animation: wfaCursor var(--dur) infinite; }
 @keyframes wfaCursor {
-  0%, 16% { opacity: 0; transform: translate(60px, -30px); }
-  22% { opacity: 1; transform: translate(30px, -10px); }
-  26% { opacity: 1; transform: translate(0, 0); }
-  28% { opacity: 1; transform: translate(0, 2px); }
-  30% { opacity: 1; transform: translate(0, 0); }
-  34%, 100% { opacity: 0; transform: translate(0, 0); }
+  0%, 17% { opacity: 0; transform: translate(60px, -30px); }
+  21% { opacity: 1; transform: translate(40px, -18px); }
+  24% { opacity: 1; transform: translate(20px, -6px); }
+  27% { opacity: 1; transform: translate(0, 0); }
+  29% { opacity: 1; transform: translate(0, 2px); }
+  31% { opacity: 1; transform: translate(0, 0); }
+  33%, 100% { opacity: 0; transform: translate(0, 0); }
 }
 
 .wfa-pin { animation: wfaPin var(--dur) infinite; }
 @keyframes wfaPin {
   0%, 25% { opacity: 0; transform: translateY(-18px) scale(0.5); }
-  29% { opacity: 1; transform: translateY(0) scale(1.15); }
-  32% { opacity: 1; transform: translateY(0) scale(1); }
-  36%, 100% { opacity: 0; }
+  29% { opacity: 1; transform: translateY(0) scale(1.08); }
+  31% { opacity: 1; transform: translateY(0) scale(1); }
+  34%, 100% { opacity: 0; }
 }
 
 .wfa-ring { animation: wfaRing var(--dur) infinite; }
 @keyframes wfaRing {
   0%, 29% { opacity: 0; transform: scale(0); }
   32% { opacity: 0.6; transform: scale(1); }
-  36%, 100% { opacity: 0; transform: scale(2); }
+  34%, 100% { opacity: 0; transform: scale(2); }
 }
 
-/* Step 2 label follows pin-step timing */
-.wfa-pin-label { animation: wfaPinStep var(--dur) infinite; }
-
-/* Step 3 — Describe: visible 32–56% */
+/* Step 3 — Describe: 34–54% */
 .wfa-form { animation: wfaForm var(--dur) infinite; }
 @keyframes wfaForm {
-  0%, 32% { opacity: 0; transform: scale(0.8) translateY(6px); }
-  38%, 52% { opacity: 1; transform: scale(1) translateY(0); }
-  56%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
+  0%, 33% { opacity: 0; transform: scale(0.8) translateY(6px); }
+  37%, 51% { opacity: 1; transform: scale(1) translateY(0); }
+  54%, 100% { opacity: 0; transform: scale(0.9) translateY(-4px); }
 }
 
 /* Word dashes — 19 rects appear sequentially to simulate typing */
@@ -90,42 +96,42 @@
 .wfa-word-17 { animation: wfaW17 var(--dur) infinite; }
 .wfa-word-18 { animation: wfaW18 var(--dur) infinite; }
 .wfa-word-19 { animation: wfaW19 var(--dur) infinite; }
-/* Each word pops in ~0.6% apart (≈0.1s). Visible until 52%. */
-@keyframes wfaW1  { 0%,38.0% { opacity:0 } 38.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW2  { 0%,38.6% { opacity:0 } 39.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW3  { 0%,39.2% { opacity:0 } 39.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW4  { 0%,39.8% { opacity:0 } 40.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW5  { 0%,40.4% { opacity:0 } 41.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW6  { 0%,41.0% { opacity:0 } 41.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW7  { 0%,41.6% { opacity:0 } 42.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW8  { 0%,42.2% { opacity:0 } 42.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW9  { 0%,42.8% { opacity:0 } 43.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW10 { 0%,43.4% { opacity:0 } 44.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW11 { 0%,44.0% { opacity:0 } 44.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW12 { 0%,44.6% { opacity:0 } 45.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW13 { 0%,45.2% { opacity:0 } 45.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW14 { 0%,45.8% { opacity:0 } 46.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW15 { 0%,46.4% { opacity:0 } 47.0%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW16 { 0%,47.0% { opacity:0 } 47.6%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW17 { 0%,47.6% { opacity:0 } 48.2%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW18 { 0%,48.2% { opacity:0 } 48.8%,52% { opacity:.45 } 56%,100% { opacity:0 } }
-@keyframes wfaW19 { 0%,48.8% { opacity:0 } 49.4%,52% { opacity:.45 } 56%,100% { opacity:0 } }
+/* Each word pops in ~0.7% apart (≈0.11s). Visible until 51%. */
+@keyframes wfaW1  { 0%,37.0% { opacity:0 } 37.7%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW2  { 0%,37.7% { opacity:0 } 38.4%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW3  { 0%,38.4% { opacity:0 } 39.1%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW4  { 0%,39.1% { opacity:0 } 39.8%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW5  { 0%,39.8% { opacity:0 } 40.5%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW6  { 0%,40.5% { opacity:0 } 41.2%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW7  { 0%,41.2% { opacity:0 } 41.9%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW8  { 0%,41.9% { opacity:0 } 42.6%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW9  { 0%,42.6% { opacity:0 } 43.3%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW10 { 0%,43.3% { opacity:0 } 44.0%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW11 { 0%,44.0% { opacity:0 } 44.7%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW12 { 0%,44.7% { opacity:0 } 45.4%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW13 { 0%,45.4% { opacity:0 } 46.1%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW14 { 0%,46.1% { opacity:0 } 46.8%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW15 { 0%,46.8% { opacity:0 } 47.5%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW16 { 0%,47.5% { opacity:0 } 48.2%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW17 { 0%,48.2% { opacity:0 } 48.9%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW18 { 0%,48.9% { opacity:0 } 49.6%,51% { opacity:.45 } 54%,100% { opacity:0 } }
+@keyframes wfaW19 { 0%,49.6% { opacity:0 } 50.3%,51% { opacity:.45 } 54%,100% { opacity:0 } }
 
-/* Step 4 — Submit: visible 52–70% */
+/* Step 4 — Submit: 54–68% */
 .wfa-check { animation: wfaCheck var(--dur) infinite; }
 @keyframes wfaCheck {
-  0%, 52% { opacity: 0; transform: scale(0); }
-  56% { opacity: 1; transform: scale(1.2); }
-  60%, 66% { opacity: 1; transform: scale(1); }
-  70%, 100% { opacity: 0; transform: scale(0.8); }
+  0%, 53% { opacity: 0; transform: scale(0); }
+  57% { opacity: 1; transform: scale(1.1); }
+  60%, 65% { opacity: 1; transform: scale(1); }
+  68%, 100% { opacity: 0; transform: scale(0.8); }
 }
 
-/* Step 5 — Catalogue: visible 66–92% */
+/* Step 5 — Catalogue: 68–90% */
 .wfa-catalogue { animation: wfaCatalogue var(--dur) infinite; }
 @keyframes wfaCatalogue {
-  0%, 66% { opacity: 0; transform: translateY(12px); }
+  0%, 67% { opacity: 0; transform: translateY(8px); }
   72%, 86% { opacity: 1; transform: translateY(0); }
-  92%, 100% { opacity: 0; transform: translateY(-6px); }
+  90%, 100% { opacity: 0; transform: translateY(-4px); }
 }
 
 .wfa-cat-row { animation: wfaCatRow var(--dur) infinite; }
@@ -133,14 +139,7 @@
 .wfa-cat-row-2 { animation-delay: 0.3s; }
 .wfa-cat-row-3 { animation-delay: 0.6s; }
 @keyframes wfaCatRow {
-  0%, 69% { opacity: 0; transform: translateX(-8px); }
-  75%, 86% { opacity: 1; transform: translateX(0); }
-  92%, 100% { opacity: 0; }
-}
-
-.wfa-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-anchor: middle;
-  fill: var(--color-fd-muted-foreground, #6b7280);
+  0%, 70% { opacity: 0; transform: translateX(-8px); }
+  76%, 86% { opacity: 1; transform: translateX(0); }
+  90%, 100% { opacity: 0; }
 }

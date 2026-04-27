@@ -79,10 +79,6 @@ export function StepForm() {
           Submit
         </text>
       </g>
-      {/* Step label */}
-      <text className="wfa-label" x="150" y="210">
-        3. Describe
-      </text>
     </g>
   )
 }

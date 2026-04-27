@@ -15,10 +15,6 @@ export function StepSubmit() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* Step label */}
-      <text className="wfa-label" x="150" y="210">
-        4. Submit
-      </text>
     </g>
   )
 }
