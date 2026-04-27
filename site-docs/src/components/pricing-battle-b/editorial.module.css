@@ -1,0 +1,132 @@
+/* Editorial / Magazine Pricing — near-monochrome + single amber accent */
+
+.page {
+  --accent: #c8873a;
+  --accent-muted: #c8873a33;
+  --ink: var(--color-fd-foreground, #111);
+  --paper: var(--color-fd-background, #fafaf8);
+  --muted: var(--color-fd-muted-foreground, #888);
+  --border: var(--color-fd-border, #e5e5e0);
+  --card-bg: var(--color-fd-card, #fff);
+  font-family: var(--font-serif);
+  color: var(--ink);
+}
+
+/* ─── Hero ─── */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 8rem 2rem 6rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.heroRule {
+  width: 60px;
+  height: 1px;
+  background: var(--accent);
+  border: none;
+  margin: 0 auto 2rem;
+}
+
+.heroKicker {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+}
+
+.heroTitle {
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.heroSubtitle {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 2rem;
+  max-width: 28ch;
+  line-height: 1.5;
+}
+
+.heroRuleBottom {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--border), transparent);
+  border: none;
+  margin: 4rem auto 0;
+}
+
+/* ─── Tier Section (shared) ─── */
+.tierSection {
+  position: relative;
+  padding: 8rem 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.tierInner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tierNumber {
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 200;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: var(--border);
+  margin: 0 0 -1rem;
+  user-select: none;
+}
+
+.tierName {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+
+.tierSubtitle {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--muted);
+  margin: 0 0 3rem;
+  font-weight: 300;
+}
+
+.tierPrice {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 3rem;
+}
+
+.priceAmount {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.pricePeriod {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

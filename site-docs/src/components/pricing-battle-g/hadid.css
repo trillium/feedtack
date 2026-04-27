@@ -1,0 +1,230 @@
+/* Zaha Hadid — Parametric Fluid Pricing: Layout & Components */
+@import './hadid-keyframes.css';
+
+.hadid-hero {
+  position: relative;
+  padding: 7rem 1.5rem 4rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hadid-hero-title {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: var(--color-fd-foreground);
+  animation: hadid-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hadid-hero-subtitle {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
+  animation: hadid-reveal 1s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hadid-hero-tagline {
+  margin-top: 0.75rem;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--color-fd-muted-foreground);
+  opacity: 0.6;
+  animation: hadid-reveal 1s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Flowing background blobs */
+.hadid-blob {
+  position: absolute;
+  pointer-events: none;
+  animation: hadid-morph 20s ease-in-out infinite,
+    hadid-drift 25s ease-in-out infinite;
+  filter: blur(80px);
+  opacity: 0.18;
+}
+
+.hadid-blob--1 {
+  width: 600px; height: 500px;
+  top: -10%; left: -10%;
+  background: var(--hadid-coral);
+  animation-delay: 0s, -5s;
+}
+
+.hadid-blob--2 {
+  width: 500px; height: 450px;
+  top: 20%; right: -8%;
+  background: var(--hadid-teal);
+  animation-delay: -7s, -12s;
+}
+
+.hadid-blob--3 {
+  width: 450px; height: 400px;
+  bottom: -5%; left: 30%;
+  background: var(--hadid-mauve);
+  animation-delay: -14s, -3s;
+}
+
+/* Wave divider */
+.hadid-wave {
+  position: relative;
+  height: 120px;
+  margin-top: -60px;
+  overflow: hidden;
+}
+
+.hadid-wave svg {
+  position: absolute;
+  bottom: 0; width: 100%; height: 100%;
+}
+
+/* Tier zone container */
+.hadid-tiers {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+  animation: hadid-reveal 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (min-width: 1024px) {
+  .hadid-tiers {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    align-items: stretch;
+  }
+}
+
+/* Individual tier zone */
+.hadid-zone {
+  position: relative;
+  padding: 2.5rem 2rem;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hadid-zone:hover { transform: translateY(-4px); }
+
+/* Clip-path shapes — no right angles */
+@media (min-width: 1024px) {
+  .hadid-zone--free {
+    clip-path: polygon(0% 4%, 94% 0%, 100% 2%, 100% 96%, 96% 100%, 0% 98%);
+    padding: 3rem 2.5rem 3rem 2rem;
+  }
+  .hadid-zone--pro {
+    clip-path: polygon(2% 0%, 98% 0%, 100% 3%, 99% 97%, 98% 100%, 2% 100%, 0% 97%, 1% 3%);
+    z-index: 2;
+    transform: scale(1.04);
+    padding: 3rem 2rem;
+  }
+  .hadid-zone--pro:hover { transform: scale(1.04) translateY(-4px); }
+  .hadid-zone--enterprise {
+    clip-path: polygon(0% 2%, 4% 0%, 100% 4%, 100% 96%, 96% 100%, 0% 98%);
+    padding: 3rem 2rem 3rem 2.5rem;
+  }
+}
+
+/* Zone backgrounds */
+.hadid-zone-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-fd-card);
+  border: 1px solid var(--color-fd-border);
+  transition: box-shadow 0.4s;
+}
+
+@media (min-width: 1024px) {
+  .hadid-zone-bg {
+    border: none;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-fd-border) 40%, transparent);
+  }
+}
+
+@media (max-width: 1023px) {
+  .hadid-zone-bg { border-radius: 2rem 0.5rem 2rem 0.5rem; }
+}
+
+.hadid-zone:hover .hadid-zone-bg {
+  box-shadow: 0 20px 60px -15px rgba(0,0,0,0.12);
+}
+
+.hadid-zone-content { position: relative; z-index: 1; }
+
+/* Accent stripes */
+.hadid-accent-stripe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  opacity: 0.6;
+  transition: opacity 0.4s, width 0.4s;
+}
+
+@media (max-width: 1023px) {
+  .hadid-accent-stripe { border-radius: 2rem 0 0 2rem; }
+}
+
+.hadid-zone:hover .hadid-accent-stripe { opacity: 1; width: 6px; }
+
+/* Typography */
+.hadid-tier-name {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 0.8rem; font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+.hadid-price-wrap {
+  display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem;
+}
+
+.hadid-price {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 4rem; font-weight: 300;
+  letter-spacing: -0.04em; line-height: 1;
+  color: var(--color-fd-foreground);
+}
+
+.hadid-price-period {
+  font-size: 0.85rem; font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--color-fd-muted-foreground);
+}
+
+.hadid-subtitle {
+  font-style: italic; font-size: 0.85rem;
+  color: var(--color-fd-muted-foreground);
+  opacity: 0.7; margin-bottom: 2rem;
+}
+
+.hadid-divider {
+  height: 2px; margin: 1.5rem 0;
+  border: none; border-radius: 50%; opacity: 0.3;
+}
+
+/* Feature list */
+.hadid-features {
+  list-style: none; padding: 0; margin: 0 0 2rem;
+  flex: 1; display: flex; flex-direction: column; gap: 0.65rem;
+}
+
+.hadid-feature {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  font-size: 0.875rem; color: var(--color-fd-muted-foreground); line-height: 1.5;
+}
+
+.hadid-feature-dot {
+  flex-shrink: 0; margin-top: 0.4rem;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: hadid-morph 8s ease-in-out infinite;
+}

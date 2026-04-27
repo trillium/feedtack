@@ -1,0 +1,239 @@
+.tier {
+  position: relative;
+  padding: 2.5rem 1.75rem 2rem;
+  border: 1px solid var(--fd-border);
+  background: var(--fd-card);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+}
+.tier:hover {
+  z-index: 10;
+}
+.offset0 {
+  transform: rotate(-2.5deg) translateY(1rem);
+}
+.offset0:hover {
+  transform: rotate(-0.5deg) translateY(0.5rem) scale(1.03);
+}
+.offset1 {
+  transform: rotate(1.5deg) translateY(-1.5rem);
+  z-index: 2;
+}
+.offset1:hover {
+  transform: rotate(0.3deg) translateY(-1.5rem) scale(1.03);
+}
+.offset2 {
+  transform: rotate(-1deg) translateY(2.5rem);
+}
+.offset2:hover {
+  transform: rotate(0.2deg) translateY(2rem) scale(1.03);
+}
+
+.tierName {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--fd-foreground);
+  margin-bottom: 0;
+  margin-left: -0.5rem;
+  overflow: visible;
+}
+
+.priceBlock {
+  position: relative;
+  margin: -1.5rem 0 0.5rem;
+  padding-left: 2rem;
+}
+.priceMain {
+  font-family: "Courier New", monospace;
+  font-size: clamp(5rem, 10vw, 7rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.1em;
+  color: var(--fd-foreground);
+}
+.priceForever {
+  font-family: "Georgia", serif;
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--fd-muted-foreground);
+  display: block;
+  transform: rotate(-3deg);
+  margin-top: -0.5rem;
+  margin-left: 3rem;
+  opacity: 0.5;
+}
+
+.subtitle {
+  font-family: "Georgia", serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--fd-muted-foreground);
+  border-left: 3px solid var(--fd-foreground);
+  padding-left: 0.6rem;
+  margin: 1.25rem 0 1.5rem 1rem;
+  transform: rotate(-1deg);
+  line-height: 1.4;
+  opacity: 0.6;
+}
+
+.featuresList {
+  list-style: none;
+  padding: 1rem 0 0;
+  margin: 0 0 1.5rem;
+  border-top: 1px solid var(--fd-border);
+}
+.featureItem {
+  font-family: "Courier New", monospace;
+  font-size: 0.65rem;
+  line-height: 1.6;
+  color: var(--fd-muted-foreground);
+  position: relative;
+  padding-left: 0.75rem;
+}
+.featureItem::before {
+  content: "/";
+  position: absolute;
+  left: 0;
+  color: var(--fd-foreground);
+  opacity: 0.2;
+}
+.featureItem:nth-child(even) {
+  padding-left: 1.5rem;
+  opacity: 0.6;
+}
+.featureItem:nth-child(3n) {
+  transform: translateX(-0.25rem);
+}
+
+.cta {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-family: "Courier New", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  text-decoration: none;
+  color: var(--fd-background);
+  background: var(--fd-foreground);
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    letter-spacing 0.3s;
+  transform: rotate(-0.8deg);
+}
+.cta:hover {
+  transform: rotate(0deg);
+  letter-spacing: 0.2em;
+}
+
+.featured {
+  background: var(--fd-foreground);
+  color: var(--fd-background);
+  border-color: var(--fd-foreground);
+  box-shadow: 12px 12px 0 var(--fd-border);
+}
+.featured .tierName,
+.featured .priceMain {
+  color: var(--fd-background);
+}
+.featured .priceForever {
+  color: var(--fd-background);
+  opacity: 0.4;
+}
+.featured .subtitle {
+  color: var(--fd-background);
+  opacity: 0.5;
+  border-left-color: var(--fd-background);
+}
+.featured .featuresList {
+  border-top-color: var(--fd-background);
+  opacity: 0.3;
+}
+.featured .featureItem {
+  color: var(--fd-background);
+}
+.featured .featureItem::before {
+  color: var(--fd-background);
+}
+.featured .cta {
+  color: var(--fd-foreground);
+  background: var(--fd-background);
+}
+
+.locked {
+  border-style: dashed;
+  border-width: 2px;
+}
+.lockedOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--fd-card);
+  opacity: 0.9;
+}
+.lockedText {
+  font-family: "Courier New", monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--fd-muted-foreground);
+  transform: rotate(-7deg);
+  opacity: 0.6;
+}
+.lockedBig {
+  font-family: "Georgia", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--fd-foreground);
+  opacity: 0.12;
+  margin-top: 0.5rem;
+  transform: rotate(3deg);
+}
+
+.tierNumber {
+  position: absolute;
+  top: -1.5rem;
+  right: 0.5rem;
+  font-family: "Georgia", serif;
+  font-size: 10rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--fd-foreground);
+  opacity: 0.03;
+  pointer-events: none;
+  user-select: none;
+}
+.featured .tierNumber {
+  color: var(--fd-background);
+  opacity: 0.06;
+}
+
+.cardSlash {
+  position: absolute;
+  width: 150%;
+  height: 1px;
+  background: var(--fd-foreground);
+  opacity: 0.04;
+  top: 30%;
+  left: -25%;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+.featured .cardSlash {
+  background: var(--fd-background);
+  opacity: 0.06;
+}

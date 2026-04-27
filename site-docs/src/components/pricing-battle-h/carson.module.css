@@ -1,0 +1,242 @@
+.arena {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--fd-background);
+  color: var(--fd-foreground);
+}
+.arena::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 100;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+.heroZone {
+  position: relative;
+  padding: 4rem 2rem 2rem;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.heroInner {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.heroWord {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(8rem, 22vw, 20rem);
+  font-weight: 900;
+  line-height: 0.75;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+  color: var(--fd-foreground);
+  opacity: 0.04;
+  position: absolute;
+  top: -3rem;
+  left: -5%;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+.heroTitle {
+  position: relative;
+  z-index: 2;
+}
+.heroLine1 {
+  font-family: "Courier New", "Courier", monospace;
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--fd-muted-foreground);
+  transform: rotate(-4deg);
+  display: block;
+  margin-bottom: 0.5rem;
+  margin-left: 5%;
+  opacity: 0.6;
+}
+.heroLine2 {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  display: block;
+}
+.heroLine3 {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  font-weight: 100;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  transform: rotate(1.5deg) translateX(20%);
+  display: block;
+  color: var(--fd-muted-foreground);
+  margin-top: -0.5rem;
+}
+.heroStrike {
+  position: absolute;
+  width: 120%;
+  height: 4px;
+  background: var(--fd-foreground);
+  top: 50%;
+  left: -10%;
+  transform: rotate(-1deg);
+  opacity: 0.1;
+}
+.fragment {
+  position: absolute;
+  font-family: "Courier New", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fd-muted-foreground);
+  opacity: 0.35;
+  pointer-events: none;
+  user-select: none;
+}
+.frag1 {
+  top: 12%;
+  right: 6%;
+  transform: rotate(90deg);
+}
+.frag2 {
+  bottom: 15%;
+  left: 2%;
+  transform: rotate(-90deg);
+}
+.frag3 {
+  top: 35%;
+  right: 1%;
+  transform: rotate(-6deg);
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+}
+.textTexture {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.textTextureLine {
+  font-family: "Courier New", monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--fd-foreground);
+  opacity: 0.02;
+  white-space: nowrap;
+  line-height: 2.5;
+  text-transform: uppercase;
+}
+
+.tiersZone {
+  position: relative;
+  padding: 0 1.5rem 4rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  z-index: 1;
+}
+.tiersGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+@media (min-width: 768px) {
+  .tiersGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    align-items: start;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+}
+
+.colophon {
+  position: relative;
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+  border-top: 1px solid var(--fd-border);
+}
+.colophonText {
+  font-family: "Georgia", serif;
+  font-size: clamp(1.2rem, 3.5vw, 2.5rem);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: var(--fd-foreground);
+  opacity: 0.08;
+  text-transform: uppercase;
+  transform: rotate(-1deg);
+}
+.colophonSub {
+  font-family: "Courier New", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--fd-muted-foreground);
+  opacity: 0.3;
+  margin-top: 0.75rem;
+}
+
+.vertRule {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--fd-border);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+.vertRule1 {
+  left: 25%;
+}
+.vertRule2 {
+  left: 50%;
+  opacity: 0.06;
+}
+.vertRule3 {
+  left: 75%;
+}
+
+.diagonalSlash {
+  position: absolute;
+  width: 200%;
+  height: 1px;
+  background: var(--fd-foreground);
+  opacity: 0.05;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.scatteredNum {
+  position: absolute;
+  font-family: "Georgia", serif;
+  font-weight: 900;
+  color: var(--fd-foreground);
+  opacity: 0.025;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.horizStrip {
+  position: relative;
+  height: 1px;
+  background: var(--fd-foreground);
+  opacity: 0.06;
+  margin: 0 -2rem;
+  transform: rotate(-0.3deg);
+}
