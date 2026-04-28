@@ -1,4 +1,4 @@
-import { TIERS } from '@/data/pricing-tiers'
+import { PRICING_TIERS } from '@/data/pricing-tiers'
 import { VignelliTier } from './VignelliTier'
 import styles from './vignelli-pricing.module.css'
 
@@ -25,7 +25,7 @@ export function VignelliPricing() {
 
       {/* ── Tier Grid ───────────────────────────────────────── */}
       <section className={styles.grid}>
-        {TIERS.map((tier) => (
+        {PRICING_TIERS.map((tier) => (
           <VignelliTier key={tier.name} tier={tier} />
         ))}
       </section>

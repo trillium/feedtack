@@ -2,6 +2,13 @@
  * AndoTier — a single pricing tier in the Ando style.
  * No cards. No borders. No decoration.
  * Just typography, space, and a thin line of light.
+ *
+ * The tier is revealed through hierarchy:
+ *   name (small, muted, uppercase, tracked)
+ *   price (large, stark)
+ *   subtitle (quiet italic whisper)
+ *   features (a list that barely announces itself)
+ *   cta (a monospace whisper with a light-line hover)
  */
 
 interface AndoTierProps {
@@ -28,36 +35,43 @@ export function AndoTier({
   const delayClass = `ando-emerge-${index + 3}`
 
   return (
-    <div
-      className={`ando-tier ando-emerge ${delayClass} relative flex flex-col`}
-    >
-      {/* Tier name */}
-      <p className="mb-8 text-[0.6875rem] font-medium uppercase tracking-[0.25em] text-fd-muted-foreground">
+    <div className={`ando-tier ando-emerge ${delayClass} flex flex-col`}>
+      {/* Tier name — architectural label */}
+      <p
+        className="text-[0.6875rem] font-medium tracking-[0.25em] uppercase mb-8"
+        style={{ color: 'var(--ando-muted)' }}
+      >
         {name}
       </p>
 
-      {/* Price */}
+      {/* Price — monumental */}
       <div className="mb-2 flex items-baseline gap-2">
-        <span className="text-5xl font-extralight tracking-tight text-fd-foreground lg:text-6xl">
+        <span
+          className="text-5xl font-extralight tracking-tight lg:text-6xl"
+          style={{ color: 'var(--ando-text)' }}
+        >
           {price}
         </span>
-        <span className="text-sm font-light tracking-wide text-fd-muted-foreground/60">
+        <span
+          className="text-sm font-light tracking-wide"
+          style={{ color: 'var(--ando-muted)', opacity: 0.6 }}
+        >
           forever
         </span>
       </div>
 
-      {/* Subtitle */}
-      <p className="mb-10 text-sm italic text-fd-muted-foreground/70 lg:mb-14">
+      {/* Subtitle — the quiet commentary */}
+      <p
+        className="text-sm italic mb-10 lg:mb-14"
+        style={{ color: 'var(--ando-muted)', opacity: 0.7 }}
+      >
         {subtitle}
       </p>
 
-      {/* Features */}
-      <ul className="mb-10 flex-1 space-y-3.5 lg:mb-14">
+      {/* Features — sparse, meditative list */}
+      <ul className="ando-feature-list mb-10 lg:mb-14 flex-1 space-y-3.5">
         {features.map((f) => (
-          <li
-            key={f}
-            className="text-[0.8125rem] font-light leading-relaxed text-fd-muted-foreground transition-colors duration-400 hover:text-fd-foreground"
-          >
+          <li key={f} className="text-[0.8125rem] font-light leading-relaxed">
             {f}
           </li>
         ))}
@@ -69,15 +83,18 @@ export function AndoTier({
           href={ctaHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="ando-cta relative inline-block cursor-pointer font-mono text-[0.8125rem] tracking-[0.04em] text-fd-muted-foreground"
+          className="ando-cta"
         >
           {cta}
         </a>
       ) : (
-        <code className="ando-cta relative inline-block cursor-pointer font-mono text-[0.8125rem] tracking-[0.04em] text-fd-muted-foreground">
+        <code className="ando-cta font-mono">
           {cta}
           {featured && (
-            <span className="ando-breathe ml-2 inline-block size-1.5 rounded-full bg-[#c8965a]" />
+            <span
+              className="ando-breathe ml-2 inline-block size-1.5 rounded-full"
+              style={{ backgroundColor: 'var(--ando-accent)' }}
+            />
           )}
         </code>
       )}

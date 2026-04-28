@@ -1,8 +1,8 @@
-import type { Tier } from '@/data/pricing-tiers'
+import type { PricingTier } from '@/data/pricing-tiers'
 import styles from './vignelli-pricing.module.css'
 
 interface VignelliTierProps {
-  tier: Tier
+  tier: PricingTier
 }
 
 /**

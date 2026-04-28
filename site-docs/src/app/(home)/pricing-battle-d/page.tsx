@@ -1,7 +1,7 @@
 import { RamsFooterNote } from '@/components/pricing-battle-d/rams-footer-note'
 import { RamsPricingGrid } from '@/components/pricing-battle-d/rams-pricing-grid'
 import { RamsPricingHero } from '@/components/pricing-battle-d/rams-pricing-hero'
-import { TIERS } from '@/data/pricing-tiers'
+import { PRICING_TIERS } from '@/data/pricing-tiers'
 
 export const metadata = {
   title: 'Pricing',
@@ -21,7 +21,7 @@ export default function PricingBattleDPage() {
       style={{ minHeight: '100vh', background: 'var(--color-fd-background)' }}
     >
       <RamsPricingHero />
-      <RamsPricingGrid tiers={TIERS} />
+      <RamsPricingGrid tiers={PRICING_TIERS} />
       <RamsFooterNote />
     </main>
   )

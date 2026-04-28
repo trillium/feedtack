@@ -1,11 +1,11 @@
-import type { Tier } from '@/data/pricing-tiers'
+import type { PricingTier } from '@/data/pricing-tiers'
 import s from './rams.module.css'
 
 /**
  * A single pricing tier, rendered in the spirit of Dieter Rams.
  * Every element earns its place. No decoration. Pure information.
  */
-export function RamsTierCard({ tier }: { tier: Tier }) {
+export function RamsTierCard({ tier }: { tier: PricingTier }) {
   const isLink = !!tier.ctaHref
 
   return (
@@ -17,7 +17,7 @@ export function RamsTierCard({ tier }: { tier: Tier }) {
 
         <div className={s.priceRow}>
           <span className={s.priceValue}>{tier.price}</span>
-          <span className={s.pricePeriod}>/ forever</span>
+          <span className={s.pricePeriod}>/forever</span>
         </div>
 
         <p className={s.subtitle}>{tier.subtitle}</p>

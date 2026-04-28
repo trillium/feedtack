@@ -1,10 +1,10 @@
-import type { Tier } from '@/data/pricing-tiers'
+import type { PricingTier } from '@/data/pricing-tiers'
 import s from './carson-tier.module.css'
 
 const OFFSETS = [s.offset0, s.offset1, s.offset2] as const
 
 interface CarsonTierProps {
-  tier: Tier
+  tier: PricingTier
   index: number
 }
 

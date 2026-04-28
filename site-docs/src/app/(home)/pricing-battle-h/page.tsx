@@ -2,7 +2,7 @@ import { CarsonColophon } from '@/components/pricing-battle-h/CarsonColophon'
 import { CarsonHero } from '@/components/pricing-battle-h/CarsonHero'
 import { CarsonTier } from '@/components/pricing-battle-h/CarsonTier'
 import s from '@/components/pricing-battle-h/carson.module.css'
-import { TIERS } from '@/data/pricing-tiers'
+import { PRICING_TIERS } from '@/data/pricing-tiers'
 
 const TEXTURE_LINE =
   'feedtack feedtack feedtack $0 $0 $0 open source mit license free forever '
@@ -93,7 +93,7 @@ export default function PricingBattleH() {
       {/* tier cards — anti-grid */}
       <section className={s.tiersZone}>
         <div className={s.tiersGrid}>
-          {TIERS.map((tier, i) => (
+          {PRICING_TIERS.map((tier, i) => (
             <CarsonTier key={tier.name} tier={tier} index={i} />
           ))}
         </div>

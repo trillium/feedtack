@@ -4,11 +4,14 @@
  */
 export function AndoFooter() {
   return (
-    <footer className="ando-emerge ando-emerge-6 py-24 text-center text-fd-muted-foreground lg:py-32">
-      <p className="mb-4 text-[0.6875rem] font-medium uppercase tracking-[0.3em]">
+    <footer
+      className="ando-emerge ando-emerge-6 py-24 lg:py-32 text-center"
+      style={{ color: 'var(--ando-muted)' }}
+    >
+      <p className="text-[0.6875rem] tracking-[0.3em] uppercase font-medium mb-4">
         Open source
       </p>
-      <p className="mx-auto max-w-xs text-sm font-light italic leading-relaxed opacity-60">
+      <p className="text-sm font-light italic opacity-60 max-w-xs mx-auto leading-relaxed">
         Feedtack is free because software that helps people communicate should
         belong to everyone.
       </p>
@@ -16,7 +19,7 @@ export function AndoFooter() {
         href="https://github.com/trillium/feedtack"
         target="_blank"
         rel="noopener noreferrer"
-        className="ando-cta relative mt-6 inline-block cursor-pointer font-mono text-[0.75rem] uppercase tracking-[0.15em] text-fd-muted-foreground"
+        className="ando-cta mt-6 text-[0.75rem] tracking-[0.15em] uppercase inline-block"
       >
         View on GitHub
       </a>

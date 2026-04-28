@@ -1,0 +1,532 @@
+/* ───────────────────────────────────────────────────
+   Pricing Battle M — Rei Kawakubo / Comme des Garçons
+   Deconstructed, anti-beauty, asymmetric, raw edges
+   ─────────────────────────────────────────────────── */
+
+.cdg-page {
+  --cdg-black: #0a0a0a;
+  --cdg-white: #f5f0eb;
+  --cdg-red: #c41e1e;
+  --cdg-grey: #8a8a8a;
+  --cdg-tear: #d4cfc8;
+
+  min-height: 100vh;
+  background-color: var(--cdg-white);
+  color: var(--cdg-black);
+  font-family: "Courier New", Courier, monospace;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Torn edge effect via clip-path on pseudo-elements */
+.cdg-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--cdg-black);
+  clip-path: polygon(
+    0% 0%,
+    3% 100%,
+    5% 20%,
+    8% 90%,
+    12% 10%,
+    15% 80%,
+    18% 30%,
+    22% 100%,
+    25% 0%,
+    28% 70%,
+    32% 15%,
+    35% 85%,
+    38% 25%,
+    42% 95%,
+    45% 5%,
+    48% 75%,
+    52% 20%,
+    55% 90%,
+    58% 10%,
+    62% 80%,
+    65% 35%,
+    68% 100%,
+    72% 0%,
+    75% 65%,
+    78% 15%,
+    82% 85%,
+    85% 30%,
+    88% 95%,
+    92% 5%,
+    95% 70%,
+    98% 20%,
+    100% 100%,
+    100% 0%
+  );
+  z-index: 10;
+}
+
+/* ── Header ── */
+
+.cdg-header {
+  padding: 6rem 2rem 3rem;
+  text-align: left;
+  position: relative;
+}
+
+.cdg-header__void {
+  position: absolute;
+  top: 2rem;
+  right: 4rem;
+  width: 120px;
+  height: 120px;
+  background: var(--cdg-black);
+  border-radius: 50%;
+  opacity: 0.06;
+}
+
+.cdg-header__title {
+  font-size: clamp(2.5rem, 8vw, 7rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 0.85;
+  text-transform: uppercase;
+  margin: 0;
+  position: relative;
+}
+
+.cdg-header__title span {
+  display: inline-block;
+}
+
+.cdg-header__title .cdg-strike {
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+  opacity: 0.35;
+}
+
+.cdg-header__subtitle {
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--cdg-grey);
+  margin-top: 1.5rem;
+  padding-left: 0.2rem;
+}
+
+/* ── Tier Grid — deliberately broken ── */
+
+.cdg-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem 6rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .cdg-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+  }
+}
+
+/* ── Tier Card ── */
+
+.cdg-card {
+  position: relative;
+  padding: 2.5rem 2rem;
+  border: 1px solid transparent;
+  transition: none;
+}
+
+/* Each card gets different treatment — deconstructed, no two alike */
+
+.cdg-card:nth-child(1) {
+  border-right: 1px solid var(--cdg-tear);
+}
+
+@media (min-width: 768px) {
+  .cdg-card:nth-child(1) {
+    transform: translateY(3rem);
+  }
+
+  .cdg-card:nth-child(2) {
+    transform: translateY(-1rem);
+  }
+
+  .cdg-card:nth-child(3) {
+    transform: translateY(5rem);
+  }
+}
+
+.cdg-card:nth-child(2) {
+  border-left: 1px solid var(--cdg-tear);
+  border-right: 1px solid var(--cdg-tear);
+}
+
+/* Featured card — red accent, torn edge bottom */
+.cdg-card--featured {
+  background: var(--cdg-black);
+  color: var(--cdg-white);
+}
+
+.cdg-card--featured::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--cdg-red);
+  clip-path: polygon(
+    0% 50%,
+    4% 0%,
+    8% 80%,
+    12% 20%,
+    16% 90%,
+    20% 10%,
+    24% 70%,
+    28% 30%,
+    32% 100%,
+    36% 0%,
+    40% 60%,
+    44% 40%,
+    48% 80%,
+    52% 10%,
+    56% 90%,
+    60% 20%,
+    64% 70%,
+    68% 50%,
+    72% 0%,
+    76% 100%,
+    80% 30%,
+    84% 60%,
+    88% 10%,
+    92% 80%,
+    96% 40%,
+    100% 50%
+  );
+}
+
+/* Locked card — distressed / faded */
+.cdg-card--locked {
+  opacity: 0.55;
+  filter: grayscale(0.3);
+}
+
+.cdg-card--locked .cdg-card__inner {
+  position: relative;
+}
+
+.cdg-card--locked .cdg-card__inner::before {
+  content: "[REDACTED]";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cdg-red);
+  opacity: 0.18;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* ── Card internals ── */
+
+.cdg-card__name {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  color: var(--cdg-grey);
+}
+
+.cdg-card--featured .cdg-card__name {
+  color: var(--cdg-red);
+}
+
+.cdg-card__price-block {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.cdg-card__price {
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin: 0;
+}
+
+.cdg-card__subtitle {
+  font-size: 0.65rem;
+  color: var(--cdg-grey);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.cdg-card--featured .cdg-card__subtitle {
+  color: var(--cdg-tear);
+}
+
+/* Horizontal raw line divider */
+.cdg-card__divider {
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.15;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.cdg-card--featured .cdg-card__divider {
+  background: var(--cdg-red);
+  opacity: 0.4;
+}
+
+/* Tear notch in divider */
+.cdg-card__divider::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 30%;
+  width: 18px;
+  height: 7px;
+  background: inherit;
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+  opacity: 0.5;
+}
+
+/* ── Features list — raw, minimal ── */
+
+.cdg-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cdg-features li {
+  font-size: 0.72rem;
+  line-height: 1.7;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid transparent;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.cdg-features li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--cdg-grey);
+}
+
+.cdg-card--featured .cdg-features li::before {
+  color: var(--cdg-red);
+  content: "/";
+}
+
+/* Every other feature slightly faded — deconstructed rhythm */
+.cdg-features li:nth-child(even) {
+  opacity: 0.65;
+}
+
+/* ── CTA ── */
+
+.cdg-cta {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 0.6rem 1.8rem;
+  font-size: 0.6rem;
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cdg-black);
+  background: transparent;
+  border: 1px solid var(--cdg-black);
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.cdg-cta:hover {
+  background: var(--cdg-black);
+  color: var(--cdg-white);
+}
+
+.cdg-card--featured .cdg-cta {
+  border-color: var(--cdg-white);
+  color: var(--cdg-white);
+}
+
+.cdg-card--featured .cdg-cta:hover {
+  background: var(--cdg-red);
+  border-color: var(--cdg-red);
+  color: var(--cdg-white);
+}
+
+/* ── Void circles — scattered decorative elements ── */
+
+.cdg-void {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--cdg-black);
+  pointer-events: none;
+}
+
+.cdg-void--1 {
+  width: 200px;
+  height: 200px;
+  top: 40%;
+  left: -80px;
+  opacity: 0.025;
+}
+
+.cdg-void--2 {
+  width: 60px;
+  height: 60px;
+  top: 20%;
+  right: 10%;
+  opacity: 0.04;
+}
+
+.cdg-void--3 {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  right: -100px;
+  opacity: 0.018;
+}
+
+/* ── Footer ── */
+
+.cdg-footer {
+  padding: 4rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.cdg-footer::before {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 1px;
+  background: var(--cdg-black);
+  opacity: 0.1;
+  margin: 0 auto 2rem;
+}
+
+.cdg-footer__text {
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--cdg-grey);
+}
+
+.cdg-footer__heart {
+  display: inline-block;
+  color: var(--cdg-red);
+  margin: 0 0.3rem;
+  font-style: normal;
+}
+
+/* ── Scattered margin notes — deconstructed editorial ── */
+
+.cdg-margin-note {
+  position: absolute;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cdg-black);
+  opacity: 0.08;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.cdg-margin-note--left {
+  left: 1rem;
+  top: 50%;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+}
+
+.cdg-margin-note--right {
+  right: 1rem;
+  top: 30%;
+  transform: rotate(90deg) translateX(50%);
+  transform-origin: right center;
+}
+
+/* ── Negative space block ── */
+
+.cdg-negative-space {
+  height: 8rem;
+  position: relative;
+}
+
+.cdg-negative-space::after {
+  content: "[ ]";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: var(--cdg-black);
+  opacity: 0.04;
+  letter-spacing: 1em;
+}
+
+/* ── Stitch marks — raw garment reference ── */
+
+.cdg-stitch {
+  position: absolute;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--cdg-black) 0px,
+    var(--cdg-black) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.cdg-stitch--1 {
+  left: 33.333%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+
+.cdg-stitch--2 {
+  left: 66.666%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+
+/* ── The "anti-label" — CDG signature ── */
+
+.cdg-anti-label {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: var(--cdg-black);
+  opacity: 0.06;
+  writing-mode: vertical-rl;
+  pointer-events: none;
+  z-index: 20;
+}

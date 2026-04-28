@@ -12,6 +12,10 @@ export interface Tier {
   locked?: boolean
 }
 
+export type { Tier as PricingTier }
+/** Aliases — some variants use alternate names */
+export { TIERS as PRICING_TIERS }
+
 export const TIERS: Tier[] = [
   {
     name: 'Free',

@@ -1,4 +1,4 @@
-import type { Tier } from '@/data/pricing-tiers'
+import type { PricingTier } from '@/data/pricing-tiers'
 import s from './rams.module.css'
 import { RamsTierCard } from './rams-tier-card'
 
@@ -6,7 +6,7 @@ import { RamsTierCard } from './rams-tier-card'
  * Three-column grid of tier cards.
  * Equal columns, no hierarchy tricks -- the content speaks.
  */
-export function RamsPricingGrid({ tiers }: { tiers: Tier[] }) {
+export function RamsPricingGrid({ tiers }: { tiers: PricingTier[] }) {
   return (
     <section className={s.grid}>
       <div className={s.gridInner}>

@@ -1,11 +1,14 @@
 /**
  * ConcreteSurface -- the raw material.
- * Board-formed concrete: grain, formwork lines, muted warmth.
+ * Formed concrete: grain, formwork lines, muted warmth.
+ * Ando's buildings use board-formed concrete where the
+ * wood grain transfers into the surface. Here we evoke
+ * that through layered noise and horizontal striations.
  */
 export function ConcreteSurface() {
   return (
     <>
-      {/* Warm ambient light — skylight wash */}
+      {/* Warm ambient light -- as if entering from a skylight */}
       <div
         className="pointer-events-none fixed inset-0 -z-20"
         aria-hidden="true"
@@ -19,12 +22,9 @@ export function ConcreteSurface() {
       />
 
       {/* Animated grain overlay */}
-      <div
-        className="ando-grain pointer-events-none fixed inset-[-50%] -z-10 h-[200%] w-[200%] opacity-[0.055]"
-        aria-hidden="true"
-      />
+      <div className="ando-grain" aria-hidden="true" />
 
-      {/* Horizontal formwork lines */}
+      {/* Horizontal formwork lines -- the board marks in concrete */}
       <div
         className="pointer-events-none fixed inset-0 -z-10 opacity-[0.025]"
         aria-hidden="true"
@@ -34,7 +34,8 @@ export function ConcreteSurface() {
         }}
       />
 
-      {/* Tie-hole pattern */}
+      {/* Tie-hole pattern -- the circular impressions left by
+          formwork ties. Ando's signature detail. */}
       <div
         className="pointer-events-none fixed inset-0 -z-10 opacity-[0.02]"
         aria-hidden="true"

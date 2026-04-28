@@ -1,0 +1,361 @@
+/* Elevated pricing — a tall, refined design system */
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #fdf6e3 0%,
+    #faf0d7 25%,
+    #f5e6c4 50%,
+    #ede0b8 75%,
+    #e8d5a3 100%
+  );
+  color: #3d3224;
+  font-family: "DM Sans", "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+}
+
+/* Decorative canopy silhouette along the top */
+.canopy {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.canopy::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 80px 60px at 10% 100%, #5a7247 0%, transparent 70%),
+    radial-gradient(ellipse 100px 80px at 25% 100%, #6b8553 0%, transparent 70%),
+    radial-gradient(ellipse 60px 50px at 40% 100%, #4e6a3b 0%, transparent 70%),
+    radial-gradient(ellipse 90px 70px at 60% 100%, #5a7247 0%, transparent 70%),
+    radial-gradient(ellipse 110px 85px at 78% 100%, #6b8553 0%, transparent 70%),
+    radial-gradient(ellipse 70px 55px at 92% 100%, #4e6a3b 0%, transparent 70%);
+  opacity: 0.12;
+}
+
+.hero {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.heroEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 0.7rem;
+  color: #8b7355;
+  margin-bottom: 1rem;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2c2416;
+  margin: 0 0 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.05rem;
+  color: #6b5d4a;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Tall card grid — elongated vertical rhythm */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+}
+
+/* Each card is intentionally tall — elongated for readability */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 2.5rem 1.75rem 2rem;
+  min-height: 520px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(139, 115, 85, 0.15);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 40px rgba(61, 50, 36, 0.08),
+    0 8px 16px rgba(61, 50, 36, 0.04);
+}
+
+.cardFeatured {
+  background: linear-gradient(165deg, #3d3224 0%, #5a4a36 100%);
+  color: #fdf6e3;
+  border-color: transparent;
+  box-shadow:
+    0 12px 32px rgba(61, 50, 36, 0.2),
+    0 4px 12px rgba(61, 50, 36, 0.1);
+  /* Featured card reaches a bit higher */
+  margin-top: -1rem;
+  margin-bottom: -0.5rem;
+  min-height: 560px;
+}
+
+.cardLocked {
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+/* Decorative leaf accent on each card */
+.leafAccent {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.15;
+}
+
+.leafAccentFeatured {
+  opacity: 0.25;
+}
+
+.tierName {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #8b7355;
+  margin: 0 0 0.75rem;
+}
+
+.tierNameFeatured {
+  color: #c9b896;
+}
+
+.tierNameLocked {
+  color: #8b7355;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 0 0.25rem;
+  color: #2c2416;
+}
+
+.priceFeatured {
+  color: #fdf6e3;
+}
+
+.pricePeriod {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #8b7355;
+}
+
+.pricePeriodFeatured {
+  color: #a89878;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #6b5d4a;
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.5;
+}
+
+.subtitleFeatured {
+  color: #c9b896;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(139, 115, 85, 0.15);
+  margin-bottom: 1.5rem;
+}
+
+.dividerFeatured {
+  background: rgba(201, 184, 150, 0.2);
+}
+
+.featureList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #4a3f32;
+}
+
+.featureItemFeatured {
+  color: #e0d5c0;
+}
+
+.featureItemLocked {
+  color: #8b7355;
+}
+
+.checkIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  color: #6b8553;
+}
+
+.checkIconFeatured {
+  color: #a3c48a;
+}
+
+.checkIconLocked {
+  color: #8b7355;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+  background: #3d3224;
+  color: #fdf6e3;
+  border: none;
+}
+
+.cta:hover {
+  background: #5a4a36;
+  transform: translateY(-1px);
+}
+
+.ctaFeatured {
+  background: #fdf6e3;
+  color: #3d3224;
+}
+
+.ctaFeatured:hover {
+  background: #f5e6c4;
+}
+
+.ctaLocked {
+  background: transparent;
+  color: #8b7355;
+  border: 1px solid #8b7355;
+}
+
+.ctaLocked:hover {
+  background: rgba(139, 115, 85, 0.08);
+}
+
+/* Veil for locked tier */
+.lockedVeil {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(139, 115, 85, 0.03) 8px,
+    rgba(139, 115, 85, 0.03) 16px
+  );
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Badge for featured */
+.badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  background: rgba(163, 196, 138, 0.2);
+  color: #a3c48a;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 2rem 1.5rem 3rem;
+  font-size: 0.75rem;
+  color: #8b7355;
+  line-height: 1.6;
+}
+
+.footerLink {
+  color: #6b5d4a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Scattered leaf decoration at the bottom */
+.groundCover {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+}
+
+.groundCover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 40px 20px at 15% 0%, #6b8553 0%, transparent 70%),
+    radial-gradient(ellipse 50px 25px at 35% 0%, #5a7247 0%, transparent 70%),
+    radial-gradient(ellipse 30px 15px at 55% 0%, #4e6a3b 0%, transparent 70%),
+    radial-gradient(ellipse 45px 22px at 75% 0%, #6b8553 0%, transparent 70%),
+    radial-gradient(ellipse 35px 18px at 90% 0%, #5a7247 0%, transparent 70%);
+  opacity: 0.08;
+}

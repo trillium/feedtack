@@ -12,7 +12,7 @@
   background: var(--bass-bg);
 }
 .scene::after {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -27,7 +27,7 @@
   overflow: hidden;
 }
 .heroTitle {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: clamp(4rem, 12vw, 10rem);
   font-weight: 900;
   line-height: 0.82;
@@ -46,7 +46,7 @@
   margin-top: 0.8rem;
 }
 .heroSubtitle {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 1.05rem;
   color: var(--bass-muted);
   margin-top: 1.2rem;
@@ -76,12 +76,7 @@
   z-index: 2;
 }
 @media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    align-items: start;
-    padding: 0 3rem 5rem;
-  }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: start; padding: 0 3rem 5rem; }
 }
 .card {
   position: relative;
@@ -97,44 +92,16 @@
   box-shadow: 8px 12px 0 rgba(0, 0, 0, 0.12);
 }
 @media (min-width: 768px) {
-  .card:nth-child(1) {
-    transform: rotate(-2.5deg) translateY(12px);
-    z-index: 1;
-  }
-  .card:nth-child(1):hover {
-    transform: rotate(-2.5deg) translateY(4px);
-    z-index: 10;
-  }
-  .card:nth-child(2) {
-    transform: rotate(1deg) scale(1.05) translateY(-8px);
-    z-index: 5;
-    border-color: var(--bass-accent);
-    border-width: 4px;
-    box-shadow: 8px 10px 0 rgba(198, 40, 40, 0.15);
-  }
-  .card:nth-child(2):hover {
-    transform: rotate(1deg) scale(1.07) translateY(-14px);
-    box-shadow: 10px 16px 0 rgba(198, 40, 40, 0.2);
-  }
-  .card:nth-child(3) {
-    transform: rotate(2deg) translateY(20px);
-    z-index: 1;
-  }
-  .card:nth-child(3):hover {
-    transform: rotate(2deg) translateY(12px);
-    z-index: 10;
-  }
+  .card:nth-child(1) { transform: rotate(-2.5deg) translateY(12px); z-index: 1; }
+  .card:nth-child(1):hover { transform: rotate(-2.5deg) translateY(4px); z-index: 10; }
+  .card:nth-child(2) { transform: rotate(1deg) scale(1.05) translateY(-8px); z-index: 5; border-color: var(--bass-accent); border-width: 4px; box-shadow: 8px 10px 0 rgba(198, 40, 40, 0.15); }
+  .card:nth-child(2):hover { transform: rotate(1deg) scale(1.07) translateY(-14px); box-shadow: 10px 16px 0 rgba(198, 40, 40, 0.2); }
+  .card:nth-child(3) { transform: rotate(2deg) translateY(20px); z-index: 1; }
+  .card:nth-child(3):hover { transform: rotate(2deg) translateY(12px); z-index: 10; }
 }
-.cardNumber {
-  position: absolute;
-  top: -30px;
-  right: -20px;
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: 0;
-}
+.cardNumber { position: absolute; top: -30px; right: -20px; opacity: 0.1; pointer-events: none; z-index: 0; }
 .tierName {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 1.5rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -144,11 +111,9 @@
   z-index: 1;
   margin-bottom: 0.2rem;
 }
-.tierNameFeatured {
-  color: var(--bass-accent);
-}
+.tierNameFeatured { color: var(--bass-accent); }
 .price {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 5rem;
   font-weight: 900;
   line-height: 1;
@@ -157,15 +122,9 @@
   position: relative;
   z-index: 1;
 }
-.pricePeriod {
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--bass-muted);
-  margin-left: 0.2rem;
-  font-style: italic;
-}
+.pricePeriod { font-size: 0.9rem; font-weight: 400; color: var(--bass-muted); margin-left: 0.2rem; font-style: italic; }
 .subtitle {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 0.85rem;
   color: var(--bass-muted);
   font-style: italic;
@@ -174,18 +133,8 @@
   position: relative;
   z-index: 1;
 }
-.divider {
-  width: 100%;
-  margin-bottom: 1rem;
-  opacity: 0.2;
-}
-.features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.75rem;
-  position: relative;
-  z-index: 1;
-}
+.divider { width: 100%; margin-bottom: 1rem; opacity: 0.2; }
+.features { list-style: none; padding: 0; margin: 0 0 1.75rem; position: relative; z-index: 1; }
 .feature {
   display: flex;
   align-items: flex-start;
@@ -196,19 +145,12 @@
   color: var(--bass-fg);
   opacity: 0.8;
 }
-.featureBullet {
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  margin-top: 5px;
-  background: var(--bass-accent);
-  transform: rotate(45deg);
-}
+.featureBullet { flex-shrink: 0; width: 8px; height: 8px; margin-top: 5px; background: var(--bass-accent); transform: rotate(45deg); }
 .cta {
   display: block;
   width: 100%;
   padding: 0.85rem 1.5rem;
-  font-family: "Courier New", Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
@@ -219,68 +161,16 @@
   background: var(--bass-fg);
   border: 3px solid var(--bass-fg);
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
   position: relative;
   z-index: 1;
 }
-.cta:hover {
-  background: var(--bass-accent);
-  border-color: var(--bass-accent);
-  color: #fff;
-  transform: rotate(-1.5deg);
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
-}
-.ctaFeatured {
-  background: var(--bass-accent);
-  border-color: var(--bass-accent);
-  color: #fff;
-}
-.ctaFeatured:hover {
-  background: var(--bass-accent-dark);
-  border-color: var(--bass-accent-dark);
-  transform: rotate(-1.5deg) scale(1.02);
-}
-.badge {
-  text-align: center;
-  padding: 2.5rem 1.5rem 4rem;
-  position: relative;
-  z-index: 2;
-}
-.badgeText {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.05rem;
-  color: var(--bass-muted);
-  font-style: italic;
-}
-.badgeLink {
-  color: var(--bass-accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  font-weight: 700;
-}
-.slashLeft {
-  position: absolute;
-  bottom: 12%;
-  left: 2%;
-  opacity: 0.12;
-  z-index: 0;
-}
-.slashRight {
-  position: absolute;
-  top: 25%;
-  right: 1%;
-  opacity: 0.08;
-  transform: scaleX(-1);
-  z-index: 0;
-}
-.spiralHero {
-  position: absolute;
-  top: 15%;
-  left: 5%;
-  opacity: 0.1;
-  z-index: 0;
-}
+.cta:hover { background: var(--bass-accent); border-color: var(--bass-accent); color: #fff; transform: rotate(-1.5deg); box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15); }
+.ctaFeatured { background: var(--bass-accent); border-color: var(--bass-accent); color: #fff; }
+.ctaFeatured:hover { background: var(--bass-accent-dark); border-color: var(--bass-accent-dark); transform: rotate(-1.5deg) scale(1.02); }
+.badge { text-align: center; padding: 2.5rem 1.5rem 4rem; position: relative; z-index: 2; }
+.badgeText { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; color: var(--bass-muted); font-style: italic; }
+.badgeLink { color: var(--bass-accent); text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+.slashLeft { position: absolute; bottom: 12%; left: 2%; opacity: 0.12; z-index: 0; }
+.slashRight { position: absolute; top: 25%; right: 1%; opacity: 0.08; transform: scaleX(-1); z-index: 0; }
+.spiralHero { position: absolute; top: 15%; left: 5%; opacity: 0.1; z-index: 0; }

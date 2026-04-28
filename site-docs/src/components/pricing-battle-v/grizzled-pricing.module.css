@@ -1,0 +1,205 @@
+.page {
+  font-family: "Courier New", Courier, "Liberation Mono", monospace;
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 4rem 1rem 6rem;
+  color: #999;
+  line-height: 1.6;
+}
+
+.header {
+  border-bottom: 1px solid #333;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #666;
+  margin: 0;
+}
+
+.manpageRef {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 0.25rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  margin: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.table th {
+  text-align: left;
+  font-weight: normal;
+  color: #666;
+  border-bottom: 1px solid #333;
+  padding: 0.4rem 0.75rem;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px dashed #222;
+  color: #888;
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: 1px solid #333;
+}
+
+.tierName {
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.price {
+  color: #6a6;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.featuresCell {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.ctaCell {
+  white-space: nowrap;
+}
+
+.ctaCode {
+  background: #111;
+  border: 1px solid #333;
+  padding: 0.15rem 0.4rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: #8a8;
+}
+
+.ctaLink {
+  color: #68a;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 2px;
+}
+
+.ctaLink:hover {
+  color: #8ac;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureList li::before {
+  content: "- ";
+  color: #555;
+}
+
+.details {
+  margin-top: 0.5rem;
+}
+
+.details summary {
+  cursor: pointer;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.details summary:hover {
+  color: #999;
+}
+
+.detailsContent {
+  padding: 0.5rem 0 0 1rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.detailsContent p {
+  margin: 0.3rem 0;
+}
+
+.comment {
+  color: #444;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.footer p {
+  margin: 0.25rem 0;
+}
+
+.viewSource {
+  color: #68a;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 2px;
+}
+
+.viewSource:hover {
+  color: #8ac;
+}
+
+.lockedBadge {
+  background: #222;
+  border: 1px solid #333;
+  color: #666;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.3rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.featuredBadge {
+  color: #555;
+  font-size: 0.7rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.snark {
+  color: #555;
+  font-style: italic;
+}
+
+.hr {
+  border: none;
+  border-top: 1px dashed #333;
+  margin: 1.5rem 0;
+}
