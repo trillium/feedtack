@@ -1,9 +1,14 @@
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { type NextRequest, NextResponse } from 'next/server'
 import { formatIssueBody, isRateLimited, PayloadSchema } from './helpers'
 
 const GITHUB_REPO = 'trillium/feedtack'
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_REPO}/issues`
 const LABEL = 'docs-feedback'
+
+const isLocalDev = process.env.NODE_ENV === 'development'
+const FEEDBACK_DIR = '.feedback'
 
 // ---------------------------------------------------------------------------
 // POST — create a GitHub issue from a Feedtack payload
@@ -23,11 +28,6 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const token = process.env.GITHUB_TOKEN
-  if (!token) {
-    return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
-  }
-
   let body: unknown
   try {
     body = await request.json()
@@ -44,6 +44,26 @@ export async function POST(request: NextRequest) {
   }
 
   const payload = result.data
+
+  // In development, write to disk instead of creating GitHub issues
+  if (isLocalDev) {
+    await mkdir(FEEDBACK_DIR, { recursive: true })
+    const item = { payload, replies: [], resolutions: [], archives: [] }
+    await writeFile(
+      join(FEEDBACK_DIR, `${payload.id}.json`),
+      JSON.stringify(item, null, 2),
+    )
+    console.log(
+      `[feedtack] Written to disk: ${FEEDBACK_DIR}/${payload.id}.json`,
+    )
+    return NextResponse.json({ ok: true }, { status: 201 })
+  }
+
+  const token = process.env.GITHUB_TOKEN
+  if (!token) {
+    return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+  }
+
   const titleComment =
     payload.comment.length > 80
       ? `${payload.comment.slice(0, 77)}...`
@@ -80,12 +100,33 @@ export async function POST(request: NextRequest) {
 // GET — fetch open docs-feedback issues, return as FeedbackItem[]
 // ---------------------------------------------------------------------------
 export async function GET(request: NextRequest) {
+  const pathname = request.nextUrl.searchParams.get('pathname')
+
+  // In development, read from disk
+  if (isLocalDev) {
+    try {
+      await mkdir(FEEDBACK_DIR, { recursive: true })
+      const files = (await readdir(FEEDBACK_DIR)).filter((f) =>
+        f.endsWith('.json'),
+      )
+      const items = await Promise.all(
+        files.map(async (f) =>
+          JSON.parse(await readFile(join(FEEDBACK_DIR, f), 'utf-8')),
+        ),
+      )
+      const filtered = pathname
+        ? items.filter((item) => item.payload?.page?.pathname === pathname)
+        : items
+      return NextResponse.json(filtered)
+    } catch {
+      return NextResponse.json([])
+    }
+  }
+
   const token = process.env.GITHUB_TOKEN
   if (!token) {
     return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
   }
-
-  const pathname = request.nextUrl.searchParams.get('pathname')
 
   const ghRes = await fetch(
     `${GITHUB_API}?labels=${LABEL}&state=open&per_page=50`,
