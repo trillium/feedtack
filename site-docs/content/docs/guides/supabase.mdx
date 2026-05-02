@@ -109,7 +109,7 @@ export class SupabaseAdapter implements FeedtackAdapter {
       .select("*, feedtack_replies(*), feedtack_resolutions(*), feedtack_archives(*)");
 
     if (filter?.pathname) {
-      query = query.eq("data->>page->>pathname", filter.pathname);
+      query = query.filter("data->page->>pathname", "eq", filter.pathname);
     }
 
     const { data, error } = await query;

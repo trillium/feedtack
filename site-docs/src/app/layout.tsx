@@ -1,5 +1,6 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import 'fumadocs-ui/style.css'
+import './globals.css'
 import type { ReactNode } from 'react'
 import { DocsFeedtackProvider } from '@/providers/FeedtackProvider'
 
@@ -8,7 +9,8 @@ export const metadata = {
     template: '%s | Feedtack',
     default: 'Feedtack docs',
   },
-  description: 'Documentation for Feedtack — drop-in React feedback overlay',
+  description:
+    'Documentation for Feedtack — drop-in feedback overlay for the web',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -21,6 +23,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             defaultTheme: 'system',
             attribute: 'class',
             enableSystem: true,
+          }}
+          search={{
+            enabled: true,
+            options: { api: '/api/search' },
           }}
         >
           <DocsFeedtackProvider>{children}</DocsFeedtackProvider>

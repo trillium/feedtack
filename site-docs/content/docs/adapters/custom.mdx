@@ -118,7 +118,7 @@ class SupabaseAdapter implements FeedtackAdapter {
     let query = this.supabase
       .from("feedtack_submissions")
       .select("*, feedtack_replies(*), feedtack_resolutions(*), feedtack_archives(*)");
-    if (filter?.pathname) query = query.eq("data->>page->>pathname", filter.pathname);
+    if (filter?.pathname) query = query.filter("data->page->>pathname", "eq", filter.pathname);
     const { data } = await query;
     return (data ?? []).map((row) => ({
       payload: row.data,
