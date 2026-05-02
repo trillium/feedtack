@@ -11,14 +11,17 @@
     "format": "biome check --write ."
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.2.4",
     "feedtack": "^1.0.1",
     "fumadocs-core": "^16.8.5",
+    "fumadocs-docgen": "^3.0.10",
     "fumadocs-mdx": "^14.3.2",
     "fumadocs-ui": "^16.8.5",
     "next": "^16.2.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-icons": "^5.6.0",
+    "tailwindcss": "^4.2.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
