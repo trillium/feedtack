@@ -1,4 +1,6 @@
 export { ConsoleAdapter } from './ConsoleAdapter.js'
+export type { DiskAdapterConfig } from './DiskAdapter.js'
+export { DiskAdapter } from './DiskAdapter.js'
 export type { LocalStorageAdapterConfig } from './LocalStorageAdapter.js'
 export { LocalStorageAdapter } from './LocalStorageAdapter.js'
 export type { WebhookAdapterConfig } from './WebhookAdapter.js'
