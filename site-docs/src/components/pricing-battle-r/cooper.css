@@ -1,0 +1,474 @@
+/* ============================================================
+   Pricing Battle R — Muriel Cooper / MIT Media Lab
+   Computational typography, layered depth, information landscapes
+   ============================================================ */
+
+.cooper-scene {
+  --cooper-bg: #0a0a0f;
+  --cooper-fg: #e8e8f0;
+  --cooper-dim: rgba(232, 232, 240, 0.35);
+  --cooper-accent: #4488ff;
+  --cooper-accent-dim: rgba(68, 136, 255, 0.25);
+  --cooper-warm: #ff6644;
+  --cooper-warm-dim: rgba(255, 102, 68, 0.15);
+
+  min-height: 100vh;
+  background: var(--cooper-bg);
+  color: var(--cooper-fg);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---- Information Landscape Background ---- */
+
+.cooper-landscape {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 30% 20%,
+      rgba(68, 136, 255, 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 70% 70%,
+      rgba(255, 102, 68, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 90% at 50% 50%,
+      rgba(68, 136, 255, 0.02) 0%,
+      transparent 70%
+    );
+}
+
+/* Floating depth grid — receding perspective lines */
+.cooper-grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(68, 136, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68, 136, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(
+    ellipse 70% 50% at 50% 40%,
+    black 0%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 50% at 50% 40%,
+    black 0%,
+    transparent 100%
+  );
+}
+
+/* ---- Layered Typography Hero ---- */
+
+.cooper-hero {
+  position: relative;
+  z-index: 1;
+  padding: 8rem 2rem 6rem;
+  text-align: center;
+  perspective: 800px;
+}
+
+.cooper-hero-stack {
+  position: relative;
+  display: inline-block;
+}
+
+/* Deep background layer — huge, blurred, transparent */
+.cooper-hero-depth-3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(-200px) scale(2.2);
+  font-size: clamp(6rem, 18vw, 16rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(68, 136, 255, 0.08);
+  line-height: 0.85;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Mid layer — semi-transparent */
+.cooper-hero-depth-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(-80px) scale(1.4);
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: rgba(68, 136, 255, 0.12);
+  line-height: 0.9;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  filter: blur(1px);
+}
+
+/* Front layer — sharp, readable */
+.cooper-hero-depth-1 {
+  position: relative;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--cooper-fg);
+  line-height: 0.9;
+  z-index: 2;
+}
+
+.cooper-hero-sub {
+  position: relative;
+  z-index: 2;
+  margin-top: 2rem;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cooper-dim);
+}
+
+.cooper-hero-sub span {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: rgba(232, 232, 240, 0.2);
+}
+
+/* ---- Tier Cards — Floating Planes ---- */
+
+.cooper-tiers {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  perspective: 1200px;
+}
+
+@media (max-width: 1024px) {
+  .cooper-tiers {
+    grid-template-columns: 1fr;
+    max-width: 32rem;
+    gap: 3rem;
+  }
+}
+
+.cooper-card {
+  position: relative;
+  padding: 2.5rem 2rem;
+  background: rgba(232, 232, 240, 0.02);
+  border: 1px solid rgba(232, 232, 240, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    transform 0.4s ease,
+    border-color 0.3s ease;
+}
+
+.cooper-card:hover {
+  border-color: rgba(68, 136, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+/* Featured card gets a glow plane */
+.cooper-card--featured {
+  border-color: rgba(68, 136, 255, 0.15);
+  background: rgba(68, 136, 255, 0.03);
+}
+
+.cooper-card--featured::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(68, 136, 255, 0.12);
+  pointer-events: none;
+  animation: cooper-pulse 4s ease-in-out infinite;
+}
+
+@keyframes cooper-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Locked card — depth recession */
+.cooper-card--locked {
+  opacity: 0.6;
+  filter: blur(0.5px);
+}
+
+.cooper-card--locked:hover {
+  opacity: 0.8;
+  filter: blur(0);
+}
+
+/* ---- Card Typography ---- */
+
+.cooper-card-label {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--cooper-dim);
+  margin-bottom: 1.5rem;
+}
+
+.cooper-card-name {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+/* Layered name — ghost behind */
+.cooper-card-name-ghost {
+  position: absolute;
+  top: 2.5rem;
+  left: 2rem;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232, 232, 240, 0.04);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cooper-card--featured .cooper-card-name-ghost {
+  -webkit-text-stroke-color: rgba(68, 136, 255, 0.06);
+}
+
+.cooper-card-price {
+  font-size: 3.5rem;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-top: 1rem;
+  color: var(--cooper-fg);
+}
+
+.cooper-card--featured .cooper-card-price {
+  color: var(--cooper-accent);
+}
+
+.cooper-card-subtitle {
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--cooper-dim);
+  margin-top: 0.5rem;
+}
+
+/* ---- Feature List — Computational Readout ---- */
+
+.cooper-features {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(232, 232, 240, 0.06);
+  list-style: none;
+  padding-left: 0;
+}
+
+.cooper-feature {
+  position: relative;
+  padding: 0.4rem 0 0.4rem 1.2rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: rgba(232, 232, 240, 0.55);
+  line-height: 1.5;
+}
+
+/* Data point marker */
+.cooper-feature::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7rem;
+  width: 4px;
+  height: 4px;
+  background: var(--cooper-accent-dim);
+  border-radius: 0;
+}
+
+.cooper-card--featured .cooper-feature::before {
+  background: var(--cooper-accent);
+  opacity: 0.5;
+}
+
+/* ---- CTA — Minimal Computational Button ---- */
+
+.cooper-cta {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cooper-fg);
+  border: 1px solid rgba(232, 232, 240, 0.15);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.cooper-cta:hover {
+  background: rgba(232, 232, 240, 0.05);
+  border-color: rgba(232, 232, 240, 0.3);
+  color: var(--cooper-fg);
+}
+
+.cooper-card--featured .cooper-cta {
+  border-color: rgba(68, 136, 255, 0.3);
+  color: var(--cooper-accent);
+}
+
+.cooper-card--featured .cooper-cta:hover {
+  background: rgba(68, 136, 255, 0.08);
+  border-color: rgba(68, 136, 255, 0.5);
+}
+
+/* ---- Floating Axis Labels ---- */
+
+.cooper-axis {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 240, 0.08);
+}
+
+.cooper-axis--left {
+  top: 50%;
+  left: 1rem;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+}
+
+.cooper-axis--right {
+  top: 50%;
+  right: 1rem;
+  transform: rotate(90deg) translateX(50%);
+  transform-origin: right center;
+}
+
+/* ---- Footer — Information Plane ---- */
+
+.cooper-footer {
+  position: relative;
+  z-index: 1;
+  padding: 4rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(232, 232, 240, 0.04);
+}
+
+.cooper-footer-text {
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 240, 0.15);
+}
+
+.cooper-footer-text a {
+  color: rgba(68, 136, 255, 0.4);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.cooper-footer-text a:hover {
+  color: rgba(68, 136, 255, 0.7);
+}
+
+/* ---- Floating Depth Markers ---- */
+
+.cooper-depth-marker {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 240, 0.06);
+}
+
+/* ---- Coordinate Readout ---- */
+
+.cooper-coords {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 240, 0.1);
+}
+
+/* Card index number — large, ghosted */
+.cooper-card-index {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232, 232, 240, 0.04);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cooper-card--featured .cooper-card-index {
+  -webkit-text-stroke-color: rgba(68, 136, 255, 0.06);
+}
+
+/* ---- Lock Badge ---- */
+
+.cooper-lock {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cooper-warm);
+  opacity: 0.6;
+  vertical-align: middle;
+}

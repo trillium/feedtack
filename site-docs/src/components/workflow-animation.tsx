@@ -22,7 +22,10 @@ export function WorkflowAnimation() {
       className="flex items-center justify-center px-6 py-16 sm:py-20"
       aria-label="Animated workflow showing how Feedtack works"
     >
-      <div className="wfa-root w-full max-w-2xl">
+      <div
+        className="wfa-root mx-auto w-full"
+        style={{ maxWidth: 'min(80vw, 520px)', maxHeight: '650px' }}
+      >
         <StepProgress />
         <svg
           viewBox="0 0 300 200"
@@ -31,6 +34,7 @@ export function WorkflowAnimation() {
           role="img"
           aria-label="Feedtack workflow: browse, click, describe, submit, catalogue"
           className="h-auto w-full"
+          style={{ maxHeight: '400px' }}
         >
           <StepBrowser />
           <StepClick />

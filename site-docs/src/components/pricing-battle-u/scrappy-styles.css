@@ -1,0 +1,405 @@
+/* pricing-battle-u: The Scrappy Startup Dev */
+
+@keyframes countdown-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes badge-wobble {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes yc-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 100, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 100, 0, 0.2);
+  }
+}
+
+.scrappy-page {
+  --scrappy-orange: #ff6600;
+  --scrappy-bg: #fafafa;
+  --scrappy-card: #ffffff;
+  --scrappy-text: #1a1a1a;
+  --scrappy-muted: #666666;
+  --scrappy-border: #e5e5e5;
+  --scrappy-blue: #2563eb;
+  --scrappy-green: #10b981;
+  --scrappy-purple: #7c3aed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root[class~="dark"] .scrappy-page {
+  --scrappy-bg: #111111;
+  --scrappy-card: #1a1a1a;
+  --scrappy-text: #f5f5f5;
+  --scrappy-muted: #999999;
+  --scrappy-border: #333333;
+}
+
+.scrappy-page {
+  background: var(--scrappy-bg);
+  color: var(--scrappy-text);
+}
+
+/* Notion-style toggle that does nothing */
+.compare-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--scrappy-border);
+  background: var(--scrappy-card);
+  font-size: 13px;
+  color: var(--scrappy-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s;
+}
+
+.compare-toggle:hover {
+  border-color: var(--scrappy-orange);
+}
+
+.compare-toggle-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--scrappy-border);
+  transition: background 0.15s;
+}
+
+.compare-toggle:hover .compare-toggle-dot {
+  background: var(--scrappy-orange);
+}
+
+/* Countdown timer */
+.countdown-bar {
+  background: linear-gradient(90deg, var(--scrappy-orange), #ff8533);
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  animation: countdown-pulse 2s ease-in-out infinite;
+}
+
+/* Most Popular badge — on EVERY card */
+.popular-badge {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  background: var(--scrappy-orange);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  animation: badge-wobble 3s ease-in-out infinite;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+/* Card styles */
+.scrappy-card {
+  position: relative;
+  background: var(--scrappy-card);
+  border: 1px solid var(--scrappy-border);
+  border-radius: 12px;
+  padding: 32px 24px 24px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.scrappy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Intentionally slightly misaligned — different cards have different top padding */
+.scrappy-card:nth-child(1) {
+  transform: rotate(-0.3deg);
+}
+
+.scrappy-card:nth-child(2) {
+  transform: rotate(0.2deg);
+  margin-top: -4px;
+}
+
+.scrappy-card:nth-child(3) {
+  transform: rotate(-0.15deg);
+  margin-top: 2px;
+}
+
+.scrappy-card:nth-child(1):hover {
+  transform: rotate(-0.3deg) translateY(-4px);
+}
+
+.scrappy-card:nth-child(2):hover {
+  transform: rotate(0.2deg) translateY(-4px);
+}
+
+.scrappy-card:nth-child(3):hover {
+  transform: rotate(-0.15deg) translateY(-4px);
+}
+
+/* Price style — notion vibes */
+.scrappy-price {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--scrappy-text);
+}
+
+.scrappy-price-period {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--scrappy-muted);
+  margin-left: 4px;
+}
+
+/* Strikethrough fake old price */
+.scrappy-old-price {
+  font-size: 20px;
+  color: var(--scrappy-muted);
+  text-decoration: line-through;
+  margin-right: 8px;
+  opacity: 0.6;
+}
+
+/* Feature list */
+.scrappy-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scrappy-features li {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--scrappy-text);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.scrappy-features li::before {
+  content: "✓";
+  color: var(--scrappy-green);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* CTA button */
+.scrappy-cta {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+  text-decoration: none;
+}
+
+.scrappy-cta:hover {
+  transform: translateY(-1px);
+}
+
+.scrappy-cta-primary {
+  background: var(--scrappy-orange);
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+}
+
+.scrappy-cta-primary:hover {
+  box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+}
+
+.scrappy-cta-secondary {
+  background: var(--scrappy-text);
+  color: var(--scrappy-bg);
+}
+
+.scrappy-cta-outline {
+  background: transparent;
+  color: var(--scrappy-text);
+  border: 2px solid var(--scrappy-border);
+}
+
+.scrappy-cta-outline:hover {
+  border-color: var(--scrappy-orange);
+  color: var(--scrappy-orange);
+}
+
+/* Tier name emoji */
+.scrappy-tier-emoji {
+  font-size: 28px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.scrappy-tier-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--scrappy-text);
+}
+
+.scrappy-tier-desc {
+  font-size: 13px;
+  color: var(--scrappy-muted);
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+/* Marquee banner */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px solid var(--scrappy-border);
+  border-bottom: 1px solid var(--scrappy-border);
+  padding: 10px 0;
+  margin: 40px 0;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+  font-size: 13px;
+  color: var(--scrappy-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* YC-style social proof */
+.social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 0;
+  flex-wrap: wrap;
+}
+
+.social-proof-item {
+  font-size: 12px;
+  color: var(--scrappy-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+/* Lock overlay for enterprise */
+.scrappy-lock-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: rgba(250, 250, 250, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 24px;
+  text-align: center;
+}
+
+:root[class~="dark"] .scrappy-lock-overlay {
+  background: rgba(17, 17, 17, 0.85);
+}
+
+.scrappy-lock-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.scrappy-lock-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--scrappy-text);
+  margin: 0 0 4px;
+}
+
+.scrappy-lock-subtext {
+  font-size: 12px;
+  color: var(--scrappy-muted);
+  margin: 0;
+}
+
+/* Grid */
+.scrappy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .scrappy-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .scrappy-card:nth-child(1),
+  .scrappy-card:nth-child(2),
+  .scrappy-card:nth-child(3) {
+    transform: none;
+    margin-top: 0;
+  }
+
+  .scrappy-card:nth-child(1):hover,
+  .scrappy-card:nth-child(2):hover,
+  .scrappy-card:nth-child(3):hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Notion-style divider */
+.scrappy-divider {
+  height: 1px;
+  background: var(--scrappy-border);
+  margin: 16px 0;
+}
