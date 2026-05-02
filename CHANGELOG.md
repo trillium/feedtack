@@ -1,5 +1,32 @@
 # Changelog
 
+## [](https://github.com/trillium/feedtack/compare/v1.0.1...vnull) (2026-05-02)
+
+### Features
+
+* export DiskAdapter from adapters barrel ([8c0cf52](https://github.com/trillium/feedtack/commit/8c0cf52bc6b43c3b484b51d426155123a4d4e301))
+* **site-docs:** add animated workflow visualization to landing page ([5ac7eae](https://github.com/trillium/feedtack/commit/5ac7eae848ac4e820845c2e382ab99154fd4f31e))
+* **site-docs:** add expanding pulse ring to submit step animation ([25e5b4f](https://github.com/trillium/feedtack/commit/25e5b4f1379c9c320497c096bc2ce24ca05b0959))
+* **site-docs:** add joke pricing page with sponsor links ([07227dd](https://github.com/trillium/feedtack/commit/07227dd46dc018da4613a368f8692f8960dc83d4))
+* **site-docs:** add pin teardrop icon to Feedtack wordmark logo ([b4d2e8a](https://github.com/trillium/feedtack/commit/b4d2e8a3ec3573760eb29080a2e4a64603f419d3))
+* **site-docs:** add skeleton shimmer bar component for loading effect ([1d9797a](https://github.com/trillium/feedtack/commit/1d9797a4b7e40dc6aac8726ded96b81644692a9e))
+* **site-docs:** add Tailwind CSS v4 with PostCSS integration ([f5af3dc](https://github.com/trillium/feedtack/commit/f5af3dc13ca7bf7244be8d6e8609e04c0f621895))
+* **site-docs:** fix animation cursor design and step layout ([1188dea](https://github.com/trillium/feedtack/commit/1188dea4071ad5c854950f0242dd515573859ea4))
+* **site-docs:** flexbox step progress bar and seamless browse-click transition ([b7052e4](https://github.com/trillium/feedtack/commit/b7052e48967dba4258180a2c6ce5972170aa1520))
+* **site-docs:** modern Figma-style cursor with smooth glide animation ([ce254c5](https://github.com/trillium/feedtack/commit/ce254c52c190e1d764607e566416225a54809848))
+* **site-docs:** pricing page, nav, and search ([#23](https://github.com/trillium/feedtack/issues/23)) ([b5c62a6](https://github.com/trillium/feedtack/commit/b5c62a6c7cc461b8cbbf05d1729a0cf1a35aeac3))
+* **site-docs:** redesign hero spacing and features grid layout ([5f3c27c](https://github.com/trillium/feedtack/commit/5f3c27c18a8dcbcc52d8ecbc8a64cf7cbba3caf4))
+* **site-docs:** redesign pricing page with premium visual treatment ([69cf218](https://github.com/trillium/feedtack/commit/69cf2180dd2c2008dabce0eb2b1d4e0db380b70b))
+* **site-docs:** write feedback to filesystem on localhost ([ac80369](https://github.com/trillium/feedtack/commit/ac80369d7d8ad655c502e0b036a1761d06b5ed4b))
+
+### Bug Fixes
+
+* **site-docs:** improve step progress bar visual design ([348d2da](https://github.com/trillium/feedtack/commit/348d2dabbe85caf43708c3551f7235760f7fb01a))
+* **site-docs:** replace solid typing bars with word-dash animation ([5fb9695](https://github.com/trillium/feedtack/commit/5fb9695c39b20ebde45d2bb2322d441c84eb16c2))
+* **site-docs:** restructure animation steps with centered stage layout ([18c4333](https://github.com/trillium/feedtack/commit/18c43337d9151d1b396a722581ed358a4f50225a))
+* **site-docs:** upgrade pricing page visual design ([d1f561a](https://github.com/trillium/feedtack/commit/d1f561a9f9df87cae96a77509f97832750e8e6d8))
+* **site-docs:** use shared PinSvg component in wordmark logo ([5943b76](https://github.com/trillium/feedtack/commit/5943b76036c2434e9ec4db14eb28e5c9c359b543))
+
 ## [1.0.1](https://github.com/trillium/feedtack/compare/v1.0.0...v1.0.1) (2026-04-21)
 
 ### Bug Fixes
