@@ -1,6 +1,7 @@
 'use client'
 
 import type React from 'react'
+import type { FeedtackFlushEvent } from '../core/types.js'
 import type { FeedtackAdapter } from '../types/adapter.js'
 import type { FeedbackItem, FeedtackUser } from '../types/payload.js'
 import type { FeedtackTheme } from '../types/theme.js'
@@ -11,7 +12,6 @@ import { FeedbackModal } from './FeedbackModal.js'
 import { PinOverlay } from './PinOverlay.js'
 import { ThreadPanel } from './ThreadPanel.js'
 import { useAnchoredPins } from './useAnchoredPins.js'
-import type { FeedtackFlushEvent } from './useFeedtackFlush.js'
 import { useFeedtackState } from './useFeedtackState.js'
 import { cx, getAnchoredPosition } from './utils.js'
 
