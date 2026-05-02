@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:py-40">
+      <section className="relative overflow-hidden px-6 pt-32 pb-24 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40">
         {/* Scattered decorative pins */}
         <ScatteredPins />
 
@@ -68,7 +68,7 @@ export default function HomePage() {
       {/* CTA */}
       <section className="px-6 py-16 text-center">
         <p className="text-fd-muted-foreground">
-          Open source. MIT licensed. Built for React.
+          Open source. MIT licensed. Built for the web.
         </p>
         <div className="mt-4">
           <code className="rounded bg-fd-muted px-3 py-1.5 text-sm font-mono text-fd-foreground">
