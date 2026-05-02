@@ -1,4 +1,12 @@
+import { HiCheck, HiLockClosed, HiLockOpen } from 'react-icons/hi2'
+import { LuCrown, LuPartyPopper, LuRocket } from 'react-icons/lu'
 import type { TierT } from './tier-data'
+
+const TIER_ICONS = {
+  party: LuPartyPopper,
+  rocket: LuRocket,
+  crown: LuCrown,
+} as const
 
 function tierClass(name: string): string {
   if (name === 'Free') return 'tier-free'
@@ -15,7 +23,16 @@ function CodeSnippet({ tierName }: { tierName: string }) {
         {' }'} <span className="kw">from</span>{' '}
         <span className="str">&apos;feedtack&apos;</span>
         <br />
-        <span className="cm">{"// FREE?! LET'S GO! 🎉"}</span>
+        <span className="cm">
+          {"// FREE?! LET'S GO! "}
+          <LuPartyPopper
+            style={{
+              display: 'inline',
+              verticalAlign: 'middle',
+              fontSize: '1em',
+            }}
+          />
+        </span>
       </div>
     )
   }
@@ -25,7 +42,16 @@ function CodeSnippet({ tierName }: { tierName: string }) {
         <span className="kw">const</span> <span className="fn">vibes</span> ={' '}
         <span className="str">&apos;immaculate&apos;</span>
         <br />
-        <span className="cm">{'// you leveled up 🚀'}</span>
+        <span className="cm">
+          {'// you leveled up '}
+          <LuRocket
+            style={{
+              display: 'inline',
+              verticalAlign: 'middle',
+              fontSize: '1em',
+            }}
+          />
+        </span>
       </div>
     )
   }
@@ -34,7 +60,16 @@ function CodeSnippet({ tierName }: { tierName: string }) {
       <span className="kw">await</span> <span className="fn">enterprise</span>(
       <span className="str">&apos;deploy&apos;</span>)
       <br />
-      <span className="cm">{"// it's just npm install 👑"}</span>
+      <span className="cm">
+        {"// it's just npm install "}
+        <LuCrown
+          style={{
+            display: 'inline',
+            verticalAlign: 'middle',
+            fontSize: '1em',
+          }}
+        />
+      </span>
     </div>
   )
 }
@@ -42,6 +77,7 @@ function CodeSnippet({ tierName }: { tierName: string }) {
 export function PricingCard({ tier }: { tier: TierT }) {
   const cls = tierClass(tier.name)
   const isLocked = tier.locked === true
+  const TierIcon = TIER_ICONS[tier.icon]
 
   return (
     <div
@@ -52,7 +88,11 @@ export function PricingCard({ tier }: { tier: TierT }) {
           MOST POPULAR (THEY&apos;RE ALL THE SAME)
         </div>
       )}
-      {isLocked && <div className="tolinski-lock-overlay">🔒</div>}
+      {isLocked && (
+        <div className="tolinski-lock-overlay">
+          <HiLockClosed style={{ fontSize: '1em' }} />
+        </div>
+      )}
       <div className="tolinski-card-inner">
         {/* Level badge */}
         <div className="tolinski-level">
@@ -62,7 +102,14 @@ export function PricingCard({ tier }: { tier: TierT }) {
 
         {/* Name + subtitle */}
         <h3 className="tolinski-card-name">
-          {tier.emoji} {tier.name}
+          <TierIcon
+            style={{
+              display: 'inline',
+              verticalAlign: 'middle',
+              fontSize: '1em',
+            }}
+          />{' '}
+          {tier.name}
         </h3>
         <p className="tolinski-card-subtitle">{tier.subtitle}</p>
 
@@ -82,7 +129,7 @@ export function PricingCard({ tier }: { tier: TierT }) {
           {tier.features.map((f) => (
             <li key={f} className="tolinski-feature">
               <span className="tolinski-check" aria-hidden="true">
-                ✓
+                <HiCheck style={{ fontSize: '1em' }} />
               </span>
               <span>{f}</span>
             </li>
@@ -99,7 +146,19 @@ export function PricingCard({ tier }: { tier: TierT }) {
             className="tolinski-cta"
             style={{ marginTop: '1.25rem' }}
           >
-            {isLocked ? '🔓 ' : ''}
+            {isLocked ? (
+              <>
+                <HiLockOpen
+                  style={{
+                    display: 'inline',
+                    verticalAlign: 'middle',
+                    fontSize: '1em',
+                  }}
+                />{' '}
+              </>
+            ) : (
+              ''
+            )}
             {tier.cta}
           </a>
         ) : (

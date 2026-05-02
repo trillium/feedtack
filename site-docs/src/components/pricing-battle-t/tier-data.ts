@@ -7,7 +7,7 @@ export interface TierT {
   ctaHref?: string
   featured?: boolean
   locked?: boolean
-  emoji: string
+  icon: 'party' | 'rocket' | 'crown'
   levelLabel: string
 }
 
@@ -16,7 +16,7 @@ export const TIERS: TierT[] = [
     name: 'Free',
     price: '$0',
     subtitle: 'Forever. Seriously.',
-    emoji: '🎉',
+    icon: 'party',
     levelLabel: 'LEVEL 1',
     features: [
       'All adapters (console, localStorage, Supabase, webhooks)',
@@ -33,7 +33,7 @@ export const TIERS: TierT[] = [
     name: 'Pro',
     price: '$0',
     subtitle: 'Same price. More prestige.',
-    emoji: '🚀',
+    icon: 'rocket',
     levelLabel: 'LEVEL 2',
     featured: true,
     features: [
@@ -50,7 +50,7 @@ export const TIERS: TierT[] = [
     name: 'Enterprise',
     price: '$0',
     subtitle: 'For teams who like saying "enterprise."',
-    emoji: '👑',
+    icon: 'crown',
     levelLabel: 'BOSS LEVEL',
     locked: true,
     features: [
