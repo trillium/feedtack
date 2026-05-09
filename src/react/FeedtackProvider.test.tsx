@@ -58,6 +58,26 @@ describe('FeedtackProvider', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
+  it('closes modal on backdrop click (native dialog)', async () => {
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
+          <div />
+        </FeedtackProvider>,
+      )
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Feedback'))
+    })
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    // Simulate a click on the <dialog> element itself (the backdrop area)
+    await act(async () => {
+      fireEvent.click(dialog)
+    })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
   it('modal has Site and Page tabs', async () => {
     await act(async () => {
       render(

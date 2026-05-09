@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { FeedbackItem, FeedtackSentiment } from '../types/payload.js'
 import { ThreadView } from './ThreadView.js'
 import { cx } from './utils.js'
@@ -52,28 +52,38 @@ export function FeedbackModal({
   openThreadId,
   onOpenThread,
 }: FeedbackModalProps) {
-  const panelRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
+  // Sync the native dialog open state with the isOpen prop
   useEffect(() => {
-    if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (isOpen && !dialog.open) {
+      dialog.showModal()
+    } else if (!isOpen && dialog.open) {
+      dialog.close()
     }
-    const onDown = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        // Don't close if click was on the toggle button itself
-        const btn = document.querySelector('.feedtack-btn')
-        if (btn?.contains(e.target as Node)) return
+  }, [isOpen])
+
+  // Handle native cancel event (Escape key) — delegates to onClose
+  const handleCancel = useCallback(
+    (e: React.SyntheticEvent) => {
+      e.preventDefault()
+      onClose()
+    },
+    [onClose],
+  )
+
+  // Close on backdrop click: when the click target is the <dialog> itself
+  // (not its children), it means the user clicked the backdrop
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent<HTMLDialogElement>) => {
+      if (e.target === dialogRef.current) {
         onClose()
       }
-    }
-    window.addEventListener('keydown', onKey)
-    document.addEventListener('mousedown', onDown)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.removeEventListener('mousedown', onDown)
-    }
-  }, [isOpen, onClose])
+    },
+    [onClose],
+  )
 
   if (!isOpen) return null
 
@@ -83,12 +93,13 @@ export function FeedbackModal({
     : null
 
   return (
-    <div
-      ref={panelRef}
+    // biome-ignore lint/a11y/useKeyWithClickEvents: native <dialog> handles keyboard via onCancel (Escape)
+    <dialog
+      ref={dialogRef}
       className="feedtack-modal"
-      role="dialog"
       aria-label="Feedback"
-      aria-modal="true"
+      onCancel={handleCancel}
+      onClick={handleBackdropClick}
     >
       <div className="feedtack-modal-header">
         <span className="feedtack-modal-title">Feedback</span>
@@ -225,6 +236,6 @@ export function FeedbackModal({
           Place a pin
         </button>
       </div>
-    </div>
+    </dialog>
   )
 }

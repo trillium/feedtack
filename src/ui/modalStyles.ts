@@ -15,6 +15,8 @@ export const FEEDTACK_MODAL_STYLES = `
     right: 24px;
     width: 360px;
     max-height: 70vh;
+    margin: 0;
+    padding: 0;
     background: var(--ft-bg);
     border: 1px solid var(--ft-border);
     border-radius: calc(var(--ft-radius) + 4px);
@@ -23,6 +25,10 @@ export const FEEDTACK_MODAL_STYLES = `
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  .feedtack-modal::backdrop {
+    background: transparent;
   }
 
   .feedtack-modal-header {
@@ -230,6 +236,7 @@ export const FEEDTACK_MODAL_STYLES = `
       bottom: 64px;
       width: 100vw;
       max-height: 85vh;
+      margin: 0;
       border-radius: var(--ft-radius) var(--ft-radius) 0 0;
       border-left: none;
       border-right: none;
