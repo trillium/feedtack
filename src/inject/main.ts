@@ -1,8 +1,4 @@
-import type {
-  FeedtackPayload,
-  FeedtackPin,
-  FeedtackSentiment,
-} from '../types/payload.js'
+import type { FeedtackPayload, FeedtackSentiment } from '../types/payload.js'
 import { SCHEMA_VERSION } from '../types/payload.js'
 import {
   getDeviceMeta,
@@ -13,6 +9,8 @@ import {
 } from './capture.js'
 import { parseConfig } from './config.js'
 import { sendPayload } from './egress.js'
+import type { PinMarker } from './pin-marker.js'
+import { createPinMarker, PIN_COLOR, removePinMarkers } from './pin-marker.js'
 import type { FeedtackInjectRawConfig } from './types.js'
 import type { InjectUI } from './ui.js'
 import { createInjectUI } from './ui.js'
@@ -24,59 +22,11 @@ declare global {
   }
 }
 
-/** Pin marker placed on the host page (outside Shadow DOM) */
-interface PinMarker {
-  el: HTMLDivElement
-  pin: Omit<FeedtackPin, 'index'>
-}
-
-const PIN_COLOR = '#2563eb'
-
-function createPinMarker(x: number, y: number, index: number): HTMLDivElement {
-  const el = document.createElement('div')
-  el.style.cssText = [
-    'position:absolute',
-    `left:${x}px`,
-    `top:${y}px`,
-    'z-index:2147483641',
-    'width:24px',
-    'height:24px',
-    'border-radius:50% 50% 50% 0',
-    'transform:translate(-50%,-100%) rotate(-45deg)',
-    `background:${PIN_COLOR}`,
-    'border:2px solid rgba(255,255,255,0.8)',
-    'box-shadow:0 2px 6px rgba(0,0,0,0.3)',
-    'pointer-events:none',
-  ].join(';')
-  const icon = document.createElement('span')
-  icon.style.cssText = [
-    'position:absolute',
-    'inset:0',
-    'display:flex',
-    'align-items:center',
-    'justify-content:center',
-    'transform:rotate(45deg)',
-    'font-size:12px',
-    'font-weight:700',
-    'color:#fff',
-    'line-height:1',
-  ].join(';')
-  icon.textContent = String(index)
-  el.appendChild(icon)
-  document.body.appendChild(el)
-  return el
-}
-
-function removePinMarkers(markers: PinMarker[]): void {
-  for (const m of markers) m.el.remove()
-  markers.length = 0
-}
-
 function updatePinCount(ui: InjectUI, count: number): void {
   ui.pinCount.textContent =
     count === 0
-      ? 'Click on elements to place pins, then submit.'
-      : `${count} pin${count > 1 ? 's' : ''} placed. Click more or submit.`
+      ? 'Click on an element to place a pin.'
+      : 'Pin placed. Add your comment and submit.'
 }
 
 ;(function feedtackInject() {
@@ -104,6 +54,17 @@ function updatePinCount(ui: InjectUI, count: number): void {
     }
   }
 
+  function resetForm(): void {
+    removePinMarkers(markers)
+    ui.textarea.value = ''
+    sentiment = null
+    ui.sentimentGood.classList.remove('selected')
+    ui.sentimentBad.classList.remove('selected')
+    ui.errorMsg.style.display = 'none'
+    ui.status.style.display = 'none'
+    updatePinCount(ui, 0)
+  }
+
   function openPanel(): void {
     panelOpen = true
     ui.panel.classList.add('open')
@@ -114,14 +75,7 @@ function updatePinCount(ui: InjectUI, count: number): void {
     panelOpen = false
     ui.panel.classList.remove('open')
     setPinMode(false)
-    removePinMarkers(markers)
-    ui.textarea.value = ''
-    sentiment = null
-    ui.sentimentGood.classList.remove('selected')
-    ui.sentimentBad.classList.remove('selected')
-    ui.errorMsg.style.display = 'none'
-    ui.status.style.display = 'none'
-    updatePinCount(ui, 0)
+    resetForm()
   }
 
   // FAB toggle
@@ -171,15 +125,20 @@ function updatePinCount(ui: InjectUI, count: number): void {
   }
 
   function placePin(clientX: number, clientY: number, target: Element): void {
+    // One pin per tack — clear any existing pin first
+    removePinMarkers(markers)
+
     const coords = getPinCoords({ clientX, clientY })
     const pin: Omit<FeedtackPin, 'index'> = {
       color: PIN_COLOR,
       ...coords,
       target: getTargetMeta(target),
     }
-    const markerEl = createPinMarker(coords.x, coords.y, markers.length + 1)
+    const markerEl = createPinMarker(coords.x, coords.y, 1)
     markers.push({ el: markerEl, pin })
-    updatePinCount(ui, markers.length)
+    updatePinCount(ui, 1)
+    setPinMode(false)
+    ui.textarea.focus()
   }
 
   document.addEventListener('click', handlePinClick, true)
@@ -221,7 +180,17 @@ function updatePinCount(ui: InjectUI, count: number): void {
       ui.status.textContent =
         mode === 'clipboard' ? 'Copied to clipboard!' : 'Sent to webhook!'
       ui.status.style.display = 'block'
-      setTimeout(closePanel, 1500)
+      // Reset form for next tack but keep panel open
+      removePinMarkers(markers)
+      ui.textarea.value = ''
+      sentiment = null
+      ui.sentimentGood.classList.remove('selected')
+      ui.sentimentBad.classList.remove('selected')
+      updatePinCount(ui, 0)
+      setPinMode(true)
+      setTimeout(() => {
+        ui.status.style.display = 'none'
+      }, 1500)
     } catch (err) {
       ui.errorMsg.textContent = (err as Error).message
       ui.errorMsg.style.display = 'block'
