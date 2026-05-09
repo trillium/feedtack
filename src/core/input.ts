@@ -1,3 +1,4 @@
+import { getComponentName } from '../capture/fiber.js'
 import { getPinCoords } from '../capture/index.js'
 import { getTargetMeta } from '../capture/target.js'
 import type { FeedtackPin } from '../types/payload.js'
@@ -52,7 +53,7 @@ function placePin(
   const pin: Omit<FeedtackPin, 'index'> = {
     color: getState().selectedColor,
     ...getPinCoords(coords),
-    target: getTargetMeta(target),
+    target: getTargetMeta(target, getComponentName),
   }
   setState({ pendingPins: [...getState().pendingPins, pin], showForm: true })
 }

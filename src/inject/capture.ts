@@ -1,6 +1,6 @@
 /**
  * Capture re-exports for injectable snippet.
- * Uses target-shim (no React fiber) instead of the main target module.
+ * Imports target module without fiber walker — no React dependency.
  */
 export {
   getDeviceMeta,
@@ -9,4 +9,4 @@ export {
   getViewportMeta,
 } from '../capture/meta.js'
 
-export { getTargetMeta } from './target-shim.js'
+export { getTargetMeta } from '../capture/target.js'

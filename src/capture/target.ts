@@ -1,5 +1,7 @@
 import type { AncestorNode, FeedtackPinTarget } from '../types/payload.js'
-import { getComponentName } from './fiber.js'
+
+/** Optional fiber-walker function — when omitted, componentName falls back to null */
+export type FiberWalker = (el: Element) => string | null
 
 const INTERACTIVE_SELECTOR = 'button,a,input,select,textarea,label'
 
@@ -34,8 +36,12 @@ function nthOfType(el: Element): number {
   return n
 }
 
-/** Serialize a single DOM node into an AncestorNode */
-export function serializeNode(el: Element): AncestorNode {
+/** Serialize a single DOM node into an AncestorNode.
+ *  Pass a FiberWalker to resolve React component names; omit for non-React contexts. */
+export function serializeNode(
+  el: Element,
+  fiberWalker?: FiberWalker,
+): AncestorNode {
   const id = attr(el, 'id')
   const dataTestId = attr(el, 'data-testid') ?? attr(el, 'data-test-id')
   const dataFeedtackComponent = attr(el, 'data-feedtack-component')
@@ -54,16 +60,19 @@ export function serializeNode(el: Element): AncestorNode {
     dataFeedtackComponent,
     nthChild: hasStableId ? null : nthChild(el),
     nthOfType: hasStableId ? null : nthOfType(el),
-    componentName: dataFeedtackComponent ?? getComponentName(el),
+    componentName: dataFeedtackComponent ?? fiberWalker?.(el) ?? null,
   }
 }
 
 /** Walk up to 5 ancestor levels from the resolved target, stop before body */
-export function getAncestorChain(element: Element): AncestorNode[] {
+export function getAncestorChain(
+  element: Element,
+  fiberWalker?: FiberWalker,
+): AncestorNode[] {
   const chain: AncestorNode[] = []
   let current = element.parentElement
   while (current && current !== document.body && chain.length < 5) {
-    chain.push(serializeNode(current))
+    chain.push(serializeNode(current, fiberWalker))
     current = current.parentElement
   }
   return chain
@@ -135,8 +144,12 @@ function deriveElementPath(
   return [targetPart, ...ancestorParts].join(' > ')
 }
 
-/** Capture DOM target metadata at the clicked element */
-export function getTargetMeta(element: Element): FeedtackPinTarget {
+/** Capture DOM target metadata at the clicked element.
+ *  Pass a FiberWalker to resolve React component names; omit for non-React contexts. */
+export function getTargetMeta(
+  element: Element,
+  fiberWalker?: FiberWalker,
+): FeedtackPinTarget {
   const resolved = resolveTarget(element)
 
   const id = resolved.getAttribute('id')
@@ -162,7 +175,7 @@ export function getTargetMeta(element: Element): FeedtackPinTarget {
     best_effort = true
   }
 
-  const ancestors = getAncestorChain(resolved)
+  const ancestors = getAncestorChain(resolved, fiberWalker)
   const rect = resolved.getBoundingClientRect()
 
   return {

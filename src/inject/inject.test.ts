@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { serializeNode } from '../capture/target.js'
 import type { FeedtackPayload } from '../types/payload.js'
 import { parseConfig, validateWebhookUrl } from './config.js'
 import { sendPayload } from './egress.js'
-import { serializeNode } from './target-shim.js'
 import type { FeedtackInjectConfig } from './types.js'
 import { ANON_USER } from './types.js'
 
-// ── 7.1 target-shim ──────────────────────────────────────────────────
+// ── 7.1 target serializeNode (no fiber walker) ──────────────────────
 
-describe('target-shim serializeNode', () => {
+describe('target serializeNode (no fiber walker)', () => {
   beforeEach(() => {
     document.body.innerHTML = ''
   })
