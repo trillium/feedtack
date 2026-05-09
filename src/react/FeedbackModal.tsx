@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef } from 'react'
 import type { FeedbackItem, FeedtackSentiment } from '../types/payload.js'
+import { ModalComposeForm } from './ModalComposeForm.js'
+import { ModalThreadList } from './ModalThreadList.js'
 import { ThreadView } from './ThreadView.js'
 import { cx } from './utils.js'
 
@@ -149,80 +151,16 @@ export function FeedbackModal({
           />
         ) : (
           <>
-            {threads.length > 0 && (
-              <div className="feedtack-modal-threads">
-                {threads.map((item) => (
-                  <button
-                    type="button"
-                    key={item.payload.id}
-                    className="feedtack-modal-thread-item"
-                    onClick={() => onOpenThread(item.payload.id)}
-                  >
-                    <span className="feedtack-thread-author">
-                      {item.payload.submittedBy.name}
-                    </span>
-                    <span className="feedtack-thread-comment">
-                      {item.payload.comment}
-                    </span>
-                    <span className="feedtack-thread-meta">
-                      {item.replies.length > 0 &&
-                        `${item.replies.length} ${item.replies.length === 1 ? 'reply' : 'replies'}`}
-                      {item.resolutions.length > 0 && ' · resolved'}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="feedtack-modal-compose">
-              <textarea
-                className={cx(
-                  'feedtack-modal-textarea',
-                  commentError && 'error',
-                )}
-                placeholder="What's on your mind? (required)"
-                value={comment}
-                onChange={(e) => onCommentChange(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                    e.preventDefault()
-                    onSubmit()
-                  }
-                }}
-                aria-invalid={commentError || undefined}
-              />
-              {commentError && (
-                <span className="feedtack-error-msg">Comment is required</span>
-              )}
-              <div className="feedtack-sentiment">
-                <button
-                  type="button"
-                  className={sentiment === 'good' ? 'selected' : ''}
-                  onClick={() =>
-                    onSentimentChange(sentiment === 'good' ? null : 'good')
-                  }
-                >
-                  Good
-                </button>
-                <button
-                  type="button"
-                  className={sentiment === 'bad' ? 'selected' : ''}
-                  onClick={() =>
-                    onSentimentChange(sentiment === 'bad' ? null : 'bad')
-                  }
-                >
-                  Bad
-                </button>
-              </div>
-              <button
-                type="button"
-                className="feedtack-btn-submit"
-                onClick={onSubmit}
-                disabled={submitting}
-              >
-                {submitting ? 'Sending…' : 'Submit'}
-              </button>
-            </div>
+            <ModalThreadList threads={threads} onOpenThread={onOpenThread} />
+            <ModalComposeForm
+              comment={comment}
+              onCommentChange={onCommentChange}
+              commentError={commentError}
+              sentiment={sentiment}
+              onSentimentChange={onSentimentChange}
+              submitting={submitting}
+              onSubmit={onSubmit}
+            />
           </>
         )}
       </div>
