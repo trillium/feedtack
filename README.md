@@ -83,7 +83,7 @@ The `FeedtackAdapter` interface has five methods. Here are copy-paste implementa
 Git-trackable feedback — each submission becomes a JSON file in `.feedback/`. `DiskAdapter` ships with the package and also implements `ContentAdapter` + `ContentEditAdapter`.
 
 ```ts
-import { DiskAdapter } from 'feedtack'
+import { DiskAdapter } from 'feedtack/node'
 
 const adapter = new DiskAdapter({ directory: '.feedback' }) // default: '.feedback'
 ```
