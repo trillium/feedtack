@@ -38,5 +38,5 @@
 
 ## 8. Docs
 
-- [ ] 8.1 Create `site-docs/content/docs/guides/injectable-snippet.mdx` — usage guide with snippet builder instructions
-- [ ] 8.2 Create `site-docs/src/app/(home)/snippet-builder/page.tsx` — interactive snippet builder component
+- [x] 8.1 Create `site-docs/content/docs/guides/injectable-snippet.mdx` — usage guide with snippet builder instructions
+- [x] 8.2 Create `site-docs/src/app/(home)/snippet-builder/page.tsx` — interactive snippet builder component

@@ -1,0 +1,92 @@
+---
+title: Injectable Snippet
+description: Inject Feedtack into any page via browser console or bookmarklet — no React required
+---
+
+The injectable snippet is a self-contained vanilla JS bundle that adds a feedback UI to any webpage. No build step, no React dependency, no package installation.
+
+## Quick start
+
+Paste this into your browser console on any page:
+
+```js
+(function(){var s=document.createElement('script');s.src='https://unpkg.com/feedtack@1.2.0/dist/feedtack.inject.js';document.head.appendChild(s)})()
+```
+
+A "Feedback" button appears in the bottom-right corner. Click it to open the panel, place pins on elements, and submit feedback. By default, the payload is copied to your clipboard as JSON.
+
+## Configuration
+
+Set `window.__feedtack` **before** loading the script to customize behavior:
+
+```js
+window.__feedtack = {
+  webhookUrl: 'https://your-api.example.com/feedtack',
+  user: {
+    id: 'u_42',
+    name: 'Alice',
+    role: 'designer',
+  },
+};
+```
+
+### Options
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `webhookUrl` | `string` | — | HTTPS URL to receive payloads via `sendBeacon`. Omit for clipboard mode. |
+| `user.id` | `string` | `'anon'` | User identifier |
+| `user.name` | `string` | `'Anonymous'` | Display name |
+| `user.role` | `string` | `'reviewer'` | User role |
+
+## Egress modes
+
+### Clipboard (default)
+
+When no `webhookUrl` is set, the JSON payload is written to the clipboard via `navigator.clipboard.writeText()`. Paste it into a ticket, Slack message, or any tool.
+
+### Webhook
+
+When `webhookUrl` is set, the payload is sent via `navigator.sendBeacon()` with `Content-Type: application/json`. This is fire-and-forget and works even during page unload.
+
+The webhook URL **must** use `https:` protocol.
+
+## Bookmarklet
+
+Create a bookmarklet for one-click injection. Drag this to your bookmarks bar:
+
+```
+javascript:void((function(){var s=document.createElement('script');s.src='https://unpkg.com/feedtack@1.2.0/dist/feedtack.inject.js';document.head.appendChild(s)})())
+```
+
+For webhook mode, configure the bookmarklet to set config first:
+
+```
+javascript:void((function(){window.__feedtack={webhookUrl:'https://your-api.example.com/feedtack'};var s=document.createElement('script');s.src='https://unpkg.com/feedtack@1.2.0/dist/feedtack.inject.js';document.head.appendChild(s)})())
+```
+
+## Snippet builder
+
+Use the interactive [Snippet Builder](/snippet-builder) to generate a ready-to-use console snippet or bookmarklet with your configuration pre-filled.
+
+## How it works
+
+- **Shadow DOM isolation** — UI styles don't leak into the host page
+- **No React dependency** — the snippet uses a fiber-free target shim that bypasses React-specific code
+- **Idempotent** — injecting the script twice is a no-op
+- **Touch support** — works on mobile with 44px touch targets and an 80vh panel
+- **`direction: ltr`** — renders correctly on RTL pages
+- **`crypto.randomUUID()`** — each payload gets a unique ID
+
+## Payload format
+
+The injectable snippet produces the same `FeedtackPayload` schema as the React integration. The only difference is that `componentName` in `AncestorNode` is always `null` (no fiber walker).
+
+See [Payload Schema](/docs/api/payload-schema) for the full type definition.
+
+## Security notes
+
+- The `webhookUrl` must use HTTPS
+- The snippet sets `window.__feedtack_injected = true` as an idempotency guard
+- No data is sent unless the user explicitly clicks Submit
+- Clipboard mode requires the Clipboard API permission (granted by default in most browsers for user-initiated actions)
