@@ -7,7 +7,7 @@ import type { AncestorNode, FeedtackPinTarget } from '../types/payload.js'
 const INTERACTIVE_SELECTOR = 'button,a,input,select,textarea,label'
 
 /** Resolve the capture target — promote to nearest interactive ancestor */
-export function resolveTarget(element: Element): Element {
+function resolveTarget(element: Element): Element {
   const promoted = element.closest(INTERACTIVE_SELECTOR)
   return promoted ?? element
 }
@@ -62,7 +62,7 @@ export function serializeNode(el: Element): AncestorNode {
 }
 
 /** Walk up to 5 ancestor levels from the resolved target */
-export function getAncestorChain(element: Element): AncestorNode[] {
+function getAncestorChain(element: Element): AncestorNode[] {
   const chain: AncestorNode[] = []
   let current = element.parentElement
   while (current && current !== document.body && chain.length < 5) {
@@ -73,7 +73,7 @@ export function getAncestorChain(element: Element): AncestorNode[] {
 }
 
 /** Build shortest unique CSS selector for an element */
-export function getCSSSelector(element: Element): string {
+function getCSSSelector(element: Element): string {
   const parts: string[] = []
   let current: Element | null = element
 

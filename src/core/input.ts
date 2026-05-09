@@ -9,7 +9,7 @@ type SetState = (partial: Partial<FeedtackEngineState>) => void
 type GetState = () => FeedtackEngineState
 
 /** Build a keydown handler for hotkey, escape, and color cycling */
-export function createKeydownHandler(
+function createKeydownHandler(
   hotkey: string,
   getState: GetState,
   setState: SetState,
@@ -42,7 +42,7 @@ export function createKeydownHandler(
 }
 
 /** Place a pin from click/touch coordinates */
-export function placePin(
+function placePin(
   coords: { clientX: number; clientY: number },
   target: Element,
   getState: GetState,

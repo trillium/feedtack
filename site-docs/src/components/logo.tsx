@@ -1,6 +1,6 @@
 import { PinSvg } from './pin-svg'
 
-export const BRAND = {
+const BRAND = {
   primary: '#2563eb', // blue-600 — "feed"
   secondary: '#f59e0b', // amber-500 — "tack"
 } as const

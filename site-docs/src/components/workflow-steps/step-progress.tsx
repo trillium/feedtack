@@ -4,7 +4,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 
 const DURATION_MS = 16_000
 
-export const STEPS = [
+const STEPS = [
   { name: 'Browse', start: 0, end: 0.18 },
   { name: 'Click', start: 0.18, end: 0.34 },
   { name: 'Describe', start: 0.34, end: 0.54 },
