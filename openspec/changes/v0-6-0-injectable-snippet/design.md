@@ -32,7 +32,7 @@ The snippet must be fully self-contained. All CSS is injected as inline styles o
 
 **Clipboard mode** (default): On submit, the payload JSON is copied to the clipboard via `navigator.clipboard.writeText()`. A toast confirms "Copied to clipboard." No server, no URL, no config. Falls back to `document.execCommand('copy')` if clipboard API is unavailable (non-HTTPS).
 
-**Webhook mode**: If a URL is provided at init time (`feedtack.inject({ url: '...' })`), payloads are sent via `navigator.sendBeacon(url, JSON.stringify(payload))`. sendBeacon is fire-and-forget, survives page unload, and doesn't block UI. Falls back to `fetch()` if sendBeacon is unavailable.
+**Webhook mode**: If a URL is provided at init time (`feedtack.inject({ url: '...' })`), payloads are sent via `navigator.sendBeacon(url, blob)` where `blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })`. The Blob ensures the correct `Content-Type: application/json` header — without it, sendBeacon sends `text/plain` and most webhook receivers reject the payload. sendBeacon is fire-and-forget, survives page unload, and doesn't block UI. Falls back to `fetch()` with `keepalive: true` if sendBeacon is unavailable; the fetch fallback reports success/error based on response status.
 
 **Alternative considered:** LocalStorage queue with export. Rejected — data would live on someone else's domain and requires a separate export step.
 
@@ -50,7 +50,7 @@ For webhook mode, the bookmarklet sets a global config before loading:
 javascript:void((function(){window.__feedtack_config={url:'https://...'};var s=document.createElement('script');s.src='...';document.head.appendChild(s)})())
 ```
 
-The console paste version IS the full IIFE — no loader needed.
+The console paste version is a short loader script (same pattern as the bookmarklet but without the `javascript:` wrapper). The raw IIFE source is available as a secondary "offline" option for users who need to work without network access, but the default console snippet is the loader — pasting a 15-20KB minified blob is impractical in most browser consoles.
 
 ### 4. UI structure
 
@@ -70,11 +70,13 @@ The snippet creates a `<div id="feedtack-inject">` with an attached shadow root.
 - Feedtack styles from leaking into the host page
 - ID/class collisions
 
-### 6. Reuse capture code via build-time bundling
+### 6. Reuse capture code via build-time bundling — excluding fiber.ts
 
-The IIFE bundles `src/capture/target.ts` and `src/capture/meta.ts` at build time. These modules are already React-free. tsup bundles them into the IIFE alongside the inject-specific UI code.
+The IIFE bundles `src/capture/target.ts` and `src/capture/meta.ts` at build time. However, `target.ts` imports `getComponentName` from `fiber.ts`, which walks React fiber internals (`__reactFiber$`) and has a `'use client'` directive. This must be excluded from the IIFE.
 
-Verify: `src/capture/index.ts` barrel must not re-export anything that pulls in React. Currently exports `scanFields` and `hashField` from `content.ts` which uses Web Crypto — fine, but not needed for the snippet. The IIFE entry point imports directly from `target.ts` and `meta.ts`.
+**Approach:** Create `src/inject/target-shim.ts` that re-exports everything from `target.ts` but replaces the `getComponentName` import with a no-op that returns `null`. This keeps the capture code untouched for React users while giving the IIFE a clean dependency tree. The IIFE entry imports from the shim, not from `target.ts` directly.
+
+The IIFE entry point imports directly from `target-shim.ts` and `meta.ts` — never through `capture/index.ts` barrel.
 
 ### 7. Build configuration
 
@@ -93,10 +95,7 @@ New tsup entry point:
 
 Output: `dist/feedtack.inject.js`
 
-Package.json export:
-```json
-"./inject": { "default": "./dist/feedtack.inject.js" }
-```
+**No `package.json` export path.** The IIFE self-executes on load — adding it to the exports map would cause `import ... from 'feedtack/inject'` to immediately self-execute, which is dangerous in Node.js/SSR. The file is published in `dist/` and accessed via CDN URL or direct file reference only.
 
 ### 8. Snippet builder docs page
 
@@ -110,6 +109,28 @@ React component at `site-docs/content/docs/guides/snippet.mdx` with an interacti
 
 The component is a client-side React component in the docs site — it generates the bookmarklet/snippet strings dynamically based on user input.
 
+**URL sanitization:** The webhook URL input must be validated as a well-formed HTTPS URL before embedding in the bookmarklet `javascript:` href. Raw user input in a `javascript:` URL is an XSS vector (e.g., `'};alert(1);//` breaks out of the config string). Validate with `new URL()` and require `https:` protocol. Reject any URL that fails validation.
+
+**Version pinning:** The bookmarklet source URL defaults to the current feedtack version (e.g., `feedtack@1.2.0`), not `@latest`. This prevents saved bookmarklets from breaking when a new version ships. The builder shows the pinned version with an option to switch to `@latest`.
+
+### 9. User identity
+
+The snippet config accepts an optional `user` field: `feedtack.inject({ user: { id: 'u1', name: 'Alice', role: 'designer' } })`. If not provided, the payload uses `{ id: 'anon', name: 'Anonymous', role: 'reviewer' }`. The snippet UI includes an optional name input — if the user types a name, it overrides the config/default for `submittedBy.name`.
+
+The snippet builder docs page includes a user name input alongside the webhook URL.
+
+### 10. Payload ID generation
+
+The IIFE uses `crypto.randomUUID()` for payload IDs (prefixed with `ft_`). This is available in all modern browsers without additional dependencies. No nanoid dependency needed.
+
+### 11. Idempotency — double-injection guard
+
+On initialization, the IIFE checks for an existing `document.getElementById('feedtack-inject')` Shadow DOM host. If found, the second injection is a no-op (returns the existing instance). `feedtack.destroy()` removes the host, allowing re-injection.
+
+### 12. Touch / mobile support
+
+Pin mode listens for both `click` and `touchend` events. The trigger button uses `min-width: 44px; min-height: 44px` for touch targets. The panel uses `max-height: 80vh; overflow-y: auto` to fit small screens. No cursor change on touch devices (no cursor to change).
+
 ## Risks / Trade-offs
 
 - **[Bundle size]** → Monitor with `ls -la dist/feedtack.inject.js` after build. If over 20KB, audit what's being included. The capture logic is small; the UI DOM construction is the bulk.
@@ -117,3 +138,7 @@ The component is a client-side React component in the docs site — it generates
 - **[Clipboard API permissions]** → Modern browsers require HTTPS + user gesture for clipboard access. The submit button click provides the gesture. Non-HTTPS sites fall back to `document.execCommand('copy')`.
 - **[Shadow DOM browser support]** → Supported in all modern browsers. No IE11 support, which is acceptable.
 - **[sendBeacon payload limits]** → Browsers typically allow 64KB for sendBeacon. Feedtack payloads are well under this (~2-3KB).
+- **[CSP `style-src`]** → Shadow DOM `<style>` elements are still subject to the page's CSP `style-src` directive. Sites with `style-src 'self'` (no `'unsafe-inline'`) will block the injected styles, rendering the UI unstyled. Document this limitation — there is no workaround short of loading styles from an allowed origin.
+- **[sendBeacon delivery]** → sendBeacon returns a boolean (queued, not delivered). The toast shows "Sent" for sendBeacon (acknowledging fire-and-forget) and shows success/error for the fetch fallback which has a response status. Document that sendBeacon provides no delivery confirmation.
+- **[Pointer-events overlays]** → Cookie banners, modals, and loading overlays with `pointer-events: none` or full-screen z-index can intercept pin mode clicks. Document this limitation — the snippet captures whatever `e.target` resolves to.
+- **[RTL pages]** → The snippet UI forces `direction: ltr` inside the Shadow DOM to avoid inheriting RTL layout from the host page.

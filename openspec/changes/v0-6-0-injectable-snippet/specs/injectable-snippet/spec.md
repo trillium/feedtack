@@ -32,7 +32,8 @@ When a webhook URL is provided, the system SHALL send the payload to that URL on
 
 #### Scenario: Submit with webhook URL
 - **WHEN** a user submits feedback with a webhook URL configured via `feedtack.inject({ url: 'https://...' })`
-- **THEN** the payload is sent via `navigator.sendBeacon(url, JSON.stringify(payload))`
+- **THEN** the payload is sent via `navigator.sendBeacon(url, blob)` where `blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })`
+- **AND** a toast message confirms "Sent"
 
 #### Scenario: sendBeacon fallback
 - **WHEN** `navigator.sendBeacon` is unavailable
@@ -49,6 +50,14 @@ The system SHALL accept configuration either as a function argument or via a glo
 - **WHEN** `window.__feedtack_config` is set before the script loads
 - **THEN** the snippet reads configuration from that global on initialization
 
+#### Scenario: User identity via config
+- **WHEN** the config includes `user: { id: 'u1', name: 'Alice', role: 'designer' }`
+- **THEN** the payload `submittedBy` field uses the provided user identity
+
+#### Scenario: Default anonymous identity
+- **WHEN** no `user` is provided in config
+- **THEN** the payload `submittedBy` uses `{ id: 'anon', name: 'Anonymous', role: 'reviewer' }`
+
 ### Requirement: Feedback UI
 The snippet SHALL provide a minimal UI for submitting feedback with scope selection, pin placement, comment, and sentiment.
 
@@ -56,9 +65,13 @@ The snippet SHALL provide a minimal UI for submitting feedback with scope select
 - **WHEN** the user clicks the floating trigger button
 - **THEN** a feedback panel opens with scope tabs (Site / Page / Element) and a comment textarea
 
-#### Scenario: Pin mode
-- **WHEN** the user clicks "Place a pin" in the panel
+#### Scenario: Pin mode (desktop)
+- **WHEN** the user clicks "Place a pin" in the panel on a desktop browser
 - **THEN** the cursor changes to a crosshair and clicking an element captures its target data and places a visual pin indicator
+
+#### Scenario: Pin mode (touch)
+- **WHEN** the user taps "Place a pin" in the panel on a mobile/touch device
+- **THEN** tapping an element captures its target data and places a visual pin indicator (no cursor change on touch devices)
 
 #### Scenario: Sentiment selection
 - **WHEN** the user selects a sentiment (good / bad / none)
@@ -82,11 +95,29 @@ The IIFE bundle SHALL be under 20KB minified.
 - **WHEN** `dist/feedtack.inject.js` is built with minification enabled
 - **THEN** the file size is under 20KB
 
+### Requirement: Idempotency
+The system SHALL handle double-injection gracefully.
+
+#### Scenario: Script loaded twice
+- **WHEN** the IIFE executes and a Shadow DOM host with `id="feedtack-inject"` already exists
+- **THEN** the second execution is a no-op and returns the existing instance
+
+#### Scenario: Re-injection after destroy
+- **WHEN** `feedtack.destroy()` has been called and the IIFE executes again
+- **THEN** a new instance initializes normally
+
+### Requirement: Payload ID generation
+The system SHALL generate unique payload IDs using `crypto.randomUUID()`.
+
+#### Scenario: ID format
+- **WHEN** a payload is assembled
+- **THEN** the `id` field is `'ft_' + crypto.randomUUID()`
+
 ### Requirement: Bookmarklet loader
 The system SHALL support loading via a bookmarklet URL.
 
-#### Scenario: Bookmarklet loads snippet from CDN
-- **WHEN** a user clicks a bookmarklet with `javascript:void(...)` that injects a script tag pointing to a CDN-hosted `feedtack.inject.js`
+#### Scenario: Bookmarklet loads snippet from CDN with pinned version
+- **WHEN** a user clicks a bookmarklet with `javascript:void(...)` that injects a script tag pointing to a version-pinned CDN URL (e.g., `feedtack@1.2.0`)
 - **THEN** the snippet loads and initializes on the current page
 
 #### Scenario: Bookmarklet with webhook config

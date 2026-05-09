@@ -8,9 +8,10 @@ Feedtack currently requires React integration and a build step. Users who want t
 - Two egress modes: clipboard (default, zero-config) and webhook (user provides a URL, uses `navigator.sendBeacon`)
 - Minimal vanilla JS UI: floating trigger button, pin mode with crosshair, scope selector, comment input, sentiment picker, submit
 - Same payload schema (`schemaVersion: "2.0.0"`) as the React version — payloads are interchangeable
-- Reuses existing capture logic (`src/capture/target.ts`, `src/capture/meta.ts`) bundled into the IIFE
-- Bookmarklet format: `javascript:void(...)` loader URL
-- Console paste format: raw IIFE source
+- Reuses existing capture logic (`src/capture/target.ts`, `src/capture/meta.ts`) bundled into the IIFE — with `fiber.ts` (React fiber walker) excluded, hardcoding `componentName: null`
+- Bookmarklet format: `javascript:void(...)` loader URL with version-pinned CDN source
+- Console paste format: short CDN loader script (with raw IIFE as secondary offline option)
+- User identity via config (`user: { id, name, role }`) or optional name input in the UI, defaulting to anonymous
 - New interactive docs page (`/docs/guides/snippet`) where users configure their webhook URL and get a generated bookmarklet link + copyable console snippet
 - New build target in `tsup.config.ts` producing `dist/feedtack.inject.js` (minified, self-contained)
 
@@ -28,6 +29,6 @@ Feedtack currently requires React integration and a build step. Users who want t
 - **New files**: `src/inject/` directory for standalone bundle source, `site-docs/` page + component for snippet builder
 - **Build**: New tsup entry point producing `dist/feedtack.inject.js`
 - **Capture code**: `src/capture/target.ts` and `src/capture/meta.ts` must be importable without pulling in React — verify no React imports leak into capture modules
-- **Package exports**: New `./inject` export path in `package.json` for the standalone bundle
+- **Package exports**: `dist/feedtack.inject.js` published in the package but NOT added to `package.json` exports map (IIFE self-executes on import — unsafe for ESM/SSR contexts)
 - **Bundle size target**: Under 20KB minified for the IIFE
 - **No breaking changes**: Existing React API and adapters are unchanged
