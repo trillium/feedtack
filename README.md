@@ -80,49 +80,12 @@ The `FeedtackAdapter` interface has five methods. Here are copy-paste implementa
 
 ### Disk / JSON files (Node.js)
 
-Git-trackable feedback — each submission becomes a JSON file in `.feedback/`.
+Git-trackable feedback — each submission becomes a JSON file in `.feedback/`. `DiskAdapter` ships with the package and also implements `ContentAdapter` + `ContentEditAdapter`.
 
 ```ts
-import type { FeedtackAdapter, FeedbackItem, FeedtackPayload } from 'feedtack'
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
-import { join } from 'node:path'
+import { DiskAdapter } from 'feedtack'
 
-const DIR = '.feedback'
-
-class DiskAdapter implements FeedtackAdapter {
-  async submit(payload: FeedtackPayload) {
-    await mkdir(DIR, { recursive: true })
-    const item: FeedbackItem = { payload, replies: [], resolutions: [], archives: [] }
-    await writeFile(join(DIR, `${payload.id}.json`), JSON.stringify(item, null, 2))
-  }
-
-  async reply(feedbackId: string, reply: Omit<FeedbackItem['replies'][0], 'id' | 'feedbackId'>) {
-    const item = await this.read(feedbackId)
-    item.replies.push({ ...reply, id: crypto.randomUUID(), feedbackId })
-    await this.write(feedbackId, item)
-  }
-
-  async resolve(feedbackId: string, resolution: Omit<FeedbackItem['resolutions'][0], 'feedbackId'>) {
-    const item = await this.read(feedbackId)
-    item.resolutions.push({ ...resolution, feedbackId })
-    await this.write(feedbackId, item)
-  }
-
-  async archive(feedbackId: string, userId: string) {
-    const item = await this.read(feedbackId)
-    item.archives.push({ feedbackId, archivedBy: { id: userId, name: '', role: '' }, timestamp: new Date().toISOString() })
-    await this.write(feedbackId, item)
-  }
-
-  async loadFeedback() {
-    await mkdir(DIR, { recursive: true })
-    const files = (await readdir(DIR)).filter((f) => f.endsWith('.json'))
-    return Promise.all(files.map(async (f) => JSON.parse(await readFile(join(DIR, f), 'utf-8')) as FeedbackItem))
-  }
-
-  private async read(id: string) { return JSON.parse(await readFile(join(DIR, `${id}.json`), 'utf-8')) as FeedbackItem }
-  private async write(id: string, item: FeedbackItem) { await writeFile(join(DIR, `${id}.json`), JSON.stringify(item, null, 2)) }
-}
+const adapter = new DiskAdapter({ directory: '.feedback' }) // default: '.feedback'
 ```
 
 ### Supabase
