@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { PIN_PALETTE } from '@/components/pin-svg'
 import { ScrappyPricing } from '@/components/pricing-battle-u/scrappy-pricing'
-import type { Tier } from '@/components/tier-card'
+import type { Tier } from '@/data/pricing-tiers'
 
 export const metadata: Metadata = {
   title: 'Pricing – Feedtack',

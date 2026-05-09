@@ -1,4 +1,4 @@
-import type { Tier } from '@/components/tier-card'
+import type { Tier } from '@/data/pricing-tiers'
 import {
   FAKE_OLD_PRICES,
   FAQ_ITEMS,
