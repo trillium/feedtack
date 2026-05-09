@@ -206,6 +206,51 @@ function MyButton() {
 }
 ```
 
+## Content approval (opt-in)
+
+Feedtack can also track whether copywriting fields on a page have been reviewed and approved. Annotate elements with `data-feedtack-field`, use an adapter that implements `ContentAdapter` (`DiskAdapter` and `WebhookAdapter` both do), and call the hook:
+
+```tsx
+<h1 data-feedtack-field="hero.heading">Welcome to Acme</h1>
+<p data-feedtack-field="hero.subheading">The best tools for your team.</p>
+```
+
+```tsx
+import { useContentApproval } from 'feedtack/react'
+
+const { fields, approve, checkDeploy } = useContentApproval(adapter, currentUser.id)
+
+// Gate deploys on all fields being approved
+const result = await checkDeploy()
+// => { approved: false, pending: ['hero.subheading'] }
+```
+
+Approvals are hash-based — if the content changes, the approval goes stale automatically. See the [Content Approval docs](site-docs/content/docs/concepts/content-approval.mdx) for the full API.
+
+## Content editing (opt-in)
+
+For teams that want to edit content inline, `useContentEdit` builds on top of content approval. It hydrates the DOM with stored values, makes annotated fields `contenteditable`, and auto-saves on blur. The adapter must implement `ContentEditAdapter` (`DiskAdapter` and `WebhookAdapter` both do).
+
+```tsx
+import { useContentEdit, ContentEditToolbar } from 'feedtack/react'
+
+function AdminLayout({ adapter, children }) {
+  const edit = useContentEdit(adapter, currentUser.id)
+
+  return (
+    <>
+      {children}
+      {edit.active && <ContentEditToolbar {...edit.toolbarProps} />}
+      <button onClick={edit.active ? edit.deactivate : edit.activate}>
+        {edit.active ? 'Exit edit mode' : 'Edit content'}
+      </button>
+    </>
+  )
+}
+```
+
+The toolbar shows approve/revert actions per field, a session changes panel, and a deploy gate. See the [Content Editing docs](site-docs/content/docs/concepts/content-editing.mdx) for details.
+
 ## What feedtack does NOT do
 
 - LLM triage or routing (downstream concern — feedtack emits, others act)
