@@ -148,3 +148,45 @@ export interface FeedtackFilter {
   userId?: string
   scope?: FeedtackScope
 }
+
+/** Recorded approval for a content field — keyed by dot-path (e.g. "hero.heading") */
+export interface FieldApproval {
+  /** 12-char truncated SHA-256 of the approved content */
+  hash: string
+  /** User IDs who have approved this field */
+  by: string[]
+  /** ISO 8601 UTC timestamp of most recent approval */
+  at: string
+}
+
+/** Combined field identity, approval record, and staleness flag */
+export interface FieldApprovalState {
+  /** Dot-path field identifier (value of data-feedtack-field attribute) */
+  fieldPath: string
+  /** Null when the field has never been approved */
+  approval: FieldApproval | null
+  /** True when the current content hash differs from the stored approval hash */
+  stale: boolean
+}
+
+export interface FieldFilter {
+  pathname?: string
+  fieldPath?: string
+}
+
+/** A single field edit recorded in the current editing session */
+export interface FieldChange {
+  fieldPath: string
+  /** Value at session start (pre-first-edit for this field) */
+  from: string
+  /** Most recent saved value */
+  to: string
+  /** Unix ms timestamp of most recent save */
+  savedAt: number
+}
+
+/** Info about the currently focused content field — used by the edit toolbar */
+export interface FocusedFieldInfo {
+  element: HTMLElement
+  fieldPath: string
+}

@@ -1,10 +1,17 @@
-import type { FeedtackAdapter } from '../types/adapter.js'
+import type {
+  ContentAdapter,
+  ContentEditAdapter,
+  FeedtackAdapter,
+} from '../types/adapter.js'
 import type {
   FeedbackItem,
   FeedtackFilter,
   FeedtackPayload,
   FeedtackReply,
   FeedtackResolution,
+  FieldApproval,
+  FieldApprovalState,
+  FieldFilter,
 } from '../types/payload.js'
 
 export interface WebhookAdapterConfig {
@@ -14,10 +21,16 @@ export interface WebhookAdapterConfig {
   updateUrl?: string
   /** Required: async function that returns persisted feedback items */
   loadFeedback: (filter?: FeedtackFilter) => Promise<FeedbackItem[]>
+  /** Optional: async function that returns stored field approvals */
+  loadApprovals?: (filter?: FieldFilter) => Promise<FieldApprovalState[]>
+  /** Optional: async function that returns all stored field values for hydration */
+  loadFields?: () => Promise<Record<string, string>>
 }
 
 /** Production adapter — POSTs feedback as JSON to a webhook endpoint */
-export class WebhookAdapter implements FeedtackAdapter {
+export class WebhookAdapter
+  implements FeedtackAdapter, ContentAdapter, ContentEditAdapter
+{
   private config: WebhookAdapterConfig
 
   constructor(config: WebhookAdapterConfig) {
@@ -68,5 +81,43 @@ export class WebhookAdapter implements FeedtackAdapter {
 
   async loadFeedback(filter?: FeedtackFilter): Promise<FeedbackItem[]> {
     return this.config.loadFeedback(filter)
+  }
+
+  // ContentAdapter implementation
+
+  async approve(fieldPath: string, approval: FieldApproval): Promise<void> {
+    const url = this.config.updateUrl ?? this.config.submitUrl
+    await this.post(url, { type: 'approve', fieldPath, ...approval })
+  }
+
+  async revokeApproval(fieldPath: string, userId: string): Promise<void> {
+    const url = this.config.updateUrl ?? this.config.submitUrl
+    await this.post(url, { type: 'revoke', fieldPath, userId })
+  }
+
+  async loadApprovals(filter?: FieldFilter): Promise<FieldApprovalState[]> {
+    if (this.config.loadApprovals) {
+      return this.config.loadApprovals(filter)
+    }
+    return []
+  }
+
+  // ContentEditAdapter implementation
+
+  async loadFields(): Promise<Record<string, string>> {
+    if (this.config.loadFields) {
+      return this.config.loadFields()
+    }
+    return {}
+  }
+
+  async saveField(fieldPath: string, value: string): Promise<void> {
+    const url = this.config.updateUrl ?? this.config.submitUrl
+    await this.post(url, {
+      type: 'save-field',
+      fieldPath,
+      value,
+      clearApproval: true,
+    })
   }
 }

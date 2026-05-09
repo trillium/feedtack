@@ -47,6 +47,12 @@ export interface FeedtackProviderProps {
   flushIdleMs?: number
   /** User roles that trigger re-scope on reply (default: any non-'agent' role) */
   rescopeRoles?: string[]
+  /**
+   * Called by the consumer (e.g. on a Deploy button click) to check whether all
+   * content fields have current approvals. Feedtack surfaces the data; the consumer
+   * decides what to do with the result.
+   */
+  onDeployCheck?: () => Promise<{ approved: boolean; pending: string[] }>
 }
 
 export function FeedtackProvider({

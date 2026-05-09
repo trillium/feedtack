@@ -1,3 +1,4 @@
+export { hashField, scanFields } from './content.js'
 export {
   getDeviceMeta,
   getPageMeta,

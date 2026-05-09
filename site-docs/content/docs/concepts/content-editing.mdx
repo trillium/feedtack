@@ -1,0 +1,104 @@
+---
+title: Content Editing
+description: Inline content editing with blur-to-save and adapter-backed hydration
+---
+
+The content editing layer turns `data-feedtack-field` annotations into inline-editable fields. Changes are persisted through the adapter, approvals are cleared on edit, and a contextual toolbar surfaces approve/revert/deploy actions.
+
+This builds directly on the [Content Approval](/docs/concepts/content-approval) system.
+
+## Adapter requirement
+
+Your adapter must implement `ContentEditAdapter` — an extension of `ContentAdapter`:
+
+```ts
+interface ContentEditAdapter extends ContentAdapter {
+  loadFields(): Promise<Record<string, string>>
+  saveField(fieldPath: string, value: string): Promise<void>
+}
+```
+
+`loadFields()` returns all stored field values for DOM hydration. `saveField()` persists the new value **and must atomically clear the stored approval** for that field — an edit invalidates sign-off.
+
+`DiskAdapter` and `WebhookAdapter` both implement `ContentEditAdapter` out of the box.
+
+## useContentEdit
+
+```tsx
+import { useContentEdit, ContentEditToolbar } from 'feedtack/react'
+
+function AdminLayout({ adapter, children }) {
+  const edit = useContentEdit(adapter, currentUser.id)
+
+  return (
+    <>
+      {children}
+      {edit.active && <ContentEditToolbar {...edit.toolbarProps} />}
+      <button onClick={edit.active ? edit.deactivate : edit.activate}>
+        {edit.active ? 'Exit edit mode' : 'Edit content'}
+      </button>
+    </>
+  )
+}
+```
+
+### What activate() does
+
+1. Calls `loadFields()` on the adapter
+2. Sets `data-feedtack-hydrating="true"` on `document.body` during load
+3. Swaps live stored values into all `[data-feedtack-field]` elements in the DOM
+4. Sets `contenteditable="true"` on each annotated field
+5. Attaches blur-to-save behavior — when a user edits and blurs a field, `saveField()` is called automatically if the value changed
+
+A `MutationObserver` handles fields added to the DOM after activation (e.g. after client-side navigation).
+
+## Hydration and the static-build problem
+
+When a page is server-rendered or statically built, the DOM contains the values from the last build — which may be stale. `loadFields()` fetches the live values from your store and swaps them in before editing begins. This also ensures approval hashes are compared against the stored value, not the stale built value.
+
+## ContentEditToolbar
+
+The toolbar is opt-in — render it wherever makes sense in your app. `useContentEdit` returns `toolbarProps` with everything it needs:
+
+```tsx
+<ContentEditToolbar {...edit.toolbarProps} />
+```
+
+**Toolbar features:**
+- **Field actions** — when a field is focused: approve button (if stale) or unaccept button (if approved)
+- **Saving indicator** — shown while a save is in-flight
+- **Changes panel** — collapsible list of session edits with per-field revert
+- **Deploy gate** — check whether all fields have current approvals before deploying
+
+## Session changes
+
+Every successful save is tracked in `edit.changes`:
+
+```ts
+interface FieldChange {
+  fieldPath: string
+  from: string     // value at session start
+  to: string       // most recent saved value
+  savedAt: number  // unix ms
+}
+```
+
+Calling `revert(fieldPath)` calls `saveField(fieldPath, change.from)` and removes the entry.
+
+## DiskAdapter
+
+`saveField` writes to `<dir>/fields/<field-path>.json` and deletes `<dir>/approvals/<field-path>.json`. `loadFields` reads all files in `<dir>/fields/`.
+
+## WebhookAdapter
+
+`saveField` POSTs `{ type: 'save-field', fieldPath, value, clearApproval: true }` to `updateUrl`. Supply a `loadFields` function in the config:
+
+```ts
+new WebhookAdapter({
+  submitUrl: '/api/feedback',
+  updateUrl: '/api/feedback/update',
+  loadFeedback: (filter) => fetch('/api/feedback').then(r => r.json()),
+  loadApprovals: () => fetch('/api/approvals').then(r => r.json()),
+  loadFields: () => fetch('/api/content/fields').then(r => r.json()),
+})
+```

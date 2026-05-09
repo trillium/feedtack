@@ -1,0 +1,134 @@
+---
+title: Content Approval
+description: Track and approve copywriting fields with hash-based change detection
+---
+
+The content approval system lets teams annotate copywriting fields on the page, track whether they've been reviewed, and gate downstream actions (like deploys) on all fields being approved.
+
+Feedtack owns the annotation and hashing — your adapter owns the persistence.
+
+If you also need inline editing (not just verification), see [Content Editing](/docs/concepts/content-editing). When used together, `useContentEdit` passes stored values to `useContentApproval` so hashes are computed from the live store rather than the statically-built DOM.
+
+## Annotating fields
+
+Add `data-feedtack-field` to any element containing copywriting you want to track. The value is a dot-path identifier that's unique per page:
+
+```tsx
+<h1 data-feedtack-field="hero.heading">Welcome to Acme</h1>
+<p data-feedtack-field="hero.subheading">The best tools for your team.</p>
+<a data-feedtack-field="hero.cta" href="/signup">Get started</a>
+```
+
+Field paths are opaque to Feedtack — they're just keys in your approval store. Use whatever namespace makes sense for your content model.
+
+## How it works
+
+When a field is approved, Feedtack computes a SHA-256 hash of the element's current text content and stores it alongside the approver's user ID and a timestamp. If the content changes, the stored hash no longer matches — the approval is **stale** and must be re-approved.
+
+## useContentApproval
+
+The `useContentApproval` hook scans the current page for annotated fields, loads stored approvals from the adapter, and computes staleness:
+
+```tsx
+import { useContentApproval } from 'feedtack/react'
+
+function ApprovalPanel({ adapter, userId }) {
+  const { fields, approve, revoke, rescan, checkDeploy } = useContentApproval(adapter, userId)
+
+  return (
+    <ul>
+      {fields.map((f) => (
+        <li key={f.fieldPath}>
+          {f.fieldPath}
+          {f.stale ? ' — needs approval' : ' — approved'}
+          {f.stale && (
+            <button onClick={() => approve(f.fieldPath)}>Approve</button>
+          )}
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+
+### Return values
+
+| Value | Type | Description |
+|-------|------|-------------|
+| `fields` | `FieldApprovalState[]` | Current approval state for all scanned fields |
+| `approve(fieldPath)` | `(path: string) => Promise<void>` | Approve the field as the current user |
+| `revoke(fieldPath)` | `(path: string) => Promise<void>` | Revoke the current user's approval |
+| `rescan()` | `() => Promise<void>` | Re-scan the DOM and refresh state |
+| `checkDeploy()` | `() => Promise<DeployCheckResult>` | Return pending fields and overall approval status |
+
+## Deploy check
+
+`checkDeploy()` returns `{ approved: boolean, pending: string[] }`. Use it to gate a deploy action:
+
+```tsx
+const { checkDeploy } = useContentApproval(adapter, userId)
+
+async function handleDeploy() {
+  const result = await checkDeploy()
+  if (!result.approved) {
+    alert(`Unapproved fields:\n${result.pending.join('\n')}`)
+    return
+  }
+  // proceed with deploy
+}
+```
+
+Feedtack surfaces the data — you decide what the gate means.
+
+## ContentAdapter
+
+Any adapter can support content approvals by implementing `ContentAdapter`:
+
+```ts
+import type { ContentAdapter, FeedtackAdapter } from 'feedtack'
+
+class MyAdapter implements FeedtackAdapter, ContentAdapter {
+  async approve(fieldPath, approval) { /* store */ }
+  async revokeApproval(fieldPath, userId) { /* remove */ }
+  async loadApprovals(filter?) { /* return FieldApprovalState[] */ }
+
+  // ... FeedtackAdapter methods
+}
+```
+
+`DiskAdapter` and `WebhookAdapter` both ship with `ContentAdapter` implementations.
+
+### DiskAdapter
+
+Approvals are stored as JSON files at `<directory>/approvals/<field-path>.json`.
+
+### WebhookAdapter
+
+Approvals are POSTed to `updateUrl` as `{ type: 'approve', fieldPath, ... }` and `{ type: 'revoke', ... }`. Supply a `loadApprovals` function in the config to support reading:
+
+```ts
+new WebhookAdapter({
+  submitUrl: '/api/feedback',
+  updateUrl: '/api/feedback/update',
+  loadFeedback: (filter) => fetch('/api/feedback').then(r => r.json()),
+  loadApprovals: (filter) => fetch('/api/approvals').then(r => r.json()),
+})
+```
+
+## FieldApprovalState
+
+Each field's state includes:
+
+```ts
+interface FieldApprovalState {
+  fieldPath: string        // e.g. "hero.heading"
+  approval: FieldApproval | null  // null = never approved
+  stale: boolean           // true if content changed since last approval
+}
+
+interface FieldApproval {
+  hash: string    // 12-char SHA-256 of approved content
+  by: string[]    // user IDs who approved
+  at: string      // ISO 8601 UTC timestamp
+}
+```
