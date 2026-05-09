@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/trillium/feedtack/compare/v1.3.1...v1.3.2) (2026-05-09)
+
+### Bug Fixes
+
+* **site-docs:** update broken tier-card imports to use @/data/pricing-tiers ([87f618f](https://github.com/trillium/feedtack/commit/87f618f5f935b4d161c1f88cd7845c115c96d587))
+* **site-docs:** use production server for Playwright tests ([247c13d](https://github.com/trillium/feedtack/commit/247c13d8cf86b8f01082eb549c242ddab5f04acd))
+
 ## [1.3.1](https://github.com/trillium/feedtack/compare/v1.3.0...v1.3.1) (2026-05-09)
 
 ### Bug Fixes
