@@ -29,12 +29,12 @@
 
 ## 7. Tests
 
-- [ ] 7.1 Test: target-shim serializeNode returns componentName null
-- [ ] 7.2 Test: config parser applies defaults for missing fields
-- [ ] 7.3 Test: config parser validates webhook URL (https required)
-- [ ] 7.4 Test: egress clipboard mode writes to clipboard
-- [ ] 7.5 Test: egress webhook mode calls sendBeacon with Blob
-- [ ] 7.6 Test: idempotency guard prevents double injection
+- [x] 7.1 Test: target-shim serializeNode returns componentName null
+- [x] 7.2 Test: config parser applies defaults for missing fields
+- [x] 7.3 Test: config parser validates webhook URL (https required)
+- [x] 7.4 Test: egress clipboard mode writes to clipboard
+- [x] 7.5 Test: egress webhook mode calls sendBeacon with Blob
+- [x] 7.6 Test: idempotency guard prevents double injection
 
 ## 8. Docs
 
