@@ -35,6 +35,10 @@
     "lint": "biome check src/",
     "lint:fix": "biome check --fix src/",
     "release": "release-it --ci",
+    "fallow": "fallow",
+    "fallow:health": "fallow health --score --top 20 --hotspots",
+    "fallow:dupes": "fallow dupes",
+    "fallow:audit": "fallow audit",
     "openspec:archive": "openspec archive -y",
     "prepublishOnly": "pnpm test && pnpm build",
     "prepare": "husky"
@@ -55,6 +59,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "eslint": "^9.0.0",
+    "fallow": "^2.69.0",
     "husky": "^9.1.7",
     "jsdom": "^25.0.0",
     "lint-staged": "^16.4.0",
