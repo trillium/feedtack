@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0](https://github.com/trillium/feedtack/compare/v1.2.0...v1.3.0) (2026-05-09)
+
+### Features
+
+* **inject:** add self-contained injectable snippet with Shadow DOM UI ([e8a4af9](https://github.com/trillium/feedtack/commit/e8a4af9086b3874d7fde2bf49ebfd12f2b892f3a))
+
 ## [1.2.0](https://github.com/trillium/feedtack/compare/v1.1.0...v1.2.0) (2026-05-09)
 
 ### Features
