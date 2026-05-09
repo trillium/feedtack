@@ -259,6 +259,7 @@ The toolbar shows approve/revert actions per field, a session changes panel, and
 
 ## ICEBOX
 
+- Vanilla JS content editing (no React dependency)
 - Script tag CDN distribution
 - Next.js plugin
 - `allowedCaptures` config for scoping DOM access
