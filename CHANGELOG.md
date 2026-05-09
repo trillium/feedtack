@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.1](https://github.com/trillium/feedtack/compare/v1.3.0...v1.3.1) (2026-05-09)
+
+### Bug Fixes
+
+* **inject:** one pin per tack and persist FAB after submit ([5394eb0](https://github.com/trillium/feedtack/commit/5394eb0793df3c8b439be7a3eebf70626d0c2f94))
+
 ## [1.3.0](https://github.com/trillium/feedtack/compare/v1.2.0...v1.3.0) (2026-05-09)
 
 ### Features
