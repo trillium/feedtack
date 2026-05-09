@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.0](https://github.com/trillium/feedtack/compare/v1.1.0...v1.2.0) (2026-05-09)
+
+### Features
+
+* add content approval and content editing system ([8ba7978](https://github.com/trillium/feedtack/commit/8ba7978563b098ee6e3d617da63f944a613e2ed5))
+
+### Bug Fixes
+
+* move DiskAdapter to separate entrypoint to avoid bundling node:fs in browsers ([17467f2](https://github.com/trillium/feedtack/commit/17467f2c1695f373093d5db16d10217f154bed00)), closes [#25](https://github.com/trillium/feedtack/issues/25)
+* use native dialog element for modal backdrop click-to-close ([3865720](https://github.com/trillium/feedtack/commit/3865720ad7270a887b3bcec752b392a867a62029)), closes [#22](https://github.com/trillium/feedtack/issues/22)
+
 ## [](https://github.com/trillium/feedtack/compare/v1.0.1...vnull) (2026-05-02)
 
 ### Features
