@@ -1,4 +1,4 @@
 {
   "title": "Guides",
-  "pages": ["production", "supabase"]
+  "pages": ["production", "supabase", "injectable-snippet"]
 }
