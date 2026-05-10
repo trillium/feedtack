@@ -39,6 +39,7 @@ const basePayload: FeedtackPayload = {
     scrollX: 0,
     scrollY: 0,
     devicePixelRatio: 1,
+    breakpoint: null,
   },
   device: { userAgent: 'test', platform: 'test', touchEnabled: false },
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import type React from 'react'
+import { TAILWIND_BREAKPOINTS } from '../capture/meta.js'
 import type { FeedtackUser } from '../types/payload.js'
 import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
@@ -35,6 +36,7 @@ export function FeedtackProvider<TUser = FeedtackUser>({
   onFlush,
   flushIdleMs,
   rescopeRoles,
+  breakpoints = TAILWIND_BREAKPOINTS,
 }: FeedtackProviderProps<TUser>) {
   const resolvedUser: FeedtackUser = mapUser
     ? mapUser(currentUser)
@@ -56,6 +58,7 @@ export function FeedtackProvider<TUser = FeedtackUser>({
     onFlush,
     flushIdleMs,
     rescopeRoles,
+    breakpoints,
   })
 
   const { getPosition } = useAnchoredPins(state.feedbackItems, state.pathname)

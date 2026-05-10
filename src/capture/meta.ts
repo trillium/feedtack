@@ -4,13 +4,36 @@ import type {
   FeedtackViewportMeta,
 } from '../types/payload.js'
 
-export function getViewportMeta(): FeedtackViewportMeta {
+export const TAILWIND_BREAKPOINTS: Record<string, number> = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536,
+}
+
+export function getViewportMeta(
+  breakpoints: Record<string, number> = TAILWIND_BREAKPOINTS,
+): FeedtackViewportMeta {
+  // Resolve breakpoint: sort by value descending, return name of first match
+  let breakpoint: string | null = null
+  if (typeof window.matchMedia === 'function') {
+    const entries = Object.entries(breakpoints).sort((a, b) => b[1] - a[1])
+    for (const [name, px] of entries) {
+      if (window.matchMedia(`(min-width: ${px}px)`).matches) {
+        breakpoint = name
+        break
+      }
+    }
+  }
+
   return {
     width: window.innerWidth,
     height: window.innerHeight,
     scrollX: window.scrollX,
     scrollY: window.scrollY,
     devicePixelRatio: window.devicePixelRatio,
+    breakpoint,
   }
 }
 

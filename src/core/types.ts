@@ -26,6 +26,7 @@ export interface FeedtackEngineOpts {
   onFlush?: (event: FeedtackFlushEvent) => void
   flushIdleMs?: number
   rescopeRoles?: string[]
+  breakpoints?: Record<string, number>
 }
 
 export interface FeedtackEngineState {

@@ -19,6 +19,7 @@ export interface ActionContext {
   currentUser: FeedtackUser
   onError?: (err: Error) => void
   rescopeRoles?: string[]
+  breakpoints?: Record<string, number>
   getState: () => FeedtackEngineState
   setState: (partial: Partial<FeedtackEngineState>) => void
   getCurrentScope: () => 'element' | 'site' | 'page'
@@ -55,7 +56,7 @@ export async function handleSubmit(ctx: ActionContext): Promise<void> {
     sentiment: s.sentiment,
     pins: s.pendingPins.map((p, i) => ({ ...p, index: i + 1 })),
     page: getPageMeta(),
-    viewport: getViewportMeta(),
+    viewport: getViewportMeta(ctx.breakpoints),
     device: getDeviceMeta(),
   }
   try {

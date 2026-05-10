@@ -47,6 +47,9 @@ export function serializeNode(
   const dataFeedtackComponent = attr(el, 'data-feedtack-component')
   const hasStableId = !!(id || dataTestId)
 
+  const rawText = el.textContent?.trim() ?? ''
+  const textContent = rawText.length > 0 ? rawText.slice(0, 120) : null
+
   return {
     tag: el.tagName.toLowerCase(),
     id,
@@ -61,6 +64,9 @@ export function serializeNode(
     nthChild: hasStableId ? null : nthChild(el),
     nthOfType: hasStableId ? null : nthOfType(el),
     componentName: dataFeedtackComponent ?? fiberWalker?.(el) ?? null,
+    classes: Array.from(el.classList),
+    textContent,
+    placeholder: attr(el, 'placeholder'),
   }
 }
 

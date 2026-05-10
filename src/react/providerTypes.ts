@@ -43,4 +43,10 @@ export interface FeedtackProviderProps<TUser = FeedtackUser> {
    * decides what to do with the result.
    */
   onDeployCheck?: () => Promise<{ approved: boolean; pending: string[] }>
+  /**
+   * CSS breakpoint map used to resolve viewport breakpoint at submission time.
+   * Keys are breakpoint names, values are min-width pixel thresholds.
+   * Defaults to Tailwind v3 breakpoints (sm: 640, md: 768, lg: 1024, xl: 1280, 2xl: 1536).
+   */
+  breakpoints?: Record<string, number>
 }

@@ -41,6 +41,12 @@ export interface AncestorNode {
   nthOfType: number | null
   /** React component display name from fiber traversal, or data-feedtack-component value */
   componentName: string | null
+  /** CSS class names on the element at capture time */
+  classes: string[]
+  /** Trimmed text content of the element, truncated to 120 characters. Null when empty. */
+  textContent: string | null
+  /** placeholder attribute value, null when absent */
+  placeholder: string | null
 }
 
 export interface FeedtackPinTarget {
@@ -86,6 +92,8 @@ export interface FeedtackViewportMeta {
   scrollX: number
   scrollY: number
   devicePixelRatio: number
+  /** Active CSS breakpoint name at capture time, resolved via matchMedia. Null when unresolved. */
+  breakpoint: string | null
 }
 
 export interface FeedtackDeviceMeta {

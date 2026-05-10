@@ -67,6 +67,7 @@ export class FeedtackEngine {
       currentUser: opts.currentUser,
       onError: opts.onError,
       rescopeRoles: opts.rescopeRoles,
+      breakpoints: opts.breakpoints,
       getState: () => this.state,
       setState: (p) => this.setState(p),
       getCurrentScope: () => this.getCurrentScope(),

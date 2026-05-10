@@ -40,6 +40,7 @@ const mockPayload: FeedtackPayload = {
     scrollX: 0,
     scrollY: 812,
     devicePixelRatio: 2,
+    breakpoint: null,
   },
   device: {
     userAgent: 'Mozilla/5.0',

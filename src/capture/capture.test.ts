@@ -261,3 +261,67 @@ describe('getCSSSelector', () => {
     expect(selector).toContain('#root')
   })
 })
+
+describe('serializeNode — classes, textContent, placeholder', () => {
+  beforeEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('includes classes as array for element with classes', () => {
+    document.body.innerHTML =
+      '<button class="btn btn-primary active">Click</button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.classes).toEqual(['btn', 'btn-primary', 'active'])
+  })
+
+  it('includes classes as empty array for element with no classes', () => {
+    document.body.innerHTML = '<button>Click</button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.classes).toEqual([])
+  })
+
+  it('includes textContent trimmed and truncated at 120 chars', () => {
+    const longText = 'a'.repeat(200)
+    document.body.innerHTML = `<button>  ${longText}  </button>`
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.textContent).toBe('a'.repeat(120))
+  })
+
+  it('sets textContent to null for whitespace-only content', () => {
+    document.body.innerHTML = '<button>   </button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.textContent).toBeNull()
+  })
+
+  it('sets textContent to null for element with no text', () => {
+    document.body.innerHTML = '<img src="img.png" />'
+    const img = document.querySelector('img')!
+    const node = serializeNode(img)
+    expect(node.textContent).toBeNull()
+  })
+
+  it('captures textContent for button with visible label', () => {
+    document.body.innerHTML = '<button>Submit feedback</button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.textContent).toBe('Submit feedback')
+  })
+
+  it('captures placeholder for input elements', () => {
+    document.body.innerHTML = '<input placeholder="Search..." />'
+    const input = document.querySelector('input')!
+    const node = serializeNode(input)
+    expect(node.placeholder).toBe('Search...')
+  })
+
+  it('sets placeholder to null for non-input elements', () => {
+    document.body.innerHTML = '<button>Click</button>'
+    const btn = document.querySelector('button')!
+    const node = serializeNode(btn)
+    expect(node.placeholder).toBeNull()
+  })
+})

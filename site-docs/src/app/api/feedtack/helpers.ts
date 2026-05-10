@@ -54,6 +54,7 @@ export const PayloadSchema = z.object({
     scrollX: z.number(),
     scrollY: z.number(),
     devicePixelRatio: z.number(),
+    breakpoint: z.string().nullable().optional(),
   }),
   device: z.object({
     userAgent: z.string(),
@@ -90,14 +91,42 @@ export function formatIssueBody(
   ]
 
   if (target) {
+    const tagName = target.tagName as string
+    const selector = target.selector as string
+    const bestEffort = target.best_effort as boolean
+    const classes = target.classes as string[] | undefined
+    const textContent = target.textContent as string | null | undefined
+    const placeholder = target.placeholder as string | null | undefined
+    const ariaLabel = target.ariaLabel as string | null | undefined
+    const role = target.role as string | null | undefined
+    const type = target.type as string | null | undefined
+    const name = target.name as string | null | undefined
+    const dataTestId = target.dataTestId as string | null | undefined
+    const dataFeedtackComponent = target.dataFeedtackComponent as
+      | string
+      | null
+      | undefined
+    const componentName = target.componentName as string | null | undefined
+
     lines.push(
-      '### Element Target',
+      '### Element Context',
       '',
-      `- **Selector:** \`${target.selector}\``,
-      `- **Tag:** \`${target.tagName}\``,
-      `- **data-testid:** ${target.dataTestId ?? 'n/a'}`,
-      `- **Best effort:** ${target.best_effort}`,
+      `- **Tag:** \`${tagName}\``,
+      `- **Selector:** \`${selector}\``,
+      `- **Best effort:** ${bestEffort}`,
     )
+    if (classes && classes.length > 0)
+      lines.push(`- **Classes:** ${classes.join(' ')}`)
+    if (textContent) lines.push(`- **Text:** "${textContent}"`)
+    if (placeholder) lines.push(`- **Placeholder:** ${placeholder}`)
+    if (ariaLabel) lines.push(`- **ARIA:** ${ariaLabel}`)
+    if (role) lines.push(`- **Role:** ${role}`)
+    if (type) lines.push(`- **Type:** ${type}`)
+    if (name) lines.push(`- **Name:** ${name}`)
+    if (dataTestId) lines.push(`- **data-testid:** ${dataTestId}`)
+    if (dataFeedtackComponent)
+      lines.push(`- **data-feedtack-component:** ${dataFeedtackComponent}`)
+    if (componentName) lines.push(`- **Component:** ${componentName}`)
 
     const ancestors = target.ancestors as
       | Array<Record<string, unknown>>
@@ -105,19 +134,39 @@ export function formatIssueBody(
     if (ancestors?.length) {
       lines.push('', '**Ancestor chain:**', '')
       for (const a of ancestors) {
-        const parts = [a.tag as string]
-        if (a.id) parts.push(`#${a.id}`)
-        if (a.componentName) parts.push(`(${a.componentName})`)
-        lines.push(`- \`${parts.join('')}\``)
+        // Build the tag#id part (no space between tag and id)
+        let tagIdPart = a.tag as string
+        if (a.id) tagIdPart += `#${a.id}`
+        const componentLabel = (a.componentName ?? a.dataFeedtackComponent) as
+          | string
+          | null
+          | undefined
+        // Add component label with a space: `nav (Sidebar)`
+        const ancestorLabel = componentLabel
+          ? `${tagIdPart} (${componentLabel})`
+          : tagIdPart
+        let ancestorLine = `- \`${ancestorLabel}\``
+        const aClasses = a.classes as string[] | undefined
+        if (aClasses && aClasses.length > 0)
+          ancestorLine += ` — Classes: ${aClasses.join(' ')}`
+        const aAriaLabel = a.ariaLabel as string | null | undefined
+        if (aAriaLabel) ancestorLine += ` — ARIA: ${aAriaLabel}`
+        lines.push(ancestorLine)
       }
     }
     lines.push('')
   }
 
+  const {
+    width: w,
+    height: h,
+    devicePixelRatio: dpr,
+    breakpoint,
+  } = payload.viewport
   lines.push(
     '### Viewport',
     '',
-    `${payload.viewport.width}x${payload.viewport.height} @ ${payload.viewport.devicePixelRatio}x DPR`,
+    `${w}x${h} @ ${dpr}x DPR${breakpoint ? ` (${breakpoint})` : ''}`,
     '',
     '### Device',
     '',

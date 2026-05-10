@@ -19,6 +19,7 @@ export interface UseFeedtackStateOpts {
   onFlush?: (event: FeedtackFlushEvent) => void
   flushIdleMs?: number
   rescopeRoles?: string[]
+  breakpoints?: Record<string, number>
 }
 
 export function useFeedtackState({
@@ -31,6 +32,7 @@ export function useFeedtackState({
   onFlush,
   flushIdleMs,
   rescopeRoles,
+  breakpoints,
 }: UseFeedtackStateOpts) {
   // Create engine once, stable across renders
   const engineRef = useRef<FeedtackEngine | null>(null)
@@ -45,6 +47,7 @@ export function useFeedtackState({
       onFlush,
       flushIdleMs,
       rescopeRoles,
+      breakpoints,
     })
   }
   const engine = engineRef.current
