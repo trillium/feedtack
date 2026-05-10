@@ -14,12 +14,22 @@ function createKeydownHandler(
   hotkey: string,
   getState: GetState,
   setState: SetState,
-  openModal: () => void,
+  onHotkey: () => void,
   deactivatePinMode: () => void,
 ): (e: KeyboardEvent) => void {
   const key = hotkey.toUpperCase()
   return (e: KeyboardEvent) => {
-    if (e.key === key && e.shiftKey) openModal()
+    if (e.key === key && e.shiftKey) {
+      const target = e.target as HTMLElement
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.tagName === 'SELECT' ||
+        target.isContentEditable
+      )
+        return
+      onHotkey()
+    }
     if (e.key === 'Escape') deactivatePinMode()
     const s = getState()
     if (
@@ -68,14 +78,14 @@ export function attachInputListeners(
   getState: GetState,
   setState: SetState,
   hotkey: string,
-  openModal: () => void,
+  onHotkey: () => void,
   deactivatePinMode: () => void,
 ): InputListenerHandles {
   const keydown = createKeydownHandler(
     hotkey,
     getState,
     setState,
-    openModal,
+    onHotkey,
     deactivatePinMode,
   )
   window.addEventListener('keydown', keydown)

@@ -92,11 +92,7 @@ export function FeedtackProvider({
   const openItem = state.openThreadId
     ? state.feedbackItems.find((i) => i.payload.id === state.openThreadId)
     : null
-
-  const handlePlacePin = () => {
-    state.closeModal()
-    state.activatePinMode()
-  }
+  const closeThread = () => state.setOpenThreadId(null)
 
   return (
     <FeedtackContext.Provider
@@ -203,7 +199,8 @@ export function FeedtackProvider({
           onReply={() => state.handleReply(openItem.payload.id)}
           onResolve={() => state.handleResolve(openItem.payload.id)}
           onArchive={() => state.handleArchive(openItem.payload.id)}
-          onClose={() => state.setOpenThreadId(null)}
+          onClose={closeThread}
+          onBackdropClick={state.isPinModeActive ? undefined : closeThread}
           pinPosition={getPosition(
             openItem.payload.id,
             openItem.payload.pins[0],
@@ -230,7 +227,10 @@ export function FeedtackProvider({
           onSentimentChange={state.setSentiment}
           submitting={state.submitting}
           onSubmit={state.handleModalSubmit}
-          onPlacePin={handlePlacePin}
+          onPlacePin={() => {
+            state.closeModal()
+            state.activatePinMode()
+          }}
           replyBody={state.replyBody}
           onReplyBodyChange={state.setReplyBody}
           onReply={(id) => state.handleReply(id)}

@@ -76,13 +76,18 @@ export function FeedbackModal({
     [onClose],
   )
 
-  // Close on backdrop click: when the click target is the <dialog> itself
-  // (not its children), it means the user clicked the backdrop
+  // Close on backdrop click/tap: when the event target is the <dialog> itself
+  // (not its children) the user clicked/tapped the backdrop
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDialogElement>) => {
-      if (e.target === dialogRef.current) {
-        onClose()
-      }
+      if (e.target === dialogRef.current) onClose()
+    },
+    [onClose],
+  )
+
+  const handleBackdropTouch = useCallback(
+    (e: React.TouchEvent<HTMLDialogElement>) => {
+      if (e.target === dialogRef.current) onClose()
     },
     [onClose],
   )
@@ -102,6 +107,7 @@ export function FeedbackModal({
       aria-label="Feedback"
       onCancel={handleCancel}
       onClick={handleBackdropClick}
+      onTouchEnd={handleBackdropTouch}
     >
       <div className="feedtack-modal-header">
         <span className="feedtack-modal-title">Feedback</span>

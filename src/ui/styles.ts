@@ -236,6 +236,11 @@ export const FEEDTACK_STYLES = `
     gap: 10px;
   }
 
+  .feedtack-backdrop {
+    position: fixed; inset: 0; z-index: 2147483641;
+    background: transparent; border: none; cursor: default; padding: 0;
+  }
+
   .feedtack-sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;

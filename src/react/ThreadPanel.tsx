@@ -11,6 +11,8 @@ interface ThreadPanelProps {
   onResolve: () => void
   onArchive: () => void
   onClose: () => void
+  /** When provided, renders a full-screen backdrop that calls this on click/tap */
+  onBackdropClick?: () => void
   className?: string
   /** Resolved pin position (DOM-anchored or fallback x/y) */
   pinPosition?: { x: number; y: number }
@@ -24,6 +26,7 @@ export function ThreadPanel({
   onResolve,
   onArchive,
   onClose,
+  onBackdropClick,
   className,
   pinPosition,
 }: ThreadPanelProps) {
@@ -33,75 +36,88 @@ export function ThreadPanel({
   const pos = getAnchoredPosition(x, y)
 
   return (
-    <div
-      className={cx('feedtack-thread', className)}
-      style={{ position: 'fixed', ...pos }}
-    >
-      <strong style={{ fontSize: 13 }}>{item.payload.submittedBy.name}</strong>
-      <p style={{ fontSize: 13 }}>{item.payload.comment}</p>
+    <>
+      {onBackdropClick && (
+        <button
+          type="button"
+          className="feedtack-backdrop"
+          onClick={onBackdropClick}
+        />
+      )}
+      <div
+        className={cx('feedtack-thread', className)}
+        style={{ position: 'fixed', ...pos }}
+      >
+        <strong style={{ fontSize: 13 }}>
+          {item.payload.submittedBy.name}
+        </strong>
+        <p style={{ fontSize: 13 }}>{item.payload.comment}</p>
 
-      {item.replies.map((r) => (
-        <div
-          key={r.id}
-          style={{ borderTop: '1px solid var(--ft-border)', paddingTop: 8 }}
-        >
-          <span style={{ fontSize: 12, fontWeight: 600 }}>{r.author.name}</span>
-          <p style={{ fontSize: 12 }}>{r.body}</p>
+        {item.replies.map((r) => (
+          <div
+            key={r.id}
+            style={{ borderTop: '1px solid var(--ft-border)', paddingTop: 8 }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 600 }}>
+              {r.author.name}
+            </span>
+            <p style={{ fontSize: 12 }}>{r.body}</p>
+          </div>
+        ))}
+
+        <textarea
+          placeholder="Reply…"
+          value={replyBody}
+          onChange={(e) => onReplyBodyChange(e.target.value)}
+          style={{
+            width: '100%',
+            fontSize: 12,
+            padding: 6,
+            borderRadius: 6,
+            border: '1px solid var(--ft-border)',
+            background: 'var(--ft-surface)',
+            color: 'var(--ft-text)',
+            minHeight: 60,
+            resize: 'vertical' as const,
+            marginTop: 4,
+          }}
+        />
+
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="feedtack-btn-submit"
+            style={{ fontSize: 12, padding: '4px 10px' }}
+            onClick={onReply}
+          >
+            Reply
+          </button>
+          <button
+            type="button"
+            className="feedtack-btn-cancel"
+            style={{ fontSize: 12 }}
+            onClick={onResolve}
+          >
+            Mark Resolved
+          </button>
+          <button
+            type="button"
+            className="feedtack-btn-cancel"
+            style={{ fontSize: 12 }}
+            onClick={onArchive}
+          >
+            Archive
+          </button>
+          <button
+            type="button"
+            className="feedtack-btn-cancel"
+            style={{ fontSize: 12 }}
+            onClick={onClose}
+          >
+            Close
+          </button>
         </div>
-      ))}
-
-      <textarea
-        placeholder="Reply…"
-        value={replyBody}
-        onChange={(e) => onReplyBodyChange(e.target.value)}
-        style={{
-          width: '100%',
-          fontSize: 12,
-          padding: 6,
-          borderRadius: 6,
-          border: '1px solid var(--ft-border)',
-          background: 'var(--ft-surface)',
-          color: 'var(--ft-text)',
-          minHeight: 60,
-          resize: 'vertical' as const,
-          marginTop: 4,
-        }}
-      />
-
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        <button
-          type="button"
-          className="feedtack-btn-submit"
-          style={{ fontSize: 12, padding: '4px 10px' }}
-          onClick={onReply}
-        >
-          Reply
-        </button>
-        <button
-          type="button"
-          className="feedtack-btn-cancel"
-          style={{ fontSize: 12 }}
-          onClick={onResolve}
-        >
-          Mark Resolved
-        </button>
-        <button
-          type="button"
-          className="feedtack-btn-cancel"
-          style={{ fontSize: 12 }}
-          onClick={onArchive}
-        >
-          Archive
-        </button>
-        <button
-          type="button"
-          className="feedtack-btn-cancel"
-          style={{ fontSize: 12 }}
-          onClick={onClose}
-        >
-          Close
-        </button>
       </div>
-    </div>
+    </>
   )
 }

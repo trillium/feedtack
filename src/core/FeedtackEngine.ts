@@ -114,7 +114,14 @@ export class FeedtackEngine {
       () => this.state,
       (p) => this.setState(p),
       this.opts.hotkey ?? 'p',
-      () => this.openModal(),
+      () => {
+        if (this.state.isModalOpen) {
+          this.closeModal()
+          this.activatePinMode()
+        } else {
+          this.openModal()
+        }
+      },
       () => this.deactivatePinMode(),
     )
     if (this.opts.onFlush) {
