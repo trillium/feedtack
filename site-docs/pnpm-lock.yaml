@@ -12,8 +12,8 @@ importers:
         specifier: ^4.2.4
         version: 4.2.4
       feedtack:
-        specifier: ^1.0.1
-        version: 1.0.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^1.3.2
+        version: 1.3.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       fumadocs-core:
         specifier: ^16.8.5
         version: 16.8.5(@mdx-js/mdx@3.1.1)(@types/estree-jsx@1.0.5)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.2.14)(lucide-react@1.11.0(react@19.2.5))(next@16.2.4(@playwright/test@1.59.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(zod@4.3.6)
@@ -1386,8 +1386,8 @@ packages:
       picomatch:
         optional: true
 
-  feedtack@1.0.1:
-    resolution: {integrity: sha512-8y2CY4/sOr0rKudcILRcHJINMxMnD+wvQ/h+6+cFnF2vGrdIUUM8y+VnUS225AmtLaTWdntrwFz309K2aogVAQ==}
+  feedtack@1.3.2:
+    resolution: {integrity: sha512-KeGtamti8OdThB2/lROjdAN/qd0/TRPtaBq2XrmCNI/g1rs7FODO/9GNvlALJfCq0XOx5mlswTfPbRI/JCiXYA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -3279,7 +3279,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
-  feedtack@1.0.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  feedtack@1.3.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)

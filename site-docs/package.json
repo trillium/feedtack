@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.4",
-    "feedtack": "^1.0.1",
+    "feedtack": "^1.3.2",
     "fumadocs-core": "^16.8.5",
     "fumadocs-docgen": "^3.0.10",
     "fumadocs-mdx": "^14.3.2",
