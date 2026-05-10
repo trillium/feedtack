@@ -37,6 +37,7 @@ export const PayloadSchema = z.object({
   submittedBy: z.object({
     id: z.string(),
     name: z.string(),
+    username: z.string().optional(),
     role: z.string(),
   }),
   comment: z.string(),
@@ -70,9 +71,14 @@ export function formatIssueBody(
   const pin = payload.pins[0] as Record<string, unknown> | undefined
   const target = pin?.target as Record<string, unknown> | undefined
 
+  const submitterLabel = payload.submittedBy.username
+    ? `${payload.submittedBy.name} (@${payload.submittedBy.username})`
+    : payload.submittedBy.name
+
   const lines: string[] = [
     '## Docs Feedback',
     '',
+    `**Submitted by:** ${submitterLabel}`,
     `**Scope:** ${payload.scope}`,
     `**Page:** [${payload.page.pathname}](${payload.page.url})`,
     `**Sentiment:** ${payload.sentiment ?? 'none'}`,

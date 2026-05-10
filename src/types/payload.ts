@@ -7,11 +7,13 @@ export interface FeedtackUser {
   id: string
   /** Display name shown in threads */
   name: string
+  /** Short handle for @mentions — GitHub username, Slack @-name, email prefix, or any app-specific slug */
+  username?: string
   /** Controls UI access, e.g. 'admin' | 'designer' | 'stakeholder' | 'partner' */
   role: string
   /** Shown in reply threads next to name */
   avatarUrl?: string
-  /** Reserved for future notification use */
+  /** Contact email */
   email?: string
 }
 

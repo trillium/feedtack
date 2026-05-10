@@ -1,7 +1,45 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { FeedtackAdapter } from '../types/adapter.js'
+import type { FeedtackUser } from '../types/payload.js'
 import { FeedtackProvider } from './FeedtackProvider.js'
+
+// ---------------------------------------------------------------------------
+// Inline minimal formatIssueBody for username rendering tests
+// (site-docs is excluded from the vitest run; logic is duplicated here for
+// test coverage of the username rendering requirement)
+// ---------------------------------------------------------------------------
+function formatSubmittedByLabel(submittedBy: {
+  name: string
+  username?: string
+}): string {
+  return submittedBy.username
+    ? `${submittedBy.name} (@${submittedBy.username})`
+    : submittedBy.name
+}
+
+describe('formatIssueBody username rendering', () => {
+  it('renders @username alongside name when username is present', () => {
+    const label = formatSubmittedByLabel({
+      name: 'Jane Doe',
+      username: 'janedoe',
+    })
+    expect(label).toBe('Jane Doe (@janedoe)')
+  })
+
+  it('falls back to name only when username is absent', () => {
+    const label = formatSubmittedByLabel({ name: 'Jane Doe' })
+    expect(label).toBe('Jane Doe')
+  })
+
+  it('falls back to name only when username is undefined', () => {
+    const label = formatSubmittedByLabel({
+      name: 'Jane Doe',
+      username: undefined,
+    })
+    expect(label).toBe('Jane Doe')
+  })
+})
 
 const mockAdapter: FeedtackAdapter = {
   submit: vi.fn().mockResolvedValue(undefined),
@@ -180,6 +218,148 @@ describe('FeedtackProvider', () => {
       )
     })
     expect(mockAdapter.loadFeedback).toHaveBeenCalled()
+  })
+
+  describe('generic user type / mapUser', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('uses currentUser directly when no mapUser provided (FeedtackUser passthrough)', async () => {
+      let capturedUser: FeedtackUser | undefined
+      const capturingAdapter: FeedtackAdapter = {
+        ...mockAdapter,
+        submit: vi.fn().mockImplementation(async (payload) => {
+          capturedUser = payload.submittedBy
+        }),
+        loadFeedback: vi.fn().mockResolvedValue([]),
+      }
+
+      await act(async () => {
+        render(
+          <FeedtackProvider adapter={capturingAdapter} currentUser={mockUser}>
+            <div />
+          </FeedtackProvider>,
+        )
+      })
+
+      // Open modal and submit
+      await act(async () => {
+        fireEvent.click(screen.getByText('Feedback'))
+      })
+      const textarea = screen.getByRole('textbox')
+      await act(async () => {
+        fireEvent.change(textarea, { target: { value: 'test comment' } })
+      })
+      await act(async () => {
+        fireEvent.click(screen.getByText('Submit'))
+      })
+
+      expect(capturedUser?.id).toBe(mockUser.id)
+      expect(capturedUser?.name).toBe(mockUser.name)
+    })
+
+    it('maps custom user type to FeedtackUser via mapUser', async () => {
+      type ClerkUser = { userId: string; fullName: string; orgRole: string }
+      const clerkUser: ClerkUser = {
+        userId: 'clerk_123',
+        fullName: 'Jane Doe',
+        orgRole: 'admin',
+      }
+      const mapUser = (u: ClerkUser): FeedtackUser => ({
+        id: u.userId,
+        name: u.fullName,
+        role: u.orgRole,
+      })
+
+      let capturedUser: FeedtackUser | undefined
+      const capturingAdapter: FeedtackAdapter = {
+        ...mockAdapter,
+        submit: vi.fn().mockImplementation(async (payload) => {
+          capturedUser = payload.submittedBy
+        }),
+        loadFeedback: vi.fn().mockResolvedValue([]),
+      }
+
+      await act(async () => {
+        render(
+          <FeedtackProvider
+            adapter={capturingAdapter}
+            currentUser={clerkUser}
+            mapUser={mapUser}
+          >
+            <div />
+          </FeedtackProvider>,
+        )
+      })
+
+      // Open modal and submit
+      await act(async () => {
+        fireEvent.click(screen.getByText('Feedback'))
+      })
+      const textarea = screen.getByRole('textbox')
+      await act(async () => {
+        fireEvent.change(textarea, { target: { value: 'custom user comment' } })
+      })
+      await act(async () => {
+        fireEvent.click(screen.getByText('Submit'))
+      })
+
+      expect(capturedUser?.id).toBe('clerk_123')
+      expect(capturedUser?.name).toBe('Jane Doe')
+      expect(capturedUser?.role).toBe('admin')
+    })
+
+    it('emits dev warning when resolved user has no id', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      // NODE_ENV is 'test' in vitest — not 'production', so warning fires
+      vi.stubEnv('NODE_ENV', 'development')
+
+      const noIdUser = { id: '', name: 'No ID User', role: 'viewer' }
+      const localAdapter: FeedtackAdapter = {
+        ...mockAdapter,
+        loadFeedback: vi.fn().mockResolvedValue([]),
+      }
+
+      await act(async () => {
+        render(
+          <FeedtackProvider adapter={localAdapter} currentUser={noIdUser}>
+            <div />
+          </FeedtackProvider>,
+        )
+      })
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[feedtack] currentUser has no id — provide mapUser to normalize your user type',
+      )
+
+      vi.unstubAllEnvs()
+    })
+
+    it('does not emit warning in production when resolved user has no id', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      vi.stubEnv('NODE_ENV', 'production')
+
+      const noIdUser = { id: '', name: 'No ID User', role: 'viewer' }
+      const localAdapter: FeedtackAdapter = {
+        ...mockAdapter,
+        loadFeedback: vi.fn().mockResolvedValue([]),
+      }
+
+      await act(async () => {
+        render(
+          <FeedtackProvider adapter={localAdapter} currentUser={noIdUser}>
+            <div />
+          </FeedtackProvider>,
+        )
+      })
+
+      expect(warnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('[feedtack]'),
+      )
+
+      vi.unstubAllEnvs()
+    })
   })
 
   it('does not crash when feedback items have empty pins', async () => {

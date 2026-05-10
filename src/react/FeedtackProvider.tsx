@@ -1,64 +1,29 @@
 'use client'
 
 import type React from 'react'
-import type { FeedtackFlushEvent } from '../core/types.js'
-import type { FeedtackAdapter } from '../types/adapter.js'
-import type { FeedbackItem, FeedtackUser } from '../types/payload.js'
-import type { FeedtackTheme } from '../types/theme.js'
+import type { FeedtackUser } from '../types/payload.js'
 import { PIN_PALETTE } from '../ui/colors.js'
 import { CommentForm } from './CommentForm.js'
 import { FeedtackContext } from './context.js'
 import { FeedbackModal } from './FeedbackModal.js'
 import { PinOverlay } from './PinOverlay.js'
+import type { FeedtackProviderProps } from './providerTypes.js'
 import { ThreadPanel } from './ThreadPanel.js'
 import { useAnchoredPins } from './useAnchoredPins.js'
 import { useFeedtackState } from './useFeedtackState.js'
 import { cx, getAnchoredPosition } from './utils.js'
 
-export interface FeedtackClasses {
-  button?: string
-  form?: string
-  thread?: string
-  colorPicker?: string
-  pinMarker?: string
-}
+export type {
+  FeedtackClasses,
+  FeedtackProviderProps,
+  FeedtackSentimentLabels,
+} from './providerTypes.js'
 
-export interface FeedtackSentimentLabels {
-  satisfied?: React.ReactNode
-  dissatisfied?: React.ReactNode
-}
-
-export interface FeedtackProviderProps {
-  children: React.ReactNode
-  adapter: FeedtackAdapter
-  currentUser: FeedtackUser
-  hotkey?: string
-  adminOnly?: boolean
-  theme?: FeedtackTheme
-  classes?: FeedtackClasses
-  sentimentLabels?: FeedtackSentimentLabels
-  onError?: (err: Error) => void
-  disabled?: boolean
-  /** Render custom content inside a submitted pin marker. Receives the feedback item. */
-  renderPinIcon?: (item: FeedbackItem) => React.ReactNode
-  /** Called with batched feedback when user leaves a page or goes idle */
-  onFlush?: (event: FeedtackFlushEvent) => void
-  /** Idle timeout in ms before flushing (default 5 min) */
-  flushIdleMs?: number
-  /** User roles that trigger re-scope on reply (default: any non-'agent' role) */
-  rescopeRoles?: string[]
-  /**
-   * Called by the consumer (e.g. on a Deploy button click) to check whether all
-   * content fields have current approvals. Feedtack surfaces the data; the consumer
-   * decides what to do with the result.
-   */
-  onDeployCheck?: () => Promise<{ approved: boolean; pending: string[] }>
-}
-
-export function FeedtackProvider({
+export function FeedtackProvider<TUser = FeedtackUser>({
   children,
   adapter,
   currentUser,
+  mapUser,
   hotkey = 'p',
   adminOnly = false,
   theme,
@@ -70,10 +35,20 @@ export function FeedtackProvider({
   onFlush,
   flushIdleMs,
   rescopeRoles,
-}: FeedtackProviderProps) {
+}: FeedtackProviderProps<TUser>) {
+  const resolvedUser: FeedtackUser = mapUser
+    ? mapUser(currentUser)
+    : (currentUser as unknown as FeedtackUser)
+
+  if (process.env.NODE_ENV !== 'production' && !resolvedUser.id) {
+    console.warn(
+      '[feedtack] currentUser has no id — provide mapUser to normalize your user type',
+    )
+  }
+
   const state = useFeedtackState({
     adapter,
-    currentUser,
+    currentUser: resolvedUser,
     hotkey,
     theme,
     onError,
@@ -87,7 +62,7 @@ export function FeedtackProvider({
 
   const firstPin = state.pendingPins[0]
   const formPos = firstPin ? getAnchoredPosition(firstPin.x, firstPin.y) : {}
-  const showButton = !adminOnly || currentUser.role === 'admin'
+  const showButton = !adminOnly || resolvedUser.role === 'admin'
 
   const openItem = state.openThreadId
     ? state.feedbackItems.find((i) => i.payload.id === state.openThreadId)
