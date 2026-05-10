@@ -350,6 +350,8 @@
   <!-- segments between dots (width=115px per gap)                      -->
   <!-- ================================================================ -->
   <g clip-path="url(#wfaCanvas)">
+  <!-- Dark background fill -->
+  <rect width="580" height="430" fill="#0f172a"/>
   <g class="wfa-root" transform="translate(26,10)">
 
     <!-- Labels row -->
