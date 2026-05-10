@@ -43,7 +43,10 @@ export function ModalComposeForm({
       <div className="feedtack-sentiment">
         <button
           type="button"
-          className={sentiment === 'good' ? 'selected' : ''}
+          className={cx(
+            'feedtack-sentiment-btn',
+            sentiment === 'good' && 'selected',
+          )}
           onClick={() =>
             onSentimentChange(sentiment === 'good' ? null : 'good')
           }
@@ -52,7 +55,10 @@ export function ModalComposeForm({
         </button>
         <button
           type="button"
-          className={sentiment === 'bad' ? 'selected' : ''}
+          className={cx(
+            'feedtack-sentiment-btn',
+            sentiment === 'bad' && 'selected',
+          )}
           onClick={() => onSentimentChange(sentiment === 'bad' ? null : 'bad')}
         >
           Bad

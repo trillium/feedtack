@@ -170,7 +170,7 @@ export const FEEDTACK_STYLES = `
     gap: 8px;
   }
 
-  .feedtack-sentiment button {
+  .feedtack-sentiment-btn {
     flex: 1;
     padding: 6px 10px;
     border: 1.5px solid var(--ft-border);
@@ -182,7 +182,7 @@ export const FEEDTACK_STYLES = `
     transition: all 0.1s;
   }
 
-  .feedtack-sentiment button.selected {
+  .feedtack-sentiment-btn.selected {
     border-color: var(--ft-primary);
     background: var(--ft-surface);
     color: var(--ft-primary);

@@ -90,7 +90,12 @@ export async function handleModalSubmit(ctx: ActionContext): Promise<void> {
       feedbackItems: items.slice(0, -1),
     })
   }
-  ctx.setState({ comment: '', sentiment: null, commentError: false })
+  ctx.setState({
+    comment: '',
+    sentiment: null,
+    commentError: false,
+    isModalOpen: false,
+  })
 }
 
 export async function handleReply(

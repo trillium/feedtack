@@ -66,7 +66,10 @@ export function CommentForm({
       <div className="feedtack-sentiment">
         <button
           type="button"
-          className={sentiment === 'good' ? 'selected' : ''}
+          className={cx(
+            'feedtack-sentiment-btn',
+            sentiment === 'good' && 'selected',
+          )}
           onClick={() =>
             onSentimentChange(sentiment === 'good' ? null : 'good')
           }
@@ -75,7 +78,10 @@ export function CommentForm({
         </button>
         <button
           type="button"
-          className={sentiment === 'bad' ? 'selected' : ''}
+          className={cx(
+            'feedtack-sentiment-btn',
+            sentiment === 'bad' && 'selected',
+          )}
           onClick={() => onSentimentChange(sentiment === 'bad' ? null : 'bad')}
         >
           {sentimentLabels.dissatisfied ?? 'Bad'}
