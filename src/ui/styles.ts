@@ -16,8 +16,7 @@ export const FEEDTACK_DEFAULT_TOKENS = `
 `
 
 /** Injected once into <head> — all styles scoped to .feedtack-* using CSS tokens */
-export const FEEDTACK_STYLES =
-  `
+export const FEEDTACK_STYLES = `
   #feedtack-root * {
     box-sizing: border-box;
     margin: 0;
@@ -240,4 +239,4 @@ export const FEEDTACK_STYLES =
     overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
-` + FEEDTACK_MODAL_STYLES
+${FEEDTACK_MODAL_STYLES}`
