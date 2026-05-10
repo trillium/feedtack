@@ -1,5 +1,12 @@
 # feedtack
 
+[![npm](https://img.shields.io/npm/v/feedtack)](https://www.npmjs.com/package/feedtack)
+[![npm downloads](https://img.shields.io/npm/dm/feedtack)](https://www.npmjs.com/package/feedtack)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/feedtack)](https://bundlephobia.com/package/feedtack)
+[![license](https://img.shields.io/npm/l/feedtack)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/trillium/feedtack/ci.yml?label=CI)](https://github.com/trillium/feedtack/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-typed-3178c6)](https://www.typescriptlang.org)
+
 > Click anywhere. Drop a pin. Leave a note. Get a payload a developer can act on.
 
 <div align="center">
