@@ -19,11 +19,41 @@ Add `data-feedtack-field` to any element containing copywriting you want to trac
 <a data-feedtack-field="hero.cta" href="/signup">Get started</a>
 ```
 
-Field paths are opaque to Feedtack — they're just keys in your approval store. Use whatever namespace makes sense for your content model.
+Field paths are opaque to Feedtack — they're just keys in your approval store. Use whatever namespace makes sense for your content model. A suggested convention is dot-path notation in the form `{page}.{section}.{element}` — for example `home.hero.heading`, `pricing.faq.cta`, or `about.team.description`. This keeps field paths predictable and easy to filter by page or section.
 
 ## How it works
 
 When a field is approved, Feedtack computes a SHA-256 hash of the element's current text content and stores it alongside the approver's user ID and a timestamp. If the content changes, the stored hash no longer matches — the approval is **stale** and must be re-approved.
+
+Here is what a `FieldApprovalState` looks like before and after a content change:
+
+```json
+// Content matches the stored hash — approval is current
+{
+  "fieldPath": "home.hero.heading",
+  "approval": {
+    "hash": "a3f8c2d91e04",
+    "by": ["user_abc"],
+    "at": "2024-11-01T10:30:00Z"
+  },
+  "stale": false
+}
+```
+
+```json
+// Content was edited after approval — must be re-approved
+{
+  "fieldPath": "home.hero.heading",
+  "approval": {
+    "hash": "a3f8c2d91e04",
+    "by": ["user_abc"],
+    "at": "2024-11-01T10:30:00Z"
+  },
+  "stale": true
+}
+```
+
+The `hash` in `approval` always reflects what was approved, not the current content. When `stale` is `true`, the stored hash and the live content hash diverge.
 
 ## useContentApproval
 

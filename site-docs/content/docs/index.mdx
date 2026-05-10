@@ -25,14 +25,15 @@ Feedtack emits a structured JSON payload so complete that an LLM can attempt a f
 
 ## Architecture
 
-Feedtack ships as two entry points:
+Feedtack ships as three entry points:
 
-| Import | Contents |
-|--------|----------|
-| `feedtack` | Core adapters, capture utilities, TypeScript types |
-| `feedtack/react` | `FeedtackProvider`, `useFeedtack` hook, UI components |
+| Import | Contents | Use case |
+|--------|----------|----------|
+| `feedtack/react` | `FeedtackProvider`, `useFeedtack` hook, UI components | Primary path — React apps |
+| `feedtack/inject` (IIFE: `feedtack.inject.js`) | Zero-dependency inject script | Any site, no framework required |
+| `feedtack` | Core adapters, capture utilities, TypeScript types | Node.js API routes, adapters |
 
-The core package has zero React dependency — you can use the types and adapters in a Node.js API route without pulling in React.
+The React UI is the primary integration path. The inject script (`feedtack/inject`) is a self-contained IIFE that works on any site without a build step or React. The core package has zero React dependency — safe to import in Node.js environments.
 
 ## Quick example
 

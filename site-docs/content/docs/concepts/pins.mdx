@@ -41,3 +41,13 @@ Pins store both absolute and percentage coordinates:
 - **`xPct` / `yPct`** — Percentage of total document dimensions. Useful for approximate positioning across different viewport sizes.
 
 For submitted pins, Feedtack prefers anchoring to the resolved DOM element (via `target.selector`) over raw coordinates, so feedback stays attached to the right element even if the layout changes.
+
+## Using pin data
+
+Once you have a pin payload, here are the most common things to do with it:
+
+**Re-highlight the element** — `target.selector` is a CSS selector you can pass directly to `document.querySelector()` to scroll to or outline the element in a review UI.
+
+**Adapt to viewport size** — `xPct` and `yPct` are percentages of the total document dimensions, so they remain a reasonable approximation across different screen sizes and zoom levels. Use `x` / `y` only when you need exact pixel positioning on the same viewport that captured the pin.
+
+**LLM triage** — The full pin payload is structured specifically for LLM consumption. Pass it directly as user context alongside a system prompt like _"A user has reported feedback on the element described below. Suggest a fix."_ The ancestor chain, component names, selectors, and bounding rect together give the model enough signal to identify the element without needing a screenshot.

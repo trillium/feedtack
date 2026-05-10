@@ -54,6 +54,8 @@ You can also annotate elements explicitly:
 </div>
 ```
 
+> **Why bother with explicit annotations?** React component names are inferred from the fiber tree at runtime, but production builds minify function names — `CheckoutForm` becomes `t` or `e`. Explicit `data-feedtack-component` annotations are the only way to guarantee a stable, human-readable name reaches the payload in production.
+
 For copywriting fields that need approval tracking, use `data-feedtack-field` instead — see [Content Approval](/docs/concepts/content-approval).
 
 ## Target metadata example
