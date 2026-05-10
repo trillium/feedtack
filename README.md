@@ -2,6 +2,11 @@
 
 > Click anywhere. Drop a pin. Leave a note. Get a payload a developer can act on.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="workflow-animation-dark.svg">
+  <img src="workflow-animation.svg" alt="Feedtack workflow: browse a page, click an element, describe the issue, submit — it lands in your feedback catalogue" width="580">
+</picture>
+
 **feedtack** is a drop-in React feedback overlay. A "Feedback" button opens a modal where anyone can leave site-wide notes, page-level comments, or place a pin on a specific element — all from one entry point. feedtack emits a structured JSON payload so complete that an LLM can attempt a first-pass fix before consuming developer hours.
 
 ## Install

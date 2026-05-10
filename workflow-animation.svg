@@ -1,0 +1,624 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 580 430"
+  width="580" height="430"
+  fill="none"
+  role="img"
+  aria-label="Feedtack workflow: browse, click, describe, submit, catalogue">
+
+  <style>
+    /* ------------------------------------------------------------------ */
+    /* Hardcoded light-mode values replacing fd-* CSS variables:           */
+    /*   --color-fd-card         = #ffffff                                 */
+    /*   --color-fd-border       = #e5e7eb                                 */
+    /*   --color-fd-muted        = #f3f4f6                                 */
+    /*   --color-fd-muted-foreground = #9ca3af                             */
+    /*   --color-fd-foreground   = #111827                                 */
+    /*   --color-fd-primary      = #2563eb                                 */
+    /* ------------------------------------------------------------------ */
+
+    .wfa-root {
+      --dur: 12s;
+    }
+
+    /* ---- Step 1+2: Browser fades in 0-34% ---- */
+    .wfa-browser { animation: wfaBrowserIn 12s infinite; }
+    @keyframes wfaBrowserIn {
+      0%   { opacity: 0; transform: scale(0.96); }
+      4%   { opacity: 1; transform: scale(1); }
+      32%  { opacity: 1; }
+      34%, 100% { opacity: 0; }
+    }
+
+    /* ---- Step 2: Click / pin-step 18-34% ---- */
+    .wfa-pin-step { animation: wfaPinStep 12s infinite; }
+    @keyframes wfaPinStep {
+      0%, 17%   { opacity: 0; }
+      19%       { opacity: 1; }
+      32%       { opacity: 1; }
+      34%, 100% { opacity: 0; }
+    }
+
+    .wfa-cursor { animation: wfaCursor 12s infinite ease-out; }
+    @keyframes wfaCursor {
+      0%, 17%  { opacity: 0; transform: translate(60px, -30px); }
+      19%      { opacity: 1; transform: translate(55px, -27px); }
+      27%      { opacity: 1; transform: translate(0, 0); }
+      33%, 100%{ opacity: 0; transform: translate(0, 0); }
+    }
+
+    .wfa-pin { animation: wfaPin 12s infinite; }
+    @keyframes wfaPin {
+      0%, 25%  { opacity: 0; transform: translateY(-18px) scale(0.5); }
+      29%      { opacity: 1; transform: translateY(0) scale(1.08); }
+      31%      { opacity: 1; transform: translateY(0) scale(1); }
+      34%, 100%{ opacity: 0; }
+    }
+
+    .wfa-ring { animation: wfaRing 12s infinite; }
+    @keyframes wfaRing {
+      0%, 29%  { opacity: 0; transform: scale(0); }
+      32%      { opacity: 0.6; transform: scale(1); }
+      34%, 100%{ opacity: 0; transform: scale(2); }
+    }
+
+    /* ---- Step 3: Form / Describe 34-54% ---- */
+    .wfa-form { animation: wfaForm 12s infinite; }
+    @keyframes wfaForm {
+      0%, 33%       { opacity: 0; transform: scale(0.8) translateY(6px); }
+      37%, 51%      { opacity: 1; transform: scale(1) translateY(0); }
+      54%, 100%     { opacity: 0; transform: scale(0.9) translateY(-4px); }
+    }
+
+    /* Word dashes — typing simulation */
+    .wfa-word-1  { animation: wfaW1  12s infinite; }
+    .wfa-word-2  { animation: wfaW2  12s infinite; }
+    .wfa-word-3  { animation: wfaW3  12s infinite; }
+    .wfa-word-4  { animation: wfaW4  12s infinite; }
+    .wfa-word-5  { animation: wfaW5  12s infinite; }
+    .wfa-word-6  { animation: wfaW6  12s infinite; }
+    .wfa-word-7  { animation: wfaW7  12s infinite; }
+    .wfa-word-8  { animation: wfaW8  12s infinite; }
+    .wfa-word-9  { animation: wfaW9  12s infinite; }
+    .wfa-word-10 { animation: wfaW10 12s infinite; }
+    .wfa-word-11 { animation: wfaW11 12s infinite; }
+    .wfa-word-12 { animation: wfaW12 12s infinite; }
+    .wfa-word-13 { animation: wfaW13 12s infinite; }
+    .wfa-word-14 { animation: wfaW14 12s infinite; }
+    .wfa-word-15 { animation: wfaW15 12s infinite; }
+    .wfa-word-16 { animation: wfaW16 12s infinite; }
+    .wfa-word-17 { animation: wfaW17 12s infinite; }
+    .wfa-word-18 { animation: wfaW18 12s infinite; }
+    .wfa-word-19 { animation: wfaW19 12s infinite; }
+    @keyframes wfaW1  { 0%,37.0%{ opacity:0 } 37.7%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW2  { 0%,37.7%{ opacity:0 } 38.4%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW3  { 0%,38.4%{ opacity:0 } 39.1%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW4  { 0%,39.1%{ opacity:0 } 39.8%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW5  { 0%,39.8%{ opacity:0 } 40.5%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW6  { 0%,40.5%{ opacity:0 } 41.2%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW7  { 0%,41.2%{ opacity:0 } 41.9%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW8  { 0%,41.9%{ opacity:0 } 42.6%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW9  { 0%,42.6%{ opacity:0 } 43.3%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW10 { 0%,43.3%{ opacity:0 } 44.0%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW11 { 0%,44.0%{ opacity:0 } 44.7%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW12 { 0%,44.7%{ opacity:0 } 45.4%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW13 { 0%,45.4%{ opacity:0 } 46.1%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW14 { 0%,46.1%{ opacity:0 } 46.8%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW15 { 0%,46.8%{ opacity:0 } 47.5%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW16 { 0%,47.5%{ opacity:0 } 48.2%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW17 { 0%,48.2%{ opacity:0 } 48.9%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW18 { 0%,48.9%{ opacity:0 } 49.6%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+    @keyframes wfaW19 { 0%,49.6%{ opacity:0 } 50.3%,51%{ opacity:.45 } 54%,100%{ opacity:0 } }
+
+    /* ---- Step 4: Submit 54-68% ---- */
+    .wfa-check { animation: wfaCheck 12s infinite; }
+    @keyframes wfaCheck {
+      0%, 53%      { opacity: 0; transform: scale(0); }
+      57%          { opacity: 1; transform: scale(1.1); }
+      60%, 65%     { opacity: 1; transform: scale(1); }
+      68%, 100%    { opacity: 0; transform: scale(0.8); }
+    }
+
+    .wfa-check-pulse { animation: wfaCheckPulse 12s infinite; }
+    @keyframes wfaCheckPulse {
+      0%, 57%  { transform: scale(1); opacity: 0.15; }
+      67%      { transform: scale(1.8); opacity: 0; }
+      68%, 100%{ transform: scale(1); opacity: 0; }
+    }
+
+    /* ---- Step 5: Catalogue 68-90% ---- */
+    .wfa-catalogue { animation: wfaCatalogue 12s infinite; }
+    @keyframes wfaCatalogue {
+      0%, 67%      { opacity: 0; transform: translateY(8px); }
+      72%, 86%     { opacity: 1; transform: translateY(0); }
+      90%, 100%    { opacity: 0; transform: translateY(-4px); }
+    }
+
+    .wfa-cat-row { animation: wfaCatRow 12s infinite; }
+    .wfa-cat-row-1 { animation-delay: 0s; }
+    .wfa-cat-row-2 { animation-delay: 0.23s; }
+    .wfa-cat-row-3 { animation-delay: 0.45s; }
+    @keyframes wfaCatRow {
+      0%, 70%  { opacity: 0; transform: translateX(-8px); }
+      76%, 86% { opacity: 1; transform: translateX(0); }
+      90%, 100%{ opacity: 0; }
+    }
+
+    /* ---- Shimmer ---- */
+    .wfa-shimmer {
+      animation: wfaShimmer 12s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes wfaShimmer {
+      0%      { transform: translateX(-300px); }
+      8%      { transform: translateX(300px); }
+      8.01%   { transform: translateX(-300px); }
+      17%     { transform: translateX(300px); }
+      17.01%  { transform: translateX(-300px); }
+      67%     { transform: translateX(-300px); }
+      68%     { transform: translateX(-300px); }
+      78%     { transform: translateX(300px); }
+      78.01%  { transform: translateX(-300px); }
+      89%     { transform: translateX(300px); }
+      89.01%  { transform: translateX(-300px); }
+      100%    { transform: translateX(-300px); }
+    }
+
+    /* ---- Progress bar dots / segments ---- */
+    .wfa-prog-dot-0  { animation: wfaDot0  12s infinite; }
+    .wfa-prog-dot-1  { animation: wfaDot1  12s infinite; }
+    .wfa-prog-dot-2  { animation: wfaDot2  12s infinite; }
+    .wfa-prog-dot-3  { animation: wfaDot3  12s infinite; }
+    .wfa-prog-dot-4  { animation: wfaDot4  12s infinite; }
+
+    /* Dot 0: fade in 0→4% at loop start (no hard snap from reset) */
+    @keyframes wfaDot0 {
+      0%        { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      4%        { fill: #2563eb; stroke: #2563eb; r: 7; }
+      18%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      90%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      93%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      100%      { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+    }
+    /* Dot 1: fade 14→17%, fully lit 1% before line arrives at 18% */
+    @keyframes wfaDot1 {
+      0%        { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      14%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      17%       { fill: #2563eb; stroke: #2563eb; r: 7; }
+      34%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      90%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      93%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      100%      { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+    }
+    /* Dot 2: fade 30→33%, fully lit 1% before line arrives at 34% */
+    @keyframes wfaDot2 {
+      0%        { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      30%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      33%       { fill: #2563eb; stroke: #2563eb; r: 7; }
+      54%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      90%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      93%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      100%      { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+    }
+    /* Dot 3: fade 50→53%, fully lit 1% before line arrives at 54% */
+    @keyframes wfaDot3 {
+      0%        { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      50%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      53%       { fill: #2563eb; stroke: #2563eb; r: 7; }
+      68%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      90%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      93%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      100%      { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+    }
+    /* Dot 4: fade 63→67% — arrives when seg 3 is full */
+    @keyframes wfaDot4 {
+      0%        { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      63%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      67%       { fill: #2563eb; stroke: #2563eb; r: 7; }
+      90%       { fill: #2563eb; stroke: #2563eb; r: 5; }
+      93%       { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+      100%      { fill: #ffffff; stroke: #e5e7eb; r: 5; }
+    }
+
+    /* Progress segment fills */
+    .wfa-seg-0 { animation: wfaSeg0 12s infinite; }
+    .wfa-seg-1 { animation: wfaSeg1 12s infinite; }
+    .wfa-seg-2 { animation: wfaSeg2 12s infinite; }
+    .wfa-seg-3 { animation: wfaSeg3 12s infinite; }
+
+    /* Segment 0: fills during step 0 (0-18%), stays full, snaps back 90→93% */
+    @keyframes wfaSeg0 {
+      0%       { width: 0; }
+      18%      { width: 115px; }
+      90%      { width: 115px; }
+      93%      { width: 0; }
+      100%     { width: 0; }
+    }
+    /* Segment 1: starts at 14% — same moment dot 1 begins fading */
+    @keyframes wfaSeg1 {
+      0%, 14%  { width: 0; }
+      33%      { width: 115px; }
+      90%      { width: 115px; }
+      93%      { width: 0; }
+      100%     { width: 0; }
+    }
+    /* Segment 2: starts at 30% — same moment dot 2 begins fading */
+    @keyframes wfaSeg2 {
+      0%, 30%  { width: 0; }
+      53%      { width: 115px; }
+      90%      { width: 115px; }
+      93%      { width: 0; }
+      100%     { width: 0; }
+    }
+    /* Segment 3: starts at 50% — same moment dot 3 begins fading */
+    @keyframes wfaSeg3 {
+      0%, 50%  { width: 0; }
+      67%      { width: 115px; }
+      90%      { width: 115px; }
+      93%      { width: 0; }
+      100%     { width: 0; }
+    }
+
+    /* Label colors */
+    .wfa-label-0 { animation: wfaLabel0 12s infinite; }
+    .wfa-label-1 { animation: wfaLabel1 12s infinite; }
+    .wfa-label-2 { animation: wfaLabel2 12s infinite; }
+    .wfa-label-3 { animation: wfaLabel3 12s infinite; }
+    .wfa-label-4 { animation: wfaLabel4 12s infinite; }
+
+    /* Label 0: fade in 0→4% at loop start */
+    @keyframes wfaLabel0 {
+      0%       { fill: #9ca3af; opacity: 0.35; }
+      4%       { fill: #2563eb; opacity: 1; font-weight: 700; }
+      18%      { fill: #374151; opacity: 0.7; font-weight: 600; }
+      90%      { fill: #374151; opacity: 0.7; }
+      93%      { fill: #9ca3af; opacity: 0.35; }
+      100%     { fill: #9ca3af; opacity: 0.35; }
+    }
+    /* Label 1: fade 14→17%, fully lit 1% before activation */
+    @keyframes wfaLabel1 {
+      0%       { fill: #9ca3af; opacity: 0.35; }
+      14%      { fill: #9ca3af; opacity: 0.35; }
+      17%      { fill: #2563eb; opacity: 1; font-weight: 700; }
+      34%      { fill: #374151; opacity: 0.7; font-weight: 600; }
+      90%      { fill: #374151; opacity: 0.7; }
+      93%      { fill: #9ca3af; opacity: 0.35; }
+      100%     { fill: #9ca3af; opacity: 0.35; }
+    }
+    /* Label 2: fade 30→33%, fully lit 1% before activation */
+    @keyframes wfaLabel2 {
+      0%       { fill: #9ca3af; opacity: 0.35; }
+      30%      { fill: #9ca3af; opacity: 0.35; }
+      33%      { fill: #2563eb; opacity: 1; }
+      54%      { fill: #374151; opacity: 0.7; }
+      90%      { fill: #374151; opacity: 0.7; }
+      93%      { fill: #9ca3af; opacity: 0.35; }
+      100%     { fill: #9ca3af; opacity: 0.35; }
+    }
+    /* Label 3: fade 50→53%, fully lit 1% before activation */
+    @keyframes wfaLabel3 {
+      0%       { fill: #9ca3af; opacity: 0.35; }
+      50%      { fill: #9ca3af; opacity: 0.35; }
+      53%      { fill: #2563eb; opacity: 1; }
+      68%      { fill: #374151; opacity: 0.7; }
+      90%      { fill: #374151; opacity: 0.7; }
+      93%      { fill: #9ca3af; opacity: 0.35; }
+      100%     { fill: #9ca3af; opacity: 0.35; }
+    }
+    /* Label 4: fade 63→67% to match dot 4 and seg 3 completion */
+    @keyframes wfaLabel4 {
+      0%       { fill: #9ca3af; opacity: 0.35; }
+      63%      { fill: #9ca3af; opacity: 0.35; }
+      67%      { fill: #2563eb; opacity: 1; }
+      90%      { fill: #374151; opacity: 0.7; }
+      93%      { fill: #9ca3af; opacity: 0.35; }
+      100%     { fill: #9ca3af; opacity: 0.35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wfa-root * { animation: none !important; }
+      .wfa-cursor  { opacity: 0 !important; }
+      .wfa-pin     { opacity: 1 !important; transform: translate(0,0) scale(1) !important; }
+      .wfa-form    { opacity: 1 !important; transform: scale(1) !important; }
+      .wfa-check   { opacity: 1 !important; }
+      .wfa-catalogue { opacity: 1 !important; transform: translateY(0) !important; }
+    }
+  </style>
+
+  <defs>
+    <filter id="wfaShadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+    <!-- Shimmer gradient for skeleton bars -->
+    <linearGradient id="wfaShimmer" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="80" y2="0">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0)"/>
+      <stop offset="40%"  stop-color="rgba(255,255,255,0)"/>
+      <stop offset="50%"  stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="60%"  stop-color="rgba(255,255,255,0)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <!-- Rounded canvas clip -->
+    <clipPath id="wfaCanvas">
+      <rect width="580" height="430" rx="16"/>
+    </clipPath>
+  </defs>
+
+  <!-- ================================================================ -->
+  <!-- PROGRESS BAR — labels + dots + segments                          -->
+  <!-- Positioned at top: y=20 for labels, y=50 for track               -->
+  <!-- 5 dots spaced across x=30..490 = 460px total, 4 gaps of 115px   -->
+  <!-- dots at: 30, 145, 260, 375, 490                                  -->
+  <!-- segments between dots (width=115px per gap)                      -->
+  <!-- ================================================================ -->
+  <g clip-path="url(#wfaCanvas)">
+  <g class="wfa-root" transform="translate(26,10)">
+
+    <!-- Labels row -->
+    <text x="30"  y="22" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle" class="wfa-label-0">Browse</text>
+    <text x="145" y="22" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle" class="wfa-label-1">Click</text>
+    <text x="260" y="22" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle" class="wfa-label-2">Describe</text>
+    <text x="375" y="22" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle" class="wfa-label-3">Submit</text>
+    <text x="490" y="22" font-size="13" font-weight="600" font-family="system-ui,sans-serif" text-anchor="middle" class="wfa-label-4">Catalogue</text>
+
+    <!-- Progress track row -->
+    <!-- Segment track 0: dot 0 center (x=30) → dot 1 center (x=145), width=115 -->
+    <rect x="30" y="32" width="115" height="6" fill="#e5e7eb"/>
+    <svg x="30" y="32" width="115" height="6" overflow="hidden">
+      <rect class="wfa-seg-0" x="0" y="0" width="0" height="6" fill="#2563eb"/>
+    </svg>
+    <!-- Segment track 1: dot 1 center (x=145) → dot 2 center (x=260), width=115 -->
+    <rect x="145" y="32" width="115" height="6" fill="#e5e7eb"/>
+    <svg x="145" y="32" width="115" height="6" overflow="hidden">
+      <rect class="wfa-seg-1" x="0" y="0" width="0" height="6" fill="#2563eb"/>
+    </svg>
+    <!-- Segment track 2: dot 2 center (x=260) → dot 3 center (x=375), width=115 -->
+    <rect x="260" y="32" width="115" height="6" fill="#e5e7eb"/>
+    <svg x="260" y="32" width="115" height="6" overflow="hidden">
+      <rect class="wfa-seg-2" x="0" y="0" width="0" height="6" fill="#2563eb"/>
+    </svg>
+    <!-- Segment track 3: dot 3 center (x=375) → dot 4 center (x=490), width=115 -->
+    <rect x="375" y="32" width="115" height="6" fill="#e5e7eb"/>
+    <svg x="375" y="32" width="115" height="6" overflow="hidden">
+      <rect class="wfa-seg-3" x="0" y="0" width="0" height="6" fill="#2563eb"/>
+    </svg>
+
+    <!-- Dots (drawn on top of tracks) -->
+    <circle cx="30"  cy="35" r="7" fill="#2563eb" stroke="#2563eb" stroke-width="2" class="wfa-prog-dot-0"/>
+    <circle cx="145" cy="35" r="5" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" class="wfa-prog-dot-1"/>
+    <circle cx="260" cy="35" r="5" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" class="wfa-prog-dot-2"/>
+    <circle cx="375" cy="35" r="5" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" class="wfa-prog-dot-3"/>
+    <circle cx="490" cy="35" r="5" fill="#ffffff" stroke="#e5e7eb" stroke-width="2" class="wfa-prog-dot-4"/>
+
+    <!-- ============================================================== -->
+    <!-- MAIN SVG STAGE — viewBox 300x200, centered below progress bar  -->
+    <!-- Translated to center within 520px wide area                    -->
+    <!-- ============================================================== -->
+    <svg x="10" y="55" width="500" height="340" viewBox="0 0 300 200" overflow="visible">
+
+      <!-- ============================================================ -->
+      <!-- STEP 1+2: Browser frame (shared by Browse and Click)         -->
+      <!-- ============================================================ -->
+
+      <!-- Step 1 — Browser only (also has bottom lines) -->
+      <g class="wfa-browser">
+        <!-- Browser frame at translate(40,20) -->
+        <g transform="translate(40,20)">
+          <!-- Main window -->
+          <rect width="220" height="160" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.5"/>
+          <!-- Chrome bar background -->
+          <rect width="220" height="24" rx="8" fill="#f3f4f6"/>
+          <rect y="16" width="220" height="8" fill="#f3f4f6"/>
+          <!-- Traffic lights -->
+          <circle cx="14" cy="12" r="3.5" fill="#ef4444"/>
+          <circle cx="25" cy="12" r="3.5" fill="#f59e0b"/>
+          <circle cx="36" cy="12" r="3.5" fill="#22c55e"/>
+          <!-- Address bar -->
+          <rect x="50" y="6" width="120" height="12" rx="3" fill="#ffffff" opacity="0.7"/>
+          <!-- Content lines -->
+          <svg x="14" y="36" width="100" height="8" overflow="hidden">
+            <rect width="100" height="8" rx="2" fill="#9ca3af" opacity="0.3"/>
+            <rect width="100" height="8" rx="2" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+          </svg>
+          <svg x="14" y="50" width="180" height="6" overflow="hidden">
+            <rect width="180" height="6" rx="2" fill="#9ca3af" opacity="0.2"/>
+            <rect width="180" height="6" rx="2" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+          </svg>
+          <svg x="14" y="62" width="160" height="6" overflow="hidden">
+            <rect width="160" height="6" rx="2" fill="#9ca3af" opacity="0.2"/>
+            <rect width="160" height="6" rx="2" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+          </svg>
+          <!-- Highlighted element -->
+          <rect x="14" y="80" width="130" height="36" rx="4" fill="#2563eb" opacity="0.12" stroke="#3b82f6" stroke-width="1" stroke-dasharray="4 2"/>
+          <rect x="22" y="88" width="70" height="6" rx="2" fill="#9ca3af" opacity="0.3"/>
+          <rect x="22" y="100" width="100" height="5" rx="2" fill="#9ca3af" opacity="0.2"/>
+          <!-- Bottom lines (browse step only) -->
+          <svg x="14" y="128" width="140" height="6" overflow="hidden">
+            <rect width="140" height="6" rx="2" fill="#9ca3af" opacity="0.15"/>
+            <rect width="140" height="6" rx="2" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+          </svg>
+          <svg x="14" y="140" width="110" height="6" overflow="hidden">
+            <rect width="110" height="6" rx="2" fill="#9ca3af" opacity="0.15"/>
+            <rect width="110" height="6" rx="2" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+          </svg>
+        </g>
+      </g>
+
+      <!-- Step 2 — Pin step layer (cursor + pin + ripple) -->
+      <g class="wfa-pin-step">
+        <!-- Browser frame repeated (same as above, no bottom lines) -->
+        <g transform="translate(40,20)">
+          <rect width="220" height="160" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.5"/>
+          <rect width="220" height="24" rx="8" fill="#f3f4f6"/>
+          <rect y="16" width="220" height="8" fill="#f3f4f6"/>
+          <circle cx="14" cy="12" r="3.5" fill="#ef4444"/>
+          <circle cx="25" cy="12" r="3.5" fill="#f59e0b"/>
+          <circle cx="36" cy="12" r="3.5" fill="#22c55e"/>
+          <rect x="50" y="6" width="120" height="12" rx="3" fill="#ffffff" opacity="0.7"/>
+          <svg x="14" y="36" width="100" height="8" overflow="hidden">
+            <rect width="100" height="8" rx="2" fill="#9ca3af" opacity="0.3"/>
+          </svg>
+          <svg x="14" y="50" width="180" height="6" overflow="hidden">
+            <rect width="180" height="6" rx="2" fill="#9ca3af" opacity="0.2"/>
+          </svg>
+          <svg x="14" y="62" width="160" height="6" overflow="hidden">
+            <rect width="160" height="6" rx="2" fill="#9ca3af" opacity="0.2"/>
+          </svg>
+          <rect x="14" y="80" width="130" height="36" rx="4" fill="#2563eb" opacity="0.12" stroke="#3b82f6" stroke-width="1" stroke-dasharray="4 2"/>
+          <rect x="22" y="88" width="70" height="6" rx="2" fill="#9ca3af" opacity="0.3"/>
+          <rect x="22" y="100" width="100" height="5" rx="2" fill="#9ca3af" opacity="0.2"/>
+        </g>
+
+        <!-- Cursor (transform-origin at 120,118 relative to SVG) -->
+        <g class="wfa-cursor" style="transform-origin:120px 118px">
+          <g transform="translate(118,116) scale(1.1)">
+            <!-- Cursor path: Figma/Liveblocks pointer -->
+            <path d="M0.928548 2.18278C0.619075 1.37094 1.42087 0.577818 2.2293 0.896107L14.3863 5.68247C15.2271 6.0135 15.2325 7.20148 14.3947 7.54008L9.85984 9.373C9.61167 9.47331 9.41408 9.66891 9.31127 9.91604L7.43907 14.4165C7.09186 15.2511 5.90335 15.2333 5.58136 14.3886L0.928548 2.18278Z" fill="#111827" stroke="#ffffff" stroke-width="0.8"/>
+          </g>
+        </g>
+
+        <!-- Pin (transform-origin at 119,118) -->
+        <g class="wfa-pin" style="transform-origin:119px 118px">
+          <g transform="translate(113,98)">
+            <!-- PIN_PATH scaled 0.55: M12 0 C5.4 0 0 5.4 0 12 c0 9 12 20 12 20 s12-11 12-20 C24 5.4 18.6 0 12 0z -->
+            <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="#ef4444" transform="scale(0.55)"/>
+          </g>
+        </g>
+
+        <!-- Ripple ring (transform-origin at 119,118) -->
+        <circle class="wfa-ring" cx="119" cy="118" r="6" fill="none" stroke="#ef4444" stroke-width="1.5" style="transform-origin:119px 118px"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- STEP 3: Feedback form (Describe)                             -->
+      <!-- translate(80,60) inside the form group                       -->
+      <!-- ============================================================ -->
+      <g class="wfa-form" style="transform-origin:150px 110px">
+        <g transform="translate(80,60)">
+          <!-- Card background + border -->
+          <rect width="140" height="100" rx="6" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.2" filter="url(#wfaShadow)"/>
+          <!-- Title -->
+          <text x="16" y="22" font-size="9" font-weight="600" font-family="system-ui,sans-serif" fill="#111827">Feedback</text>
+          <!-- Text area background -->
+          <rect x="12" y="30" width="116" height="34" rx="3" fill="#f3f4f6"/>
+          <!-- Word dashes (typing simulation) — x,y,w coordinates from source -->
+          <rect class="wfa-word-1"  x="16"   y="35" width="14" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-2"  x="33.5" y="35" width="10" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-3"  x="47"   y="35" width="18" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-4"  x="68.5" y="35" width="12" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-5"  x="84"   y="35" width="16" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-6"  x="103.5" y="35" width="10" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-7"  x="16"   y="41" width="16" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-8"  x="35.5" y="41" width="12" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-9"  x="51"   y="41" width="10" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-10" x="64.5" y="41" width="18" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-11" x="86"   y="41" width="14" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-12" x="16"   y="47" width="10" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-13" x="29.5" y="47" width="16" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-14" x="49"   y="47" width="12" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-15" x="64.5" y="47" width="14" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-16" x="82"   y="47" width="18" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-17" x="16"   y="53" width="18" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-18" x="37.5" y="53" width="12" height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <rect class="wfa-word-19" x="53"   y="53" width="8"  height="3" rx="1.5" fill="#3b82f6" opacity="0"/>
+          <!-- Submit button -->
+          <rect x="80" y="72" width="48" height="18" rx="4" fill="#3b82f6"/>
+          <text x="104" y="84" font-size="8" fill="white" text-anchor="middle" font-weight="600" font-family="system-ui,sans-serif">Submit</text>
+        </g>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- STEP 4: Submit confirmation (green checkmark)                -->
+      <!-- ============================================================ -->
+      <g class="wfa-check" style="transform-origin:150px 110px">
+        <!-- Outer pulse ring -->
+        <circle class="wfa-check-pulse" cx="150" cy="100" r="28" fill="#22c55e" opacity="0.15" style="transform-origin:150px 100px"/>
+        <!-- Green circle -->
+        <circle cx="150" cy="100" r="18" fill="#22c55e"/>
+        <!-- Checkmark path: M(150-8) (100) l6 6 l10 -12 -->
+        <path d="M142 100 l6 6 l10 -12" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <!-- ============================================================ -->
+      <!-- STEP 5: Feedback catalogue                                   -->
+      <!-- ============================================================ -->
+      <g class="wfa-catalogue">
+        <g transform="translate(50,15)">
+          <!-- Catalogue card -->
+          <rect width="200" height="170" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.5" filter="url(#wfaShadow)"/>
+          <!-- Title -->
+          <text x="20" y="24" font-size="10" font-weight="700" font-family="system-ui,sans-serif" fill="#111827">Feedback Catalogue</text>
+          <!-- Divider -->
+          <line x1="10" y1="32" x2="190" y2="32" stroke="#e5e7eb" stroke-width="1"/>
+
+          <!-- Row 1 (red / bug) — ty=40 -->
+          <g class="wfa-cat-row wfa-cat-row-1">
+            <g transform="translate(15,40)">
+              <!-- Pin icon (PIN_PATH scale 0.4) -->
+              <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="#ef4444" transform="scale(0.4)"/>
+            </g>
+            <!-- Title bar -->
+            <svg x="30" y="42" width="80" height="5" overflow="hidden">
+              <rect width="80" height="5" rx="1.5" fill="#9ca3af" opacity="0.4"/>
+              <rect width="80" height="5" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <!-- Desc bar -->
+            <svg x="30" y="51" width="110" height="4" overflow="hidden">
+              <rect width="110" height="4" rx="1.5" fill="#9ca3af" opacity="0.25"/>
+              <rect width="110" height="4" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <!-- Tag pill -->
+            <rect x="148" y="41" width="36" height="12" rx="3" fill="#ef4444" opacity="0.15"/>
+            <text x="166" y="50" font-size="7" fill="#ef4444" text-anchor="middle" font-weight="600" font-family="system-ui,sans-serif">bug</text>
+          </g>
+
+          <!-- Divider before row 2 -->
+          <line x1="10" y1="70" x2="190" y2="70" stroke="#e5e7eb" stroke-width="0.5" opacity="0.6"/>
+
+          <!-- Row 2 (blue / idea) — ty=76 -->
+          <g class="wfa-cat-row wfa-cat-row-2">
+            <g transform="translate(15,76)">
+              <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="#3b82f6" transform="scale(0.4)"/>
+            </g>
+            <svg x="30" y="78" width="90" height="5" overflow="hidden">
+              <rect width="90" height="5" rx="1.5" fill="#9ca3af" opacity="0.4"/>
+              <rect width="90" height="5" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <svg x="30" y="87" width="100" height="4" overflow="hidden">
+              <rect width="100" height="4" rx="1.5" fill="#9ca3af" opacity="0.25"/>
+              <rect width="100" height="4" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <rect x="148" y="77" width="36" height="12" rx="3" fill="#3b82f6" opacity="0.15"/>
+            <text x="166" y="86" font-size="7" fill="#3b82f6" text-anchor="middle" font-weight="600" font-family="system-ui,sans-serif">idea</text>
+          </g>
+
+          <!-- Divider before row 3 -->
+          <line x1="10" y1="106" x2="190" y2="106" stroke="#e5e7eb" stroke-width="0.5" opacity="0.6"/>
+
+          <!-- Row 3 (amber / note) — ty=112 -->
+          <g class="wfa-cat-row wfa-cat-row-3">
+            <g transform="translate(15,112)">
+              <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="#f59e0b" transform="scale(0.4)"/>
+            </g>
+            <svg x="30" y="114" width="70" height="5" overflow="hidden">
+              <rect width="70" height="5" rx="1.5" fill="#9ca3af" opacity="0.4"/>
+              <rect width="70" height="5" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <svg x="30" y="123" width="95" height="4" overflow="hidden">
+              <rect width="95" height="4" rx="1.5" fill="#9ca3af" opacity="0.25"/>
+              <rect width="95" height="4" rx="1.5" fill="url(#wfaShimmer)" class="wfa-shimmer"/>
+            </svg>
+            <rect x="148" y="113" width="36" height="12" rx="3" fill="#f59e0b" opacity="0.15"/>
+            <text x="166" y="122" font-size="7" fill="#f59e0b" text-anchor="middle" font-weight="600" font-family="system-ui,sans-serif">note</text>
+          </g>
+
+        </g>
+      </g>
+
+    </svg>
+    <!-- end inner SVG stage -->
+
+  </g>
+  <!-- end wfa-root -->
+  </g>
+  <!-- end wfaCanvas clip wrapper -->
+
+</svg>
