@@ -11,6 +11,10 @@ export const metadata = {
   },
   description:
     'Documentation for Feedtack — drop-in feedback overlay for the web',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
