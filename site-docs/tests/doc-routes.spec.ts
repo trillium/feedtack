@@ -34,8 +34,10 @@ function discoverRoutes(dir: string, prefix: string): string[] {
 
 /**
  * Extract doc links from the README that point to site-docs content.
- * Matches patterns like: (site-docs/content/docs/concepts/content-approval.mdx)
- * and also relative /docs/ links.
+ * Matches:
+ *   (site-docs/content/docs/concepts/content-approval.mdx)  — legacy source paths
+ *   (/docs/concepts/content-approval)                        — relative paths
+ *   (https://feedtack.vercel.app/docs/concepts/...)          — absolute live URLs
  */
 function extractReadmeDocLinks(): string[] {
   const readme = readFileSync(README_PATH, 'utf-8')
@@ -50,6 +52,12 @@ function extractReadmeDocLinks(): string[] {
   // Match relative /docs/ links
   const relativePattern = /\(\/docs\/([^)]+)\)/g
   for (const match of readme.matchAll(relativePattern)) {
+    links.push(`/docs/${match[1]}`)
+  }
+
+  // Match absolute feedtack.vercel.app/docs/ links
+  const absolutePattern = /\(https:\/\/feedtack\.vercel\.app\/docs\/([^)]+)\)/g
+  for (const match of readme.matchAll(absolutePattern)) {
     links.push(`/docs/${match[1]}`)
   }
 

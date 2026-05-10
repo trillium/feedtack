@@ -18,6 +18,7 @@ export const FEEDTACK_MODAL_STYLES = `
     margin: 0;
     padding: 0;
     background: var(--ft-bg);
+    color: var(--ft-text);
     border: 1px solid var(--ft-border);
     border-radius: calc(var(--ft-radius) + 4px);
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);

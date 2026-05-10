@@ -129,6 +129,7 @@ export const FEEDTACK_STYLES = `
     position: absolute;
     z-index: 2147483642;
     background: var(--ft-bg) !important;
+    color: var(--ft-text);
     border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
@@ -223,6 +224,7 @@ export const FEEDTACK_STYLES = `
     position: absolute;
     z-index: 2147483642;
     background: var(--ft-bg) !important;
+    color: var(--ft-text);
     border-radius: calc(var(--ft-radius) + 2px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.18);
     padding: 16px;
