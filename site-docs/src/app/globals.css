@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* hide duplicate logo link in docs mobile sub-nav; sidebar already shows it on desktop */
+#nd-subnav > a {
+  display: none;
+}
