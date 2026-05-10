@@ -37,6 +37,9 @@ The React UI is the primary integration path. The inject script (`feedtack/injec
 
 ## Quick example
 
+<Tabs items={["React", "Vanilla JS", "Next.js"]}>
+<Tab value="React">
+
 ```tsx
 import { FeedtackProvider } from "feedtack/react";
 import { ConsoleAdapter } from "feedtack";
@@ -52,5 +55,52 @@ export default function App() {
   );
 }
 ```
+
+</Tab>
+<Tab value="Vanilla JS">
+
+```html
+<!-- No build step required — works on any site -->
+<script src="feedtack.inject.js"></script>
+<script>
+  window.Feedtack.init({
+    adapter: { type: "console" },
+    currentUser: { id: "u1", name: "Trillium", role: "admin" },
+  });
+</script>
+```
+
+</Tab>
+<Tab value="Next.js">
+
+```tsx
+// app/layout.tsx
+"use client";
+
+import { FeedtackProvider } from "feedtack/react";
+import { ConsoleAdapter } from "feedtack";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <FeedtackProvider
+          adapter={new ConsoleAdapter()}
+          currentUser={{ id: "u1", name: "Trillium", role: "admin" }}
+        >
+          {children}
+        </FeedtackProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+</Tab>
+</Tabs>
 
 Ready to get started? Head to [Getting Started](/docs/getting-started).

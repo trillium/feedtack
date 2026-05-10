@@ -5,7 +5,7 @@ description: Install Feedtack and add it to your React app in under a minute
 
 ## Requirements
 
-Feedtack is a **React-only** library. It requires **React 18+** as a peer dependency. Vanilla JS and script-tag usage are on the roadmap but not yet supported.
+The React integration requires **React 18+** as a peer dependency. For non-React sites, the vanilla inject script (`feedtack.inject.js`) is available — drop it in with a `<script>` tag and call `window.Feedtack.init(...)` with no build step required.
 
 ## Installation
 
@@ -55,7 +55,7 @@ The default hotkey to open the feedback modal is `Shift+P`. You can change it wi
 <FeedtackProvider hotkey="shift+f" ...>
 ```
 
-**Known limitation:** the hotkey currently fires even when focus is inside an input or textarea. If this causes conflicts, set `hotkey={null}` to disable it entirely.
+To disable the hotkey entirely, set `hotkey={null}` on `FeedtackProvider`.
 
 ## Next steps
 
