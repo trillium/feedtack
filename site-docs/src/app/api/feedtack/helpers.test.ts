@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  formatIssueBody,
-  PayloadSchema,
-} from '../site-docs/src/app/api/feedtack/helpers.js'
+import { formatIssueBody, PayloadSchema } from './helpers.js'
 
 function makeBasePayload(overrides?: Record<string, unknown>) {
   return PayloadSchema.parse({
