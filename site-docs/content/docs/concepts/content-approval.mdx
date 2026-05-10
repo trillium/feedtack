@@ -7,7 +7,7 @@ The content approval system lets teams annotate copywriting fields on the page, 
 
 Feedtack owns the annotation and hashing — your adapter owns the persistence.
 
-If you also need inline editing (not just verification), see [Content Editing](/docs/concepts/content-editing). When used together, `useContentEdit` passes stored values to `useContentApproval` so hashes are computed from the live store rather than the statically-built DOM.
+To also edit fields inline (not just approve them), see [Content Editing](/docs/concepts/content-editing). When the two are used together, `useContentEdit` passes live stored values into `useContentApproval`, so hashes are computed against what's in the store rather than whatever the last build baked into the DOM.
 
 ## Annotating fields
 

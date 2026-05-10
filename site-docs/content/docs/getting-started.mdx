@@ -3,19 +3,23 @@ title: Getting Started
 description: Install Feedtack and add it to your React app in under a minute
 ---
 
+## Requirements
+
+Feedtack is a **React-only** library. It requires **React 18+** as a peer dependency. Vanilla JS and script-tag usage are on the roadmap but not yet supported.
+
 ## Installation
 
 ```package-install
 npm install feedtack
 ```
 
-Feedtack requires React 18+ as a peer dependency.
-
 ## Minimal setup
 
 Wrap your app with `FeedtackProvider` and pass an adapter and user:
 
 ```tsx
+"use client";
+
 import { FeedtackProvider } from "feedtack/react";
 import { ConsoleAdapter } from "feedtack";
 
@@ -31,15 +35,27 @@ export default function App() {
 }
 ```
 
+> **Next.js App Router:** `FeedtackProvider` uses React hooks internally, so any file that renders it must be a Client Component. Add `"use client"` at the top of the file.
+
 This renders a floating "Feedback" button. Clicking it opens the feedback modal. The `ConsoleAdapter` logs payloads to `console.log` — perfect for development.
 
 ## Try it out
 
-1. Click the **Feedback** button
+1. Click the **Feedback** button — or press **Shift+P** (the default hotkey)
 2. Choose **Site**, **Page**, or click **Place a pin**
 3. In pin mode, click any element on the page
 4. Write a comment, pick a sentiment, and submit
 5. Check your browser console for the emitted JSON payload
+
+### Hotkey
+
+The default hotkey to open the feedback modal is `Shift+P`. You can change it with the `hotkey` prop on `FeedtackProvider`:
+
+```tsx
+<FeedtackProvider hotkey="shift+f" ...>
+```
+
+**Known limitation:** the hotkey currently fires even when focus is inside an input or textarea. If this causes conflicts, set `hotkey={null}` to disable it entirely.
 
 ## Next steps
 

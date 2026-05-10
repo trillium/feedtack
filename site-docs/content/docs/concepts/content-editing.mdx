@@ -7,6 +7,72 @@ The content editing layer turns `data-feedtack-field` annotations into inline-ed
 
 This builds directly on the [Content Approval](/docs/concepts/content-approval) system.
 
+## How to use it
+
+### 1. Annotate fields
+
+Add `data-feedtack-field` to any element containing copy you want to be editable. Use a dot-path identifier that's unique per page:
+
+```tsx
+<h1 data-feedtack-field="hero.heading">Welcome to Acme</h1>
+<p data-feedtack-field="hero.subheading">The best tools for your team.</p>
+<a data-feedtack-field="hero.cta" href="/signup">Get started</a>
+```
+
+Standard form inputs (`<input>`, `<textarea>`, `<select>`) are also supported — they get `cursor: pointer` styling instead of `contenteditable`.
+
+### 2. Mount useContentEdit and ContentEditToolbar
+
+In a layout or admin wrapper component, call `useContentEdit` and render `ContentEditToolbar`:
+
+```tsx
+"use client";
+
+import { useContentEdit, ContentEditToolbar } from 'feedtack/react'
+
+function AdminLayout({ adapter, currentUser, children }) {
+  const edit = useContentEdit(adapter, currentUser.id)
+
+  return (
+    <>
+      {children}
+      {edit.active && <ContentEditToolbar {...edit.toolbarProps} />}
+      <button onClick={edit.active ? edit.deactivate : edit.activate}>
+        {edit.active ? 'Exit edit mode' : 'Edit content'}
+      </button>
+    </>
+  )
+}
+```
+
+### 3. Activate edit mode
+
+Call `edit.activate()` (via the button above or any other trigger). This:
+
+1. Fetches live stored values from `adapter.loadFields()`
+2. Swaps those values into all annotated DOM elements
+3. Sets `contenteditable="true"` on each field
+4. Starts watching for new fields added to the DOM (handles client-side navigation)
+
+### 4. Edit and save
+
+Click into any annotated field and type. When you click away (blur), the new value is saved automatically via `adapter.saveField()` — no explicit save button needed. The toolbar shows a saving indicator while the write is in-flight.
+
+Saving a field also clears its stored approval, since the content has changed.
+
+### 5. Use the toolbar
+
+The `ContentEditToolbar` (rendered via `{...edit.toolbarProps}`) shows:
+
+- **Approve / unaccept** — when a field is focused, approve it or revoke approval
+- **Saving indicator** — shown while a save is in-flight
+- **Changes panel** — collapsible list of session edits; click revert on any field to undo
+- **Deploy gate** — checks whether all fields are currently approved before you deploy
+
+### 6. Deactivate
+
+Call `edit.deactivate()` to remove `contenteditable`, unbind event listeners, and disconnect the mutation observer.
+
 ## Adapter requirement
 
 Your adapter must implement `ContentEditAdapter` — an extension of `ContentAdapter`:
