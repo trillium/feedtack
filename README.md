@@ -225,7 +225,7 @@ const result = await checkDeploy()
 // => { approved: false, pending: ['hero.subheading'] }
 ```
 
-Approvals are hash-based — if the content changes, the approval goes stale automatically. See the [Content Approval docs](site-docs/content/docs/concepts/content-approval.mdx) for the full API.
+Approvals are hash-based — if the content changes, the approval goes stale automatically. See the [Content Approval docs](https://feedtack.vercel.app/docs/concepts/content-approval) for the full API.
 
 ## Content editing (opt-in)
 
@@ -249,7 +249,7 @@ function AdminLayout({ adapter, children }) {
 }
 ```
 
-The toolbar shows approve/revert actions per field, a session changes panel, and a deploy gate. See the [Content Editing docs](site-docs/content/docs/concepts/content-editing.mdx) for details.
+The toolbar shows approve/revert actions per field, a session changes panel, and a deploy gate. See the [Content Editing docs](https://feedtack.vercel.app/docs/concepts/content-editing) for details.
 
 ## What feedtack does NOT do
 
