@@ -40,3 +40,14 @@
 
 - [x] 8.1 Create `site-docs/content/docs/guides/injectable-snippet.mdx` — usage guide with snippet builder instructions
 - [x] 8.2 Create `site-docs/src/app/(home)/snippet-builder/page.tsx` — interactive snippet builder component
+
+## 9. Spec Gaps (post-implementation)
+
+These requirements appear in the spec but were not implemented during the initial build.
+
+- [ ] 9.1 Implement `feedtack.destroy()` — remove Shadow DOM host, detach event listeners, reset `window.__feedtack_injected`; required for re-injection after teardown (spec: injectable-snippet req 7, design decision 11)
+- [ ] 9.2 Clipboard API fallback to `document.execCommand('copy')` for non-HTTPS pages where `navigator.clipboard` is unavailable (spec: injectable-snippet req 2 scenario 2)
+- [ ] 9.3 `navigator.sendBeacon` fallback to `fetch(url, { method: 'POST', body, keepalive: true })` when sendBeacon returns false (spec: injectable-snippet req 3 scenario 2; current impl throws instead)
+- [ ] 9.4 Add "use latest" version toggle to snippet builder — switches CDN URL from `feedtack@1.2.0` to `feedtack@latest` (spec: snippet-builder req 6 scenario 2)
+- [ ] 9.5 Add offline/raw IIFE option to snippet builder — shows full minified IIFE source instead of CDN loader for paste-without-network use (spec: snippet-builder req 8 scenario 2)
+- [ ] 9.6 Move or alias snippet builder to `/docs/guides/snippet` — currently at `/snippet-builder`; spec requires the Playwright route test to cover `/docs/guides/snippet` with a 200 (spec: snippet-builder req 1 and req 9)

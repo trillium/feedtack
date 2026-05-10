@@ -30,9 +30,9 @@ The snippet must be fully self-contained. All CSS is injected as inline styles o
 
 ### 2. Two-mode egress: clipboard (default) vs webhook
 
-**Clipboard mode** (default): On submit, the payload JSON is copied to the clipboard via `navigator.clipboard.writeText()`. A toast confirms "Copied to clipboard." No server, no URL, no config. Falls back to `document.execCommand('copy')` if clipboard API is unavailable (non-HTTPS).
+**Clipboard mode** (default): On submit, the payload JSON is copied to the clipboard via `navigator.clipboard.writeText()`. A toast confirms "Copied to clipboard." No server, no URL, no config. ~~Falls back to `document.execCommand('copy')` if clipboard API is unavailable (non-HTTPS).~~ **[NOT BUILT]** The fallback was not implemented; clipboard egress will fail silently on non-HTTPS pages where the clipboard API is unavailable. Filed as task 9.2.
 
-**Webhook mode**: If a URL is provided at init time (`feedtack.inject({ url: '...' })`), payloads are sent via `navigator.sendBeacon(url, blob)` where `blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })`. The Blob ensures the correct `Content-Type: application/json` header — without it, sendBeacon sends `text/plain` and most webhook receivers reject the payload. sendBeacon is fire-and-forget, survives page unload, and doesn't block UI. Falls back to `fetch()` with `keepalive: true` if sendBeacon is unavailable; the fetch fallback reports success/error based on response status.
+**Webhook mode**: If a URL is provided via `window.__feedtack = { webhookUrl: '...' }` before the IIFE loads, payloads are sent via `navigator.sendBeacon(url, blob)` where `blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })`. The Blob ensures the correct `Content-Type: application/json` header — without it, sendBeacon sends `text/plain` and most webhook receivers reject the payload. sendBeacon is fire-and-forget, survives page unload, and doesn't block UI. ~~Falls back to `fetch()` with `keepalive: true` if sendBeacon is unavailable.~~ **[NOT BUILT]** If `sendBeacon` returns false (payload queued but oversized), the implementation currently throws an error. Filed as task 9.3.
 
 **Alternative considered:** LocalStorage queue with export. Rejected — data would live on someone else's domain and requires a separate export step.
 
@@ -44,10 +44,10 @@ The bookmarklet URL can't contain the full IIFE (URL length limits vary by brows
 javascript:void((function(){var s=document.createElement('script');s.src='https://unpkg.com/feedtack@latest/dist/feedtack.inject.js';document.head.appendChild(s)})())
 ```
 
-For webhook mode, the bookmarklet sets a global config before loading:
+For webhook mode, the bookmarklet sets a global config before loading. **[IMPLEMENTATION NOTE]** The global is `window.__feedtack` (not `window.__feedtack_config` as originally written here):
 
 ```
-javascript:void((function(){window.__feedtack_config={url:'https://...'};var s=document.createElement('script');s.src='...';document.head.appendChild(s)})())
+javascript:void((function(){window.__feedtack={webhookUrl:'https://...'};var s=document.createElement('script');s.src='...';document.head.appendChild(s)})())
 ```
 
 The console paste version is a short loader script (same pattern as the bookmarklet but without the `javascript:` wrapper). The raw IIFE source is available as a secondary "offline" option for users who need to work without network access, but the default console snippet is the loader — pasting a 15-20KB minified blob is impractical in most browser consoles.
@@ -57,11 +57,13 @@ The console paste version is a short loader script (same pattern as the bookmark
 Minimal floating UI in bottom-right corner, matching existing feedtack visual language:
 
 - **Trigger button**: Small floating button, `position: fixed`, bottom-right. Click toggles the panel.
-- **Panel**: Scope selector (site/page/element tabs), comment textarea, sentiment buttons (good/bad/none), submit button.
+- **Panel**: Comment textarea, sentiment buttons (good/bad/none), submit button. ~~Scope selector (site/page/element tabs)~~ **[NOT BUILT]** — no explicit scope tabs. Scope is determined automatically: `element` when a pin is placed, `page` otherwise. This simplifies the UI at the cost of the `site`-scope option.
 - **Pin mode**: "Place a pin" button switches to crosshair cursor. Click on any element captures target. Pin indicator appears on element.
 - **Toast**: Confirmation message after submit (copied / sent).
 
 All UI lives inside a Shadow DOM host element to avoid CSS conflicts with the host page.
+
+**Implementation note:** UI construction was split across four modules for maintainability: `ui.ts` (DOM construction), `panel.ts` (panel state management), `pin-marker.ts` (visual pin markers), and `submit.ts` (form submission handler). The original plan was a single `ui.ts`.
 
 ### 5. Shadow DOM isolation
 
@@ -97,21 +99,26 @@ Output: `dist/feedtack.inject.js`
 
 **No `package.json` export path.** The IIFE self-executes on load — adding it to the exports map would cause `import ... from 'feedtack/inject'` to immediately self-execute, which is dangerous in Node.js/SSR. The file is published in `dist/` and accessed via CDN URL or direct file reference only.
 
+**Implementation note:** The original design specified `globalName: 'feedtack'` to expose a `feedtack.inject(config)` global API. In the actual build the IIFE self-executes immediately on load (via an IIFE wrapper in `main.ts`) and reads configuration from `window.__feedtack`. No `feedtack.inject()` callable is exposed. The `feedtack.destroy()` teardown is also not yet implemented — see task 9.1.
+
 ### 8. Snippet builder docs page
 
-React component at `site-docs/content/docs/guides/snippet.mdx` with an interactive client component:
+**[IMPLEMENTATION NOTE]** The builder was implemented as a standalone page at `/snippet-builder` (`site-docs/src/app/(home)/snippet-builder/page.tsx`), not at `site-docs/content/docs/guides/snippet.mdx` as originally planned. The docs guide is at `/docs/guides/injectable-snippet` (`injectable-snippet.mdx`). The route spec requires `/docs/guides/snippet` — this is a gap (task 9.6).
 
-- Text input for webhook URL (optional)
-- Toggle for clipboard vs webhook mode
-- Generated bookmarklet: renders as a draggable `<a href="javascript:...">` link
-- Generated console snippet: copyable code block with the full IIFE
-- Preview of what the snippet does (static screenshot or description)
+React client component at `site-docs/src/app/(home)/snippet-builder/page.tsx`:
 
-The component is a client-side React component in the docs site — it generates the bookmarklet/snippet strings dynamically based on user input.
+- Text inputs for webhook URL (optional) and full user identity (id, name, role — expanded beyond the spec's name-only requirement)
+- Generated bookmarklet: renders as a `<a href="javascript:...">` link with "Drag to bookmarks bar" instructions; click is suppressed, drag is the intended interaction
+- Generated console snippet: CDN loader (short script that fetches from unpkg) — copyable
+- Real-time updates as inputs change
 
-**URL sanitization:** The webhook URL input must be validated as a well-formed HTTPS URL before embedding in the bookmarklet `javascript:` href. Raw user input in a `javascript:` URL is an XSS vector (e.g., `'};alert(1);//` breaks out of the config string). Validate with `new URL()` and require `https:` protocol. Reject any URL that fails validation.
+The component generates the bookmarklet/snippet strings dynamically based on user input.
 
-**Version pinning:** The bookmarklet source URL defaults to the current feedtack version (e.g., `feedtack@1.2.0`), not `@latest`. This prevents saved bookmarklets from breaking when a new version ships. The builder shows the pinned version with an option to switch to `@latest`.
+**URL sanitization:** The webhook URL input is validated as a well-formed HTTPS URL before embedding in the bookmarklet `javascript:` href. Validates with `new URL()` and requires `https:` protocol. Rejects invalid URLs with an inline error message.
+
+**Version pinning:** The bookmarklet source URL is pinned to the current feedtack version (`PKG_VERSION = '1.2.0'`), not `@latest`. ~~The builder shows the pinned version with an option to switch to `@latest`.~~ **[NOT BUILT]** No "use latest" toggle — version is hardcoded. Filed as task 9.4.
+
+**Offline option:** ~~Raw IIFE source available as a secondary option.~~ **[NOT BUILT]** Console snippet always generates a CDN loader. Filed as task 9.5.
 
 ### 9. User identity
 
@@ -125,11 +132,41 @@ The IIFE uses `crypto.randomUUID()` for payload IDs (prefixed with `ft_`). This 
 
 ### 11. Idempotency — double-injection guard
 
-On initialization, the IIFE checks for an existing `document.getElementById('feedtack-inject')` Shadow DOM host. If found, the second injection is a no-op (returns the existing instance). `feedtack.destroy()` removes the host, allowing re-injection.
+On initialization, the IIFE checks `window.__feedtack_injected`. If truthy, the second execution logs a warning and returns early. **[IMPLEMENTATION DIFFERS FROM PLAN]** The original design described checking for an existing `document.getElementById('feedtack-inject')` DOM node; the actual implementation uses a flag on `window`. The flag approach is simpler but means the guard does not survive DOM manipulation (e.g., if someone manually removes the Shadow DOM host, the flag still blocks re-injection). `feedtack.destroy()` is not yet implemented — the flag is never cleared, so re-injection after teardown is not currently possible (task 9.1).
 
 ### 12. Touch / mobile support
 
 Pin mode listens for both `click` and `touchend` events. The trigger button uses `min-width: 44px; min-height: 44px` for touch targets. The panel uses `max-height: 80vh; overflow-y: auto` to fit small screens. No cursor change on touch devices (no cursor to change).
+
+## Post-implementation notes
+
+These reflect what was actually built vs. the original plan, recorded after reconciliation on 2026-05-10.
+
+### What changed from the plan
+
+1. **Global config variable name.** Design doc used `window.__feedtack_config` in examples. Implementation uses `window.__feedtack` consistently across `main.ts` and the snippet builder page.
+
+2. **No `feedtack.inject(config)` callable.** The original plan had `globalName: 'feedtack'` exposing a `feedtack.inject()` function. The actual IIFE self-executes immediately and reads config from `window.__feedtack`. The global `feedtack` namespace is never populated.
+
+3. **`feedtack.destroy()` not implemented.** The teardown method described in decision 11 and required by the spec was not built. The idempotency guard uses a `window.__feedtack_injected` flag rather than a DOM check, and the flag is never cleared. See task 9.1.
+
+4. **No fallback egress paths.** Both the `document.execCommand('copy')` clipboard fallback (for non-HTTPS) and the `fetch()` sendBeacon fallback were not built. See tasks 9.2 and 9.3.
+
+5. **No scope selector tabs.** The panel omits site/page/element scope tabs. Scope is derived from whether pins were placed. This simplifies the UI but drops the `site`-scope option.
+
+6. **UI split into four modules.** `ui.ts` was planned as a single Shadow DOM panel file. The implementation splits responsibilities across `ui.ts` (DOM construction), `panel.ts` (state management), `pin-marker.ts` (pin visuals), and `submit.ts` (form submission). No functional difference, better maintainability.
+
+7. **Snippet builder location.** Built at `/snippet-builder` as a standalone app route, not inside the Fumadocs docs tree at `/docs/guides/snippet`. The Playwright route spec targets `/docs/guides/snippet` (200 expected) — this route does not exist. See task 9.6.
+
+8. **Snippet builder user identity expanded.** The spec called for a name-only input. The builder exposes three fields: User ID, Name, and Role. This is a pragmatic improvement over the spec, not a gap.
+
+9. **No "use latest" toggle or offline IIFE option in builder.** Both planned snippet builder features were not built. See tasks 9.4 and 9.5.
+
+### What was built but not in the spec
+
+- `src/inject/panel.ts` — explicit state machine for panel open/close/pin mode/sentiment. Not mentioned in spec or tasks; emerged naturally during UI implementation.
+- `src/inject/pin-marker.ts` — standalone module for creating and removing DOM pin markers with numbered icons. Not separately specified; was implied by the "pin indicator" requirement.
+- `src/inject/submit.ts` — standalone submit handler extracted from main.ts for testability. Not separately specified.
 
 ## Risks / Trade-offs
 
