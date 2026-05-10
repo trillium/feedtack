@@ -2,7 +2,9 @@
   "git": {
     "commitMessage": "chore(release): ${version}",
     "tagName": "v${version}",
-    "push": true
+    "push": true,
+    "requireBranch": "main",
+    "requireCleanWorkingDir": true
   },
   "npm": {
     "publish": true
@@ -10,7 +12,8 @@
   "plugins": {
     "@release-it/conventional-changelog": {
       "preset": "conventionalcommits",
-      "infile": "CHANGELOG.md"
+      "infile": "CHANGELOG.md",
+      "ignoreRecommendedBump": false
     }
   }
 }
