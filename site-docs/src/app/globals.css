@@ -4,3 +4,9 @@
 #nd-subnav > a {
   display: none;
 }
+
+/* constrain theme toggle width in sidebar footer so it doesn't span full sidebar width */
+#nd-sidebar > div:nth-of-type(3) > div:has([data-theme-toggle]) {
+  width: fit-content;
+  margin-left: auto;
+}
