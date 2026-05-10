@@ -1,0 +1,65 @@
+---
+title: DiskAdapter
+description: Node.js adapter that persists feedback as JSON files on disk
+---
+
+The `DiskAdapter` writes each feedback submission as a JSON file in a local directory. It's the easiest way to collect feedback during development or in small deployments — no database required, and submissions are git-trackable.
+
+It also implements `ContentAdapter` and `ContentEditAdapter`, so it supports [content approval](/docs/concepts/content-approval) and [content editing](/docs/concepts/content-editing) out of the box.
+
+## Usage
+
+```ts
+import { DiskAdapter } from 'feedtack/node'
+
+const adapter = new DiskAdapter({ directory: '.feedback' })
+```
+
+Pass the adapter to `FeedtackProvider`:
+
+```tsx
+import { FeedtackProvider } from 'feedtack/react'
+import { DiskAdapter } from 'feedtack/node'
+
+const adapter = new DiskAdapter()
+
+export default function App() {
+  return (
+    <FeedtackProvider
+      adapter={adapter}
+      currentUser={{ id: 'u1', name: 'Alice', role: 'admin' }}
+    >
+      <YourApp />
+    </FeedtackProvider>
+  )
+}
+```
+
+## Configuration
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `directory` | `string` | `'.feedback'` | Directory to store feedback JSON files |
+
+## File layout
+
+Each submission is written as `<id>.json` inside the configured directory:
+
+```
+.feedback/
+  ft_01j....json       # feedback submissions
+  approvals/
+    hero_heading.json  # field approvals (content approval)
+  fields/
+    hero_heading.json  # field values (content editing)
+```
+
+The directory is created automatically if it doesn't exist. You can commit `.feedback/` to git to track feedback alongside your code.
+
+## Filtering
+
+`loadFeedback` supports filtering by `scope`, `pathname`, `url`, and `userId`. All filters are applied in-memory after reading from disk.
+
+## Requirements
+
+`DiskAdapter` uses Node.js `fs/promises` and requires **Node.js 18+**. Import from `feedtack/node` — do not import from the main `feedtack` entry point in browser environments.
