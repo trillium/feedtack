@@ -50,6 +50,8 @@
     "lint": "biome check src/",
     "lint:fix": "biome check --fix src/",
     "release": "release-it --ci",
+    "tack-server": "bun run examples/tack-server/server.ts",
+    "patch-report": "bun run examples/tack-server/patch-report.ts",
     "fallow": "fallow",
     "fallow:health": "fallow health --score --top 20 --hotspots",
     "fallow:dupes": "fallow dupes",

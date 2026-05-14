@@ -92,6 +92,7 @@ export function attachInputListeners(
 
   const click = (e: MouseEvent) => {
     if (!getState().isPinModeActive) return
+    if ((e.target as Element).closest(FEEDTACK_UI_SELECTOR)) return
     e.preventDefault()
     e.stopPropagation()
     placePin(e, e.target as Element, getState, setState)
@@ -101,7 +102,7 @@ export function attachInputListeners(
     const t = e.changedTouches[0]
     if (!t) return
     const el = document.elementFromPoint(t.clientX, t.clientY)
-    if (!el) return
+    if (!el || el.closest(FEEDTACK_UI_SELECTOR)) return
     e.preventDefault()
     placePin(t, el, getState, setState)
   }
