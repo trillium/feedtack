@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.4.0](https://github.com/trillium/feedtack/compare/v1.3.2...v1.4.0) (2026-05-14)
+
+### Features
+
+* add animated workflow SVG to README with dark/light mode support ([18ea800](https://github.com/trillium/feedtack/commit/18ea8009f580e6383d0e5fbc49f0e4ec9d761265))
+* add tack-server example with Playwright reporter ([9dc26bb](https://github.com/trillium/feedtack/commit/9dc26bb5d325e605952db9ccca66d6a31b192245))
+* **capture:** element context enrichment + viewport breakpoint ([06aeaae](https://github.com/trillium/feedtack/commit/06aeaaeb3cbfacc3bd2ae9b5a6bb779754a24fda))
+* **provider:** generic user type + username field ([#45](https://github.com/trillium/feedtack/issues/45)) ([74b0768](https://github.com/trillium/feedtack/commit/74b076880d1a77c87cd1469ad22150a1f5452ace))
+* **ux:** shift+P toggles pin mode; mobile tap-to-dismiss ([027e874](https://github.com/trillium/feedtack/commit/027e874d5f50c027c356e74069a5d766e9e9bfcc))
+
+### Bug Fixes
+
+* add slate-900 background to dark mode workflow SVG ([f12ab69](https://github.com/trillium/feedtack/commit/f12ab69136323d1ab3a40167936bd7a46543becb)), closes [#0f172a](https://github.com/trillium/feedtack/issues/0f172a)
+* **build:** align pnpm to v10, add build:docs script, fix site-docs vercel output dir ([786a9a6](https://github.com/trillium/feedtack/commit/786a9a6707ac58a8da4cae27ae53edd724aab09f))
+* **ci:** move helpers tests to site-docs, add site-docs vitest ([3f12651](https://github.com/trillium/feedtack/commit/3f1265157077f6fd12a3c566be70fbcc3a8388c5))
+* **ci:** remove redundant pnpm version — packageManager field in package.json takes precedence ([428f337](https://github.com/trillium/feedtack/commit/428f3375c08e45fd05f3d41bc4b3c2c393505e9c))
+* **ci:** resolve vitest failures from missing deps and stray spec file ([12f14a3](https://github.com/trillium/feedtack/commit/12f14a35f5af29d40e8240459c23c5bef8e2dcb8))
+* prevent pinning feedtack UI element on click and touch ([adf899a](https://github.com/trillium/feedtack/commit/adf899a064613ee743b0b51ee977cec955a485f5))
+* **site-docs:** add favicon icon.svg via App Router file convention ([#28](https://github.com/trillium/feedtack/issues/28)) ([2eb02d7](https://github.com/trillium/feedtack/commit/2eb02d70f7be85713ae78625b8d6dd3a61c3a70d))
+* **site-docs:** constrain theme toggle width in sidebar footer ([#29](https://github.com/trillium/feedtack/issues/29)) ([7288892](https://github.com/trillium/feedtack/commit/72888927a6bf17e2cea92779ce98b1a7ad5485e9))
+* **site-docs:** declare favicon and apple-touch-icon in metadata ([#28](https://github.com/trillium/feedtack/issues/28)) ([3ed14a0](https://github.com/trillium/feedtack/commit/3ed14a0b1e167585319c1da8fd1456e21c290707))
+* **site-docs:** hide duplicate Fumadocs subnav logo on /docs ([#27](https://github.com/trillium/feedtack/issues/27)) ([a18ba6c](https://github.com/trillium/feedtack/commit/a18ba6cb1c2c271dd5bb79d2218286fed02832a0))
+* **site-docs:** remove duplicate search/sidebar buttons from docs subnav header ([#43](https://github.com/trillium/feedtack/issues/43)) ([d32956b](https://github.com/trillium/feedtack/commit/d32956b4f3bdfa6e611a4d884bd7a438265f4ef2))
+* **test:** exclude .claude worktrees from vitest, remove unused import ([fa5fa58](https://github.com/trillium/feedtack/commit/fa5fa588d2ebd43d8dc50d6e8dc2c63f9bcd88b0))
+* **test:** polyfill localStorage for Bun+vitest environments ([800afd1](https://github.com/trillium/feedtack/commit/800afd19d4ec44be037636bee35bd9e97ffaa7a0))
+* **ui:** sentiment buttons use explicit class for reliable selected state; modal closes on submit ([ffed613](https://github.com/trillium/feedtack/commit/ffed6138ef1814cce658da8275aa443323ecf343))
+* **ui:** set explicit text color on thread/modal/form panels ([5cb9daa](https://github.com/trillium/feedtack/commit/5cb9daa2c18754b451ae2362eecde135d8110dbb))
+* **vercel:** set outputDirectory to dist for library build ([2ab242e](https://github.com/trillium/feedtack/commit/2ab242e9e8230531e447b9a2d9ca29ade7627a1b))
+
 ## [1.3.2](https://github.com/trillium/feedtack/compare/v1.3.1...v1.3.2) (2026-05-09)
 
 ### Bug Fixes
