@@ -23,4 +23,19 @@ export default defineConfig([
     noExternal: [/.*/],
     platform: 'browser',
   },
+  {
+    entry: {
+      content: 'src/extension/content.ts',
+      popup: 'src/extension/popup.ts',
+    },
+    outDir: 'dist/extension',
+    format: ['iife'],
+    outExtension: () => ({ js: '.js' }),
+    dts: false,
+    clean: false,
+    minify: true,
+    external: [],
+    noExternal: [/.*/],
+    platform: 'browser',
+  },
 ])

@@ -6,12 +6,17 @@ import {
 
 const INJECT_VERSION = '1.2.0'
 
-/** Validate a webhook URL — must be absolute https */
+/** Validate a webhook URL — must be https, or http for localhost/127.0.0.1 */
 export function validateWebhookUrl(url: string): string {
   const parsed = new URL(url)
-  if (parsed.protocol !== 'https:') {
+  const isLocalhost =
+    parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1'
+  if (
+    parsed.protocol !== 'https:' &&
+    !(parsed.protocol === 'http:' && isLocalhost)
+  ) {
     throw new Error(
-      `[feedtack] Webhook URL must use https: protocol, got ${parsed.protocol}`,
+      `[feedtack] Webhook URL must use https (or http for localhost), got ${parsed.protocol}//${parsed.hostname}`,
     )
   }
   return parsed.href
