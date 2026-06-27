@@ -208,22 +208,21 @@ export const FEEDTACK_MODAL_STYLES = `
     text-align: left;
   }
 
+  /* color set explicitly — host CSS often wins inherited-color battles */
   .feedtack-modal-thread-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 13px;
+    color: var(--ft-text);
+    display: flex; flex-direction: column; gap: 4px; font-size: 13px;
   }
-
+  .feedtack-modal-thread-content p,
+  .feedtack-modal-thread-content strong,
+  .feedtack-modal-reply p { color: var(--ft-text); }
   .feedtack-modal-reply {
+    color: var(--ft-text);
     border-top: 1px solid var(--ft-border);
     padding-top: 8px;
     font-size: 12px;
   }
-
-  .feedtack-reply-author {
-    font-weight: 600;
-  }
+  .feedtack-reply-author { color: var(--ft-text); font-weight: 600; }
 
   .feedtack-modal-actions {
     display: flex;

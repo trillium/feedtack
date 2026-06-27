@@ -189,6 +189,7 @@ export function FeedtackProvider<TUser = FeedtackUser>({
 
       {!disabled && (
         <FeedbackModal
+          className={classes.modal}
           isOpen={state.isModalOpen}
           onClose={state.closeModal}
           activeTab={state.composeScope}

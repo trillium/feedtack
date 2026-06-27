@@ -10,6 +10,13 @@ export interface FeedtackClasses {
   thread?: string
   colorPicker?: string
   pinMarker?: string
+  /**
+   * Class applied to the feedback modal <dialog>. Use this to override
+   * text colors and other styles when the host page's CSS (Tailwind dark
+   * mode, prose plugins, etc.) wins specificity battles against the
+   * default --ft-text token.
+   */
+  modal?: string
 }
 
 export interface FeedtackSentimentLabels {

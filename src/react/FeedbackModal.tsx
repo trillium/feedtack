@@ -8,6 +8,7 @@ import { ThreadView } from './ThreadView.js'
 import { cx } from './utils.js'
 
 interface FeedbackModalProps {
+  className?: string
   isOpen: boolean
   onClose: () => void
   activeTab: 'site' | 'page'
@@ -32,6 +33,7 @@ interface FeedbackModalProps {
 }
 
 export function FeedbackModal({
+  className,
   isOpen,
   onClose,
   activeTab,
@@ -103,7 +105,7 @@ export function FeedbackModal({
     // biome-ignore lint/a11y/useKeyWithClickEvents: native <dialog> handles keyboard via onCancel (Escape)
     <dialog
       ref={dialogRef}
-      className="feedtack-modal"
+      className={cx('feedtack-modal', className)}
       aria-label="Feedback"
       onCancel={handleCancel}
       onClick={handleBackdropClick}

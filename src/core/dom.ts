@@ -20,13 +20,22 @@ export function injectRoot(): HTMLDivElement {
   return root
 }
 
-/** Apply theme custom properties to the feedtack root */
+/** Apply theme custom properties.
+ *
+ * Sets the vars on BOTH `#feedtack-root` (legacy target) and
+ * `document.documentElement` (`:root`). The documentElement write is
+ * load-bearing for the modal: native `<dialog>` elements opened via
+ * `showModal()` are promoted to the top-layer, escaping CSS-var
+ * inheritance from `#feedtack-root`. Setting on `:root` ensures the
+ * modal still picks up the theme (CSS custom properties cascade
+ * independently of layout, including into the top-layer).
+ */
 export function applyTheme(theme: FeedtackTheme): void {
-  const root = document.getElementById('feedtack-root')
-  if (!root) return
   const tokens = themeToCSS(theme)
+  const root = document.getElementById('feedtack-root')
   for (const [k, v] of Object.entries(tokens)) {
-    root.style.setProperty(k, v)
+    if (root) root.style.setProperty(k, v)
+    document.documentElement.style.setProperty(k, v)
   }
 }
 
