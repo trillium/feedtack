@@ -3,7 +3,13 @@
   "name": "Feedtack",
   "version": "1.0.0",
   "description": "Click anywhere. Drop a pin. Get a payload a developer can act on.",
-  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "permissions": ["storage", "sidePanel", "tabs", "scripting"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
@@ -19,7 +25,6 @@
     }
   ],
   "action": {
-    "default_popup": "popup.html",
     "default_title": "Feedtack",
     "default_icon": {
       "16": "icons/16.png",

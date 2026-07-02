@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedtack</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    header svg { flex-shrink: 0; }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f1f5f9;
+      flex: 1;
+    }
+
+    main {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Pick button */
+    #pick-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #pick-btn:hover { background: #1d4ed8; }
+    #pick-btn.active { background: #dc2626; }
+    #pick-btn.active:hover { background: #b91c1c; }
+
+    /* Element card */
+    #element-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #element-card.visible { display: flex; }
+
+    .card-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #93c5fd;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-text {
+      font-size: 12px;
+      color: #94a3b8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Note */
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: #94a3b8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    textarea, input[type="text"] {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #e2e8f0;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      width: 100%;
+      resize: vertical;
+    }
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+    textarea { min-height: 72px; }
+
+    /* Sentiment */
+    .sentiment-row {
+      display: flex;
+      gap: 8px;
+    }
+    .sentiment-btn {
+      flex: 1;
+      padding: 6px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 18px;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .sentiment-btn:hover { border-color: #475569; }
+    .sentiment-btn.selected-good { border-color: #22c55e; background: #14532d33; }
+    .sentiment-btn.selected-bad { border-color: #ef4444; background: #7f1d1d33; }
+
+    /* Submit */
+    #submit-btn {
+      width: 100%;
+      padding: 10px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #submit-btn:hover:not(:disabled) { background: #1d4ed8; }
+    #submit-btn:disabled { background: #1e3a6e; color: #475569; cursor: not-allowed; }
+
+    /* Status */
+    #status {
+      display: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    #status.ok { background: #14532d33; border: 1px solid #22c55e; color: #4ade80; display: block; }
+    #status.error { background: #7f1d1d33; border: 1px solid #ef4444; color: #f87171; display: block; }
+
+    /* Settings */
+    details {
+      border-top: 1px solid #1e293b;
+      margin-top: auto;
+    }
+    summary {
+      padding: 10px 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: ' ▸'; }
+    details[open] summary::after { content: ' ▾'; }
+
+    .settings-body {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* FAB toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-row span { font-size: 12px; color: #94a3b8; }
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #334155;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #94a3b8;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-track { background: #2563eb; }
+    .toggle input:checked + .toggle-track::after { transform: translateX(16px); background: #fff; }
+  </style>
+</head>
+<body>
+  <header>
+    <svg width="20" height="27" viewBox="0 0 24 32" fill="#2563eb" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z"/>
+      <circle cx="12" cy="11" r="4.5" fill="white" fill-opacity="0.35"/>
+    </svg>
+    <h1>Feedtack</h1>
+  </header>
+
+  <main>
+    <button id="pick-btn" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/>
+        <line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/>
+        <line x1="12" y1="22" x2="12" y2="18"/>
+      </svg>
+      Pick Element
+    </button>
+
+    <div id="element-card">
+      <span class="card-label">Element</span>
+      <span id="card-selector" class="card-tag"></span>
+      <span id="card-text" class="card-text"></span>
+    </div>
+
+    <label>
+      Note
+      <textarea id="note" placeholder="Describe the issue or feedback…"></textarea>
+    </label>
+
+    <label>
+      Sentiment
+      <div class="sentiment-row">
+        <button class="sentiment-btn" data-value="good" type="button" title="Good">👍</button>
+        <button class="sentiment-btn" data-value="bad" type="button" title="Bad">👎</button>
+      </div>
+    </label>
+
+    <div id="status"></div>
+
+    <button id="submit-btn" type="button" disabled>Submit Tack</button>
+  </main>
+
+  <details>
+    <summary>Settings</summary>
+    <div class="settings-body">
+      <label>
+        Webhook URL
+        <input id="webhook-url" type="text" placeholder="http://localhost:2727/tack" />
+      </label>
+      <label>
+        Your Name
+        <input id="user-name" type="text" placeholder="Anonymous" />
+      </label>
+      <label>
+        Your Email
+        <input id="user-email" type="text" placeholder="" />
+      </label>
+      <div class="toggle-row">
+        <span>Show FAB on pages</span>
+        <label class="toggle">
+          <input id="fab-enabled" type="checkbox" />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+  </details>
+
+  <script src="panel.js"></script>
+</body>
+</html>

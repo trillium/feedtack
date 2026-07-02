@@ -61,11 +61,19 @@ const CORS = {
 
 // --- Server ---
 
+const reloadClients = new Set<import('bun').ServerWebSocket<unknown>>()
+
 Bun.serve({
   port: PORT,
 
-  async fetch(req) {
+  async fetch(req, server) {
     const url = new URL(req.url)
+
+    // WS /reload — hot-reload channel for the Chrome extension SW
+    if (url.pathname === '/reload') {
+      if (server.upgrade(req)) return undefined
+      return new Response('WebSocket upgrade failed', { status: 400 })
+    }
 
     if (req.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS })
@@ -106,5 +114,19 @@ Bun.serve({
     }
 
     return new Response('Not found', { status: 404, headers: CORS })
+  },
+
+  websocket: {
+    open(ws) {
+      reloadClients.add(ws)
+    },
+    close(ws) {
+      reloadClients.delete(ws)
+    },
+    message(_ws, _msg) {
+      // broadcast reload to all connected extension SWs
+      for (const client of reloadClients) client.send('reload')
+      console.log(`[reload] broadcast → ${reloadClients.size} client(s)`)
+    },
   },
 })

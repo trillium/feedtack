@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-06-30 — session 601b3363
+
+Files: src/ui/modalStyles.ts, src/react/providerTypes.ts, src/react/FeedtackProvider.tsx, src/react/FeedbackModal.tsx, src/core/dom.ts
+
+> AI summary pending — check ProjectDocs Handover in next session.
+## 2026-05-19 — session 5843b625
+
+Files: src/core/input.ts
+
+> AI summary pending — check ProjectDocs Handover in next session.
+## 2026-05-14 — session bea57165
+
+Files: examples/tack-server/server.ts, examples/tack-server/README.md, package.json, examples/tack-server/patch-report.ts, examples/tack-server/playwright-reporter.ts, src/test/setup.ts, src/extension/manifest.json, src/extension/content.ts, src/extension/popup.html, src/extension/popup.ts
+
+> AI summary pending — check ProjectDocs Handover in next session.
+## 2026-05-14 — Chrome extension + hot-reload pipeline
+
+- **Chrome extension (MV3):** side panel replaces FAB as primary tacking UI — pick element with crosshair, add note + sentiment, submit directly from panel
+- **Element picker:** crosshair cursor + blue highlight overlay on hover; captures full metadata (selector, dataTestId, tagName, textContent, 5-level ancestor chain, boundingRect, scroll/viewport)
+- **FAB retained but off by default:** toggled via Settings in the side panel; injection now routes through `chrome.scripting.executeScript` with `world: MAIN` to bypass strict page CSP
+- **Hot-reload pipeline:** tack-server WS `/reload` channel + `scripts/ping-reload.ts` post-build hook — extension reloads in-place in real Chrome after every `pnpm dev` rebuild; no separate browser profile needed
+- **Real icons:** `build-extension.ts` rasterizes `site-docs/src/app/icon.svg` via `rsvg-convert` at 16/48/128px, replacing placeholder solid-blue PNGs
+- **Issues filed:** [#47](https://github.com/trillium/feedtack/issues/47) onSubmit callback, [#48](https://github.com/trillium/feedtack/issues/48) persist element highlight after pick
+
 ## [1.4.0](https://github.com/trillium/feedtack/compare/v1.3.2...v1.4.0) (2026-05-14)
 
 ### Features
