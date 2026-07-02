@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; background: #fff; }
+    pre { font-family: monospace; font-size: 12px; padding: 10px; }
+  </style>
+</head>
+<body>
+<div id="svg-container"></div>
+<pre id="output"></pre>
+<script>
+  // Load SVG inline via fetch
+  fetch('workflow-animation.svg')
+    .then(r => r.text())
+    .then(svgText => {
+      const container = document.getElementById('svg-container');
+      container.innerHTML = svgText;
+      const svg = container.querySelector('svg');
+
+      // Wait a tick for layout
+      requestAnimationFrame(() => {
+        const results = {};
+
+        // Document dimensions
+        results.svg_viewBox = svg.getAttribute('viewBox');
+        results.svg_width = svg.getAttribute('width');
+        results.svg_height = svg.getAttribute('height');
+
+        // Get bounding box of the root group (all content)
+        const rootGroup = svg.querySelector('.wfa-root');
+        if (rootGroup) {
+          try {
+            const bb = rootGroup.getBBox();
+            results.wfa_root_bbox = { x: bb.x, y: bb.y, width: bb.width, height: bb.height, right: bb.x + bb.width, bottom: bb.y + bb.height };
+          } catch(e) { results.wfa_root_bbox_error = e.message; }
+        }
+
+        // Check each text label
+        const labels = svg.querySelectorAll('text');
+        results.text_elements = [];
+        labels.forEach(el => {
+          try {
+            const bb = el.getBBox();
+            results.text_elements.push({
+              text: el.textContent.trim(),
+              bbox: { x: bb.x, y: bb.y, width: bb.width, height: bb.height, right: bb.x + bb.width }
+            });
+          } catch(e) {}
+        });
+
+        // Check each circle (progress dots)
+        const circles = svg.querySelectorAll('circle[class*="wfa-prog-dot"]');
+        results.dots = [];
+        circles.forEach(el => {
+          try {
+            const bb = el.getBBox();
+            results.dots.push({ class: el.getAttribute('class'), bbox: { x: bb.x, y: bb.y, width: bb.width, right: bb.x + bb.width } });
+          } catch(e) {}
+        });
+
+        // Overall SVG content bbox
+        try {
+          const svgBB = svg.getBBox ? svg.getBBox() : null;
+          if (svgBB) results.svg_content_bbox = { x: svgBB.x, y: svgBB.y, width: svgBB.width, height: svgBB.height };
+        } catch(e) {}
+
+        // Suggested canvas size (add 20px padding)
+        if (results.wfa_root_bbox) {
+          const bb = results.wfa_root_bbox;
+          results.suggested = {
+            min_width: Math.ceil(bb.right + 20),
+            min_height: Math.ceil(bb.bottom + 20),
+            center_offset_x: bb.x,
+            note: `Content right edge at ${bb.right.toFixed(1)}, current canvas width: ${results.svg_width}`
+          };
+        }
+
+        const out = JSON.stringify(results, null, 2);
+        document.getElementById('output').textContent = out;
+        // For headless capture
+        console.log('SVG_BOUNDS_RESULT:' + JSON.stringify(results));
+      });
+    });
+</script>
+</body>
+</html>
