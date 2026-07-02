@@ -68,8 +68,13 @@ describe('validateWebhookUrl', () => {
 
   it('rejects http URL', () => {
     expect(() => validateWebhookUrl('http://example.com/hook')).toThrow(
-      'https:',
+      'must use https (or http for localhost)',
     )
+  })
+
+  it('accepts http URL on localhost', () => {
+    const url = validateWebhookUrl('http://localhost:4573/tack')
+    expect(url).toBe('http://localhost:4573/tack')
   })
 
   it('rejects invalid URL', () => {
