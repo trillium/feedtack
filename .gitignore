@@ -3,3 +3,17 @@ dist/
 *.tsbuildinfo
 .beads
 .vercel
+
+# test/build artifacts
+coverage/
+test-results/
+.claude/worktrees/
+
+# local feedtack payload output
+.feedtack/
+
+# supabase CLI local state
+supabase/.temp/
+
+# pnpm is the package manager — stray npm lockfiles
+package-lock.json
