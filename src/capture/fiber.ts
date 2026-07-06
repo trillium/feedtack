@@ -94,6 +94,26 @@ function readFiber(element: Element, key: string): FiberNode | undefined {
 }
 
 /**
+ * Scan the live DOM (or a given root) for any element carrying a React fiber
+ * key. Bounded by MOUNT_SCAN_LIMIT. Returns false outside the browser.
+ * Read-only — used by checkFiberAtMount and the setup doctor.
+ */
+export function hasFiberInDom(root?: ParentNode): boolean {
+  if (typeof document === 'undefined') return false
+  const scope = root ?? document
+  const elements = scope.querySelectorAll('*')
+  const limit = Math.min(elements.length, MOUNT_SCAN_LIMIT)
+  for (let i = 0; i < limit; i++) {
+    const key = elementFiberKey(elements[i])
+    if (key) {
+      fiberKey = fiberKey ?? key
+      return true
+    }
+  }
+  return false
+}
+
+/**
  * Mount-time availability enforcement — call once when the React provider
  * mounts (dev server launch / page open is the right moment to inform the
  * developer; build time is impossible since library code is bundled as text,
@@ -111,16 +131,7 @@ export function checkFiberAtMount(root?: ParentNode): void {
   if (isFiberOptional()) return
   mountCheckDone = true
 
-  const scope = root ?? document
-  const elements = scope.querySelectorAll('*')
-  const limit = Math.min(elements.length, MOUNT_SCAN_LIMIT)
-  for (let i = 0; i < limit; i++) {
-    const key = elementFiberKey(elements[i])
-    if (key) {
-      fiberKey = fiberKey ?? key
-      return
-    }
-  }
+  if (hasFiberInDom(root)) return
 
   if (isProduction()) {
     console.warn(PROD_FIBER_MESSAGE)
@@ -155,6 +166,13 @@ export function getComponentName(element: Element): string | null {
   } catch {
     return null
   }
+}
+
+/** Current fiber mode from env flags — read by the setup doctor. */
+export function getFiberMode(): 'enabled' | 'optional' | 'disabled' {
+  if (isFiberDisabled()) return 'disabled'
+  if (isFiberOptional()) return 'optional'
+  return 'enabled'
 }
 
 /** Test-only: reset all module-level fiber state (cache + latches). */

@@ -57,6 +57,33 @@ The default hotkey to open the feedback modal is `Shift+P`. You can change it wi
 
 To disable the hotkey entirely, set `hotkey={null}` on `FeedtackProvider`.
 
+## Verify your setup
+
+`runFeedtackDoctor()` is a read-only configuration check that tells you whether the
+pieces actually line up: React Fiber accessibility, adapter capabilities (core /
+content approval / inline editing), `currentUser` attribution fields, Web Crypto
+availability for content hashing, `data-feedtack-field` duplicates, and whether the
+provider is mounted.
+
+Run it once in the browser after mount — temporarily in an effect, or straight from
+the devtools console:
+
+```tsx
+import { runFeedtackDoctor } from 'feedtack'
+
+useEffect(() => {
+  if (process.env.NODE_ENV !== 'production') {
+    runFeedtackDoctor({ adapter, currentUser })
+  }
+}, [])
+```
+
+It prints a grouped checklist to the console and returns a structured
+`FeedtackDoctorReport` (`{ ok, checks }`) if you'd rather assert on it — for example
+in a Playwright smoke test via `page.evaluate()`. Nothing is submitted and no
+adapter writes happen; it is safe to call anywhere, and it no-ops gracefully during
+SSR.
+
 ## Next steps
 
 - Swap `ConsoleAdapter` for a production adapter — see [Adapters](/docs/adapters)
