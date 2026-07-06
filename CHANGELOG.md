@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-06 — session 41de47ab
+
+Holistic pass, four streams: (1) shared hover element-highlight (`src/capture/highlight.ts`) wired into React (`setCrosshair`) and IIFE (`setPinMode`); extension UX documented as canonical in SPEC.md § UX Reference; divergence audit at `Plans/ui-consistency-audit.md` (fe-gj5, fe-963, fe-i7m filed). (2) Fiber enforcement — dev throws, prod warns once at first submit, `FEEDTACK_FIBER_OPTIONAL`/`FEEDTACK_FIBER_DISABLED` escape hatches, payload `fiberAvailable`, 6-case `fiber.test.ts`. (3) `Plans/fable-imaginings.md` speculative design doc. (4) Content integration closed: v0-4/v0-5 open questions answered in openspec design docs, `onDeployCheck` prop deprecated (not auto-wired, rationale documented), CI Gate recipe added to Content Approval docs, deferred surfaces filed (fe-z1z, fe-jm8).
+
+Files: src/capture/highlight.ts, src/capture/highlight.test.ts, src/core/dom.ts, src/inject/panel.ts, SPEC.md, Plans/ui-consistency-audit.md, src/capture/fiber.ts, src/capture/fiber.test.ts, src/capture/capture.test.ts, src/capture/target.ts, src/types/payload.ts, src/core/actions.ts, Plans/fable-imaginings.md, openspec/changes/v0-4-0-content-approval/design.md, openspec/changes/v0-5-0-content-editing/design.md, src/react/providerTypes.ts, site-docs/content/docs/concepts/content-approval.mdx
+
 ## 2026-06-30 — session 601b3363
 
 Files: src/ui/modalStyles.ts, src/react/providerTypes.ts, src/react/FeedtackProvider.tsx, src/react/FeedbackModal.tsx, src/core/dom.ts
