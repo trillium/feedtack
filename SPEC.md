@@ -9,6 +9,24 @@ Three integration paths:
 2. **Script inject** (`feedtack.inject.js`) — IIFE dropped into any page via `<script>` or `page.addInitScript()`
 3. **Chrome extension** — side panel tacking UI with element picker, works on any site without code changes
 
+## UX Reference
+
+**The Chrome extension's targeting flow is the canonical Feedtack UX.** Every entry point converges toward it:
+
+1. **Enter a picking mode** — explicit user action (Pick button, FAB, hotkey); crosshair cursor signals the mode.
+2. **Hover highlight** — the element under the cursor lights up (blue outline + translucent tint) *before* the user commits. The user always sees what a click will capture. Implemented once in `src/capture/highlight.ts` and shared by the React and IIFE paths; the extension's picker in `src/extension/content.ts` is the reference implementation of the look and behavior.
+3. **Click to capture** — the highlighted element becomes the tack target with full metadata (selector, ancestors, rect, component name where available).
+4. **Annotate and submit** — comment + sentiment, then adapter/webhook egress.
+
+Rules for any new surface (and for closing gaps in existing ones):
+
+- Picking mode MUST show hover highlight; a bare crosshair cursor is not enough.
+- The highlight previews the **resolved capture target** (nearest interactive ancestor, `resolveTarget()`), so what lights up is exactly what the payload describes. (The extension itself still highlights the raw element — inherits resolution when fe-3i7 unifies its capture path.)
+- The highlight overlay is `pointer-events: none` and never intercepts the click.
+- Escape exits the picking mode without destroying the user's draft.
+
+Divergence inventory and disposition: `Plans/ui-consistency-audit.md`.
+
 ## Architecture
 
 ```
@@ -107,4 +125,4 @@ The tack-server walks up from `process.cwd()` to the nearest `.git` ancestor and
 
 ## Last Updated
 
-2026-05-14
+2026-07-06

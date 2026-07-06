@@ -1,3 +1,5 @@
+import { createElementHighlight } from '../capture/highlight.js'
+import { resolveTarget } from '../capture/target.js'
 import type { FeedtackSentiment } from '../types/payload.js'
 import type { PinMarker } from './pin-marker.js'
 import { removePinMarkers } from './pin-marker.js'
@@ -35,10 +37,17 @@ export function createPanelController(
     sentiment: null,
   }
 
+  const highlight = createElementHighlight({
+    isExcluded: (el) => el.closest('#feedtack-inject') !== null,
+    resolveTarget,
+  })
+
   function setPinMode(active: boolean): void {
     state.pinMode = active
     ui.fab.classList.toggle('active', active)
     document.documentElement.style.cursor = active ? 'crosshair' : ''
+    if (active) highlight.attach()
+    else highlight.detach()
   }
 
   function resetForm(): void {

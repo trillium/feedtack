@@ -1,3 +1,8 @@
+import {
+  createElementHighlight,
+  type HighlightController,
+} from '../capture/highlight.js'
+import { resolveTarget } from '../capture/target.js'
 import type { FeedtackTheme } from '../types/theme.js'
 import { themeToCSS } from '../types/theme.js'
 import { FEEDTACK_DEFAULT_TOKENS, FEEDTACK_STYLES } from '../ui/styles.js'
@@ -39,12 +44,23 @@ export function applyTheme(theme: FeedtackTheme): void {
   }
 }
 
-/** Toggle crosshair cursor class on <html> */
+let pickingHighlight: HighlightController | null = null
+
+/** Toggle pin-mode visual affordances on <html>: crosshair cursor + hover
+ *  element highlight (the canonical picker UX — see SPEC.md § UX Reference) */
 export function setCrosshair(active: boolean): void {
   if (active) {
     document.documentElement.classList.add('feedtack-crosshair')
+    if (!pickingHighlight) {
+      pickingHighlight = createElementHighlight({
+        isExcluded: (el) => el.closest(FEEDTACK_UI_SELECTOR) !== null,
+        resolveTarget,
+      })
+    }
+    pickingHighlight.attach()
   } else {
     document.documentElement.classList.remove('feedtack-crosshair')
+    pickingHighlight?.detach()
   }
 }
 
