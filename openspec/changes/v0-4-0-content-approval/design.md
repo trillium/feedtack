@@ -69,7 +69,8 @@ Format: `<page>.<section>.<field>` — e.g. `coaching.hero.heading`. The dot-pat
 
 [ContentAdapter not implemented] → If the adapter doesn't implement `ContentAdapter`, calling approval methods silently does nothing. Mitigation: type guard + console.warn in dev mode.
 
-## Open Questions
+## Open Questions — RESOLVED 2026-07-06 (by implementation)
 
-- Should `scanFields()` be called automatically on mount, or always manual? Auto-scan is convenient but surprises SPA teams. Lean toward manual with a convenience hook (`useContentApproval`).
-- Should the `pending` list in `onDeployCheck` include fields with no stored approval at all, or only fields with a stale (hash-mismatched) approval? Probably both — unannotated = unreviewed.
+- ~~Should `scanFields()` be called automatically on mount, or always manual?~~ **RESOLVED: both, as shipped.** `useContentApproval` auto-scans once on mount (`useEffect` → `rescan()`) and exposes `rescan()` for SPA navigation and post-hydration re-runs. The "surprise" concern is contained because the scan is read-only.
+- ~~Should the `pending` list include never-approved fields, or only stale ones?~~ **RESOLVED: both.** `checkDeploy()` treats `approval === null` and hash-mismatch identically as pending — unannotated = unreviewed, as conjectured.
+- Related decision (2026-07-06): the `onDeployCheck` provider prop from D5 is **deprecated, not auto-wired** — see `src/react/providerTypes.ts` and the Content Approval docs page. Feedtack cannot know when a deploy-relevant moment occurs, and the provider never had a call site for the prop; `useContentApproval().checkDeploy()` (client) and the CI Gate recipe (pipeline) are the two supported paths.

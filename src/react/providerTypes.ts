@@ -45,9 +45,12 @@ export interface FeedtackProviderProps<TUser = FeedtackUser> {
   /** User roles that trigger re-scope on reply (default: any non-'agent' role) */
   rescopeRoles?: string[]
   /**
-   * Called by the consumer (e.g. on a Deploy button click) to check whether all
-   * content fields have current approvals. Feedtack surfaces the data; the consumer
-   * decides what to do with the result.
+   * @deprecated Never invoked by the provider, and deliberately not auto-wired:
+   * Feedtack cannot know when a deploy-relevant moment occurs (a Deploy button,
+   * a CI step, a merge) — auto-invoking would run async DOM scans at times the
+   * consumer didn't choose. Use `useContentApproval(adapter, userId).checkDeploy()`
+   * in your own deploy UI, or the CI Gate recipe in the Content Approval docs
+   * for pipelines. This prop will be removed in the next major.
    */
   onDeployCheck?: () => Promise<{ approved: boolean; pending: string[] }>
   /**

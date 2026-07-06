@@ -110,6 +110,71 @@ async function handleDeploy() {
 
 Feedtack surfaces the data — you decide what the gate means.
 
+> **Why isn't there a provider prop for this?** `FeedtackProvider`'s `onDeployCheck`
+> prop is deprecated and was never invoked: Feedtack can't know when a
+> deploy-relevant moment occurs, so auto-wiring would run DOM scans at times you
+> didn't choose. Call `checkDeploy()` from your own deploy UI (above), or gate in
+> CI (below).
+
+## CI Gate recipe
+
+`checkDeploy()`'s algorithm — scan annotated fields, hash content, compare against
+stored approvals — also runs outside the browser, because its primitives are public
+API: `hashField` from `feedtack`, `DiskAdapter` from `feedtack/node`.
+
+**Static builds (SSG/SSR output on disk).** Hash the built HTML's fields and fail
+the pipeline when any lack a current approval:
+
+```ts
+// scripts/content-gate.ts — run with: bun scripts/content-gate.ts dist/index.html
+import { readFile } from 'node:fs/promises'
+import { JSDOM } from 'jsdom'
+import { hashField } from 'feedtack'
+import { DiskAdapter } from 'feedtack/node'
+
+const html = await readFile(process.argv[2], 'utf8')
+const { document } = new JSDOM(html).window
+const adapter = new DiskAdapter({ directory: '.feedtack' })
+const approvals = new Map(
+  (await adapter.loadApprovals()).map((s) => [s.fieldPath, s.approval]),
+)
+
+const pending: string[] = []
+for (const el of document.querySelectorAll('[data-feedtack-field]')) {
+  const fieldPath = el.getAttribute('data-feedtack-field') ?? ''
+  const hash = await hashField(el.textContent?.trim() ?? '')
+  const approval = approvals.get(fieldPath)
+  if (!approval || approval.hash !== hash) pending.push(fieldPath)
+}
+
+if (pending.length > 0) {
+  console.error(`Unapproved content fields:\n  ${pending.join('\n  ')}`)
+  process.exit(1)
+}
+console.log('All content fields approved ✓')
+```
+
+Wire it into the pipeline after the build, before the deploy step:
+
+```yaml
+# .github/workflows/deploy.yml
+- run: bun run build
+- run: bun scripts/content-gate.ts dist/index.html   # fails the job when pending
+- run: bun run deploy
+```
+
+**Client-rendered apps.** Fields don't exist until hydration, so drive a real
+browser: expose the hook's checker on an admin-only route
+(`window.__feedtackCheckDeploy = checkDeploy` inside a `useEffect`), then in CI:
+
+```ts
+const result = await page.evaluate(() => window.__feedtackCheckDeploy())
+if (!result.approved) throw new Error(`Pending: ${result.pending.join(', ')}`)
+```
+
+Either way the gate's meaning stays yours — block the deploy, post a PR comment,
+or just annotate the release notes.
+
 ## ContentAdapter
 
 Any adapter can support content approvals by implementing `ContentAdapter`:

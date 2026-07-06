@@ -86,7 +86,7 @@ This matches Mel's pattern exactly and avoids unnecessary saves.
 
 [DiskAdapter approval file naming with dots] → Field paths like `hero.heading` contain dots. Mitigation: already handled in v0-4-0 (sanitize to `hero_heading.json`); `saveField` uses same sanitization.
 
-## Open Questions
+## Open Questions — RESOLVED 2026-07-06
 
-- Should `loadFields()` return ALL fields across all pages, or just the current page? Current assumption: all fields (keyed by full dot-path including page prefix). Adapter can filter by page if needed.
-- Should `ContentEditToolbar` be opt-in (consumer renders it) or auto-rendered by `useContentEdit`? Lean toward opt-in — consumer controls where the toolbar appears. The hook returns the props needed to render it.
+- ~~Should `loadFields()` return ALL fields across all pages, or just the current page?~~ **DECIDED: all fields, no page parameter in the contract.** Field paths embed the page namespace by convention (v0-4-0 D3: `{page}.{section}.{field}`), so consumers who need scoping filter the returned map by prefix — no DOM- or route-awareness leaks into adapters. Both reference implementations already return full maps, and realistic field counts (a site's editable copy) make hydration cost a non-issue. Revisit only if a real deployment's field volume measurably slows `activate()`; the escape hatch then is an optional prefix filter argument, which is additive.
+- ~~Should `ContentEditToolbar` be opt-in (consumer renders it) or auto-rendered by `useContentEdit`?~~ **DECIDED: opt-in, permanently.** A hook that renders UI as a side effect breaks the hooks contract (hooks return state; components render) and would force portal/z-index/SSR assumptions onto every consumer. The shipped shape — `useContentEdit` returns `toolbarProps`, consumer renders `<ContentEditToolbar />` where their layout wants it — keeps the hook usable headless (custom toolbars, no toolbar) and matches D4's "toolbar is pure display" principle. The v0-4-0 → v0-5-0 opt-in shipping behavior is now the documented contract, not a provisional lean.
