@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  checkFiberOnSubmit,
+  checkFiberAtMount,
   DEV_FIBER_MESSAGE,
   getComponentName,
   PROD_FIBER_MESSAGE,
@@ -21,7 +21,7 @@ function makeButton(): HTMLButtonElement {
   return btn
 }
 
-describe('fiber enforcement', () => {
+describe('fiber enforcement (mount-time)', () => {
   beforeEach(() => {
     resetFiberStateForTests()
     vi.unstubAllEnvs()
@@ -33,36 +33,29 @@ describe('fiber enforcement', () => {
     vi.unstubAllEnvs()
   })
 
-  it('importing the module never throws regardless of env (capture-time only)', async () => {
-    vi.stubEnv('NODE_ENV', 'development')
-    vi.resetModules()
-    await expect(import('./fiber.js')).resolves.toBeDefined()
+  it('module import never throws regardless of environment', async () => {
     vi.stubEnv('NODE_ENV', 'production')
-    vi.resetModules()
+    await expect(import('./fiber.js')).resolves.toBeDefined()
+    vi.stubEnv('NODE_ENV', 'development')
     await expect(import('./fiber.js')).resolves.toBeDefined()
   })
 
-  it('1: fiber present → componentName resolved, no throw/warn, fiberAvailable true', () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const btn = makeButton()
-    attachFiber(btn, 'CheckoutButton')
-
-    expect(getComponentName(btn)).toBe('CheckoutButton')
-
-    const meta = getTargetMeta(btn, getComponentName)
-    expect(meta.fiberAvailable).toBe(true)
-
-    checkFiberOnSubmit()
-    expect(warnSpy).not.toHaveBeenCalled()
-  })
-
-  it('2: fiber absent + dev → throws with the exact message', () => {
+  it('fiber present: mount check passes silently and componentName resolves', () => {
     vi.stubEnv('NODE_ENV', 'development')
     const btn = makeButton()
+    attachFiber(btn)
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(() => checkFiberAtMount()).not.toThrow()
+    expect(warnSpy).not.toHaveBeenCalled()
+    expect(getComponentName(btn)).toBe('MyComponent')
+  })
 
-    let thrown: unknown
+  it('fiber absent + development: mount check throws the exact message', () => {
+    vi.stubEnv('NODE_ENV', 'development')
+    document.body.innerHTML = '<main><p>no react here</p></main>'
+    let thrown: unknown = null
     try {
-      getComponentName(btn)
+      checkFiberAtMount()
     } catch (err) {
       thrown = err
     }
@@ -70,57 +63,65 @@ describe('fiber enforcement', () => {
     expect((thrown as Error).message).toBe(DEV_FIBER_MESSAGE)
   })
 
-  it('3: fiber absent + prod → null componentName; submit warns exactly once across captures', () => {
+  it('fiber absent + production: warns exactly once across repeated mounts', () => {
     vi.stubEnv('NODE_ENV', 'production')
+    document.body.innerHTML = '<main><p>no react here</p></main>'
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
-    const first = makeButton()
-    const second = makeButton()
-
-    // Multiple captures, none throw, all resolve to null in production.
-    expect(getComponentName(first)).toBeNull()
-    expect(getComponentName(second)).toBeNull()
-    expect(getComponentName(first)).toBeNull()
-    expect(warnSpy).not.toHaveBeenCalled()
-
-    // Warning fires only at submit time, and only once across repeated submits.
-    checkFiberOnSubmit()
-    checkFiberOnSubmit()
-    checkFiberOnSubmit()
-
+    expect(() => checkFiberAtMount()).not.toThrow()
+    checkFiberAtMount()
+    checkFiberAtMount()
     expect(warnSpy).toHaveBeenCalledTimes(1)
     expect(warnSpy).toHaveBeenCalledWith(PROD_FIBER_MESSAGE)
   })
 
-  it('4: FEEDTACK_FIBER_DISABLED=true → no throw, no warn, componentName null', () => {
-    // Force the strictest env (dev + prod submit) to prove disabled fully suppresses.
+  it('FEEDTACK_FIBER_DISABLED=true: no throw, no warn, componentName null', () => {
     vi.stubEnv('NODE_ENV', 'development')
     vi.stubEnv('FEEDTACK_FIBER_DISABLED', 'true')
+    document.body.innerHTML = '<main><p>no react here</p></main>'
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(() => checkFiberAtMount()).not.toThrow()
+    expect(warnSpy).not.toHaveBeenCalled()
     const btn = makeButton()
-
-    expect(() => getComponentName(btn)).not.toThrow()
+    attachFiber(btn)
     expect(getComponentName(btn)).toBeNull()
+  })
 
+  it('FEEDTACK_FIBER_OPTIONAL=true: degrades silently in both environments', () => {
+    vi.stubEnv('NODE_ENV', 'development')
+    vi.stubEnv('FEEDTACK_FIBER_OPTIONAL', 'true')
+    document.body.innerHTML = '<main><p>no react here</p></main>'
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(() => checkFiberAtMount()).not.toThrow()
     vi.stubEnv('NODE_ENV', 'production')
-    checkFiberOnSubmit()
+    expect(() => checkFiberAtMount()).not.toThrow()
     expect(warnSpy).not.toHaveBeenCalled()
   })
 
-  it('5: FEEDTACK_FIBER_OPTIONAL=true → no throw, no warn, fiberAvailable false', () => {
+  it('per-element capture never throws — fiber-less elements are legitimate', () => {
     vi.stubEnv('NODE_ENV', 'development')
-    vi.stubEnv('FEEDTACK_FIBER_OPTIONAL', 'true')
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const btn = makeButton()
-
     expect(() => getComponentName(btn)).not.toThrow()
     expect(getComponentName(btn)).toBeNull()
+  })
 
-    const meta = getTargetMeta(btn, getComponentName)
-    expect(meta.fiberAvailable).toBe(false)
+  it('getTargetMeta marks fiberAvailable per target when a walker is provided', () => {
+    vi.stubEnv('NODE_ENV', 'development')
+    const withFiber = makeButton()
+    attachFiber(withFiber)
+    const withoutFiber = makeButton()
+    expect(getTargetMeta(withFiber, getComponentName).fiberAvailable).toBe(true)
+    expect(getTargetMeta(withoutFiber, getComponentName).fiberAvailable).toBe(
+      false,
+    )
+    expect(getTargetMeta(withoutFiber).fiberAvailable).toBeUndefined()
+  })
 
+  it('mount check scoped to a fiber-less root warns once in production', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    checkFiberOnSubmit()
-    expect(warnSpy).not.toHaveBeenCalled()
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const detachedRoot = document.createElement('div')
+    detachedRoot.innerHTML = '<p>static</p>'
+    checkFiberAtMount(detachedRoot)
+    expect(warnSpy).toHaveBeenCalledTimes(1)
   })
 })

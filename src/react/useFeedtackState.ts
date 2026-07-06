@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react'
+import { checkFiberAtMount } from '../capture/fiber.js'
 import { FeedtackEngine } from '../core/FeedtackEngine.js'
 import type { FeedtackEngineState, FeedtackFlushEvent } from '../core/types.js'
 import type { FeedtackAdapter } from '../types/adapter.js'
@@ -52,11 +53,15 @@ export function useFeedtackState({
   }
   const engine = engineRef.current
 
-  // Mount / destroy lifecycle
+  // Mount / destroy lifecycle. The fiber check runs here — first mount in the
+  // browser is the earliest moment fiber presence is observable (library code
+  // is never executed at build), and in dev it equals "dev server launched,
+  // page opened" — the right time to inform the developer.
   useEffect(() => {
+    if (!disabled) checkFiberAtMount()
     engine.mount()
     return () => engine.destroy()
-  }, [engine])
+  }, [engine, disabled])
 
   // Subscribe to engine state via useSyncExternalStore
   const subscribe = useCallback(

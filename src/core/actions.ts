@@ -1,4 +1,3 @@
-import { checkFiberOnSubmit } from '../capture/fiber.js'
 import {
   getDeviceMeta,
   getPageMeta,
@@ -60,9 +59,6 @@ export async function handleSubmit(ctx: ActionContext): Promise<void> {
     viewport: getViewportMeta(ctx.breakpoints),
     device: getDeviceMeta(),
   }
-  // First-tack submit is the enforcement point for the production "Fiber never
-  // detected" warning (emitted once per page lifetime).
-  checkFiberOnSubmit()
   try {
     await ctx.adapter.submit(payload)
     ctx.setState({

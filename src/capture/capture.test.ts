@@ -141,21 +141,19 @@ describe('data-feedtack-component', () => {
 })
 
 describe('getComponentName — fiber unavailable', () => {
-  // In development the enforcement path throws; graceful null degradation is the
-  // production (and FEEDTACK_FIBER_OPTIONAL) contract. See fiber.test.ts for the
-  // full enforcement matrix.
-  it('returns null without throwing when fiber not present (production)', async () => {
+  // Per-element fiber absence is legitimate (static HTML inside a React app)
+  // and never throws in any environment; app-level enforcement happens at
+  // mount via checkFiberAtMount(). See fiber.test.ts for the full matrix.
+  it('returns null without throwing when fiber not present', async () => {
     const { getComponentName, resetFiberStateForTests } = await import(
       './fiber.js'
     )
     resetFiberStateForTests()
-    vi.stubEnv('NODE_ENV', 'production')
     const el = document.createElement('button')
     document.body.appendChild(el)
     expect(() => getComponentName(el)).not.toThrow()
     expect(getComponentName(el)).toBeNull()
     resetFiberStateForTests()
-    vi.unstubAllEnvs()
   })
 })
 
