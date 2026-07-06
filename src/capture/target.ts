@@ -15,6 +15,11 @@ function attr(el: Element, name: string): string | null {
   return el.getAttribute(name)
 }
 
+/** True when the element exposes a React fiber key (own enumerable property). */
+function elementHasFiber(el: Element): boolean {
+  return Object.keys(el).some((k) => k.startsWith('__reactFiber$'))
+}
+
 function nthChild(el: Element): number {
   let n = 1
   let sib = el.previousElementSibling
@@ -110,7 +115,7 @@ export function getCSSSelector(element: Element): string {
       const parent = current.parentElement
       if (parent) {
         const siblings = Array.from(parent.children).filter(
-          (c) => c.tagName === current!.tagName,
+          (c) => c.tagName === current?.tagName,
         )
         const index = siblings.indexOf(current) + 1
         parts.unshift(
@@ -184,7 +189,7 @@ export function getTargetMeta(
   const ancestors = getAncestorChain(resolved, fiberWalker)
   const rect = resolved.getBoundingClientRect()
 
-  return {
+  const meta: FeedtackPinTarget = {
     selector,
     best_effort,
     dataTestId,
@@ -198,4 +203,12 @@ export function getTargetMeta(
       height: rect.height,
     },
   }
+
+  // Only the React/core path passes a fiber walker; the IIFE inject path omits it and
+  // leaves fiberAvailable undefined so its bundle and behavior stay unaffected.
+  if (fiberWalker) {
+    meta.fiberAvailable = elementHasFiber(resolved)
+  }
+
+  return meta
 }

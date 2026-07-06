@@ -62,6 +62,13 @@ export interface FeedtackPinTarget {
   /** Ancestor chain up to 5 levels from the resolved target, for LLM element location */
   ancestors: AncestorNode[]
   boundingRect: FeedtackBoundingRect
+  /**
+   * React fiber availability at capture time. True when a fiber key was found on the
+   * resolved target, false when a fiber walker ran but no fiber was present (degraded
+   * capture). Undefined for non-React capture paths (IIFE inject) where no fiber walker
+   * is provided. Optional field — additive and non-breaking, so SCHEMA_VERSION is unchanged.
+   */
+  fiberAvailable?: boolean
 }
 
 export interface FeedtackPin {
