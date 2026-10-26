@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { TAILWIND_BREAKPOINTS } from '../capture/meta.js'
 import type { FeedtackUser } from '../types/payload.js'
 import { PIN_PALETTE } from '../ui/colors.js'

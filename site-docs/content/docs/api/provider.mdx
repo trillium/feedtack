@@ -29,7 +29,7 @@ import { FeedtackProvider } from "feedtack/react";
 | `classes` | `FeedtackClasses` | `{}` | Add CSS classes to Feedtack UI elements |
 | `sentimentLabels` | `FeedtackSentimentLabels` | — | Custom labels for the sentiment buttons |
 | `onError` | `(err: Error) => void` | — | Error callback for adapter failures |
-| `disabled` | `boolean` | `false` | Suppress all Feedtack UI (useful for CI/tests) |
+| `disabled` | `boolean` | `false` | Suppress all Feedtack UI (useful for CI/tests); may be toggled after mount — see [Gate with a feature flag](/docs/guides/feature-flag) |
 | `renderPinIcon` | `(item: FeedbackItem) => ReactNode` | — | Custom content inside submitted pin markers |
 | `onFlush` | `(event: FeedtackFlushEvent) => void` | — | Called when feedback is batched on idle or page unload |
 | `flushIdleMs` | `number` | `300000` | Idle timeout in ms before flushing (default 5 min) |
