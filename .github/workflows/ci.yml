@@ -14,6 +14,9 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      # tsup's onSuccess hook runs `bun run scripts/ping-reload.ts`
+      - uses: oven-sh/setup-bun@v2
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -44,6 +47,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: pnpm/action-setup@v4
+
+      # tsup's onSuccess hook runs `bun run scripts/ping-reload.ts`
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
