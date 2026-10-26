@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-25 — Phase 0 core readiness fixes
+
+- **Bug A:** `FeedtackProvider` now honours `disabled` changes after mount. `true` → `false` fully mounts (root, styles, hotkey, one `loadFeedback`); `false` → `true` tears the UI down. `FeedtackEngine.updateOpts()` refreshes `disabled`/`currentUser`.
+- **Bug B:** while `disabled`, only children render — no "Loading feedback…" div, `PinOverlay`, picker, form or thread panel.
+- **Bug C:** a changed `currentUser` is reflected in `submittedBy` and the archived-by check on the next action.
+- Docs: new guide "Gate with a feature flag".
+
+Files: src/core/FeedtackEngine.ts, src/react/useFeedtackState.ts, src/react/FeedtackProvider.tsx, src/react/FeedtackProvider.test.tsx, site-docs/content/docs/guides/feature-flag.mdx, site-docs/content/docs/guides/meta.json
+
 ## 2026-07-06 — session 41de47ab
 
 Holistic pass, four streams: (1) shared hover element-highlight (`src/capture/highlight.ts`) wired into React (`setCrosshair`) and IIFE (`setPinMode`); extension UX documented as canonical in SPEC.md § UX Reference; divergence audit at `Plans/ui-consistency-audit.md` (fe-gj5, fe-963, fe-i7m filed). (2) Fiber enforcement — dev throws, prod warns once at first submit, `FEEDTACK_FIBER_OPTIONAL`/`FEEDTACK_FIBER_DISABLED` escape hatches, payload `fiberAvailable`, 6-case `fiber.test.ts`. (3) `Plans/fable-imaginings.md` speculative design doc. (4) Content integration closed: v0-4/v0-5 open questions answered in openspec design docs, `onDeployCheck` prop deprecated (not auto-wired, rationale documented), CI Gate recipe added to Content Approval docs, deferred surfaces filed (fe-z1z, fe-jm8).

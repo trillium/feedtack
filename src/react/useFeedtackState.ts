@@ -58,6 +58,10 @@ export function useFeedtackState({
   // is never executed at build), and in dev it equals "dev server launched,
   // page opened" — the right time to inform the developer.
   useEffect(() => {
+    engine.updateOpts({ currentUser })
+  })
+  useEffect(() => {
+    engine.updateOpts({ disabled })
     if (!disabled) checkFiberAtMount()
     engine.mount()
     return () => engine.destroy()

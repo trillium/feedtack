@@ -180,6 +180,107 @@ describe('FeedtackProvider', () => {
     expect(document.getElementById('feedtack-root')).not.toBeInTheDocument()
   })
 
+  it('never renders the loading placeholder or overlay when disabled', async () => {
+    await act(async () => {
+      render(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+          <div data-testid="child">hello</div>
+        </FeedtackProvider>,
+      )
+    })
+    expect(screen.queryByText('Loading feedback…')).not.toBeInTheDocument()
+    expect(mockAdapter.loadFeedback).not.toHaveBeenCalled()
+  })
+
+  it('mounts fully when disabled flips true -> false', async () => {
+    const view = render(
+      <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+        <div />
+      </FeedtackProvider>,
+    )
+    expect(document.getElementById('feedtack-root')).not.toBeInTheDocument()
+    await act(async () => {
+      view.rerender(
+        <FeedtackProvider
+          adapter={mockAdapter}
+          currentUser={mockUser}
+          disabled={false}
+        >
+          <div />
+        </FeedtackProvider>,
+      )
+    })
+    expect(document.getElementById('feedtack-root')).toBeInTheDocument()
+    expect(mockAdapter.loadFeedback).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('Feedback')).toBeInTheDocument()
+    expect(screen.queryByText('Loading feedback…')).not.toBeInTheDocument()
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'P', shiftKey: true })
+    })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('tears the UI down when disabled flips false -> true', async () => {
+    const view = render(
+      <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
+        <div data-testid="child" />
+      </FeedtackProvider>,
+    )
+    await act(async () => {})
+    expect(document.getElementById('feedtack-root')).toBeInTheDocument()
+    await act(async () => {
+      view.rerender(
+        <FeedtackProvider adapter={mockAdapter} currentUser={mockUser} disabled>
+          <div data-testid="child" />
+        </FeedtackProvider>,
+      )
+    })
+    expect(document.getElementById('feedtack-root')).not.toBeInTheDocument()
+    expect(screen.queryByText('Feedback')).not.toBeInTheDocument()
+    expect(screen.getByTestId('child')).toBeInTheDocument()
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'P', shiftKey: true })
+    })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('reflects a changed currentUser in submittedBy', async () => {
+    let capturedUser: FeedtackUser | undefined
+    const adapter: FeedtackAdapter = {
+      ...mockAdapter,
+      submit: vi.fn().mockImplementation(async (payload) => {
+        capturedUser = payload.submittedBy
+      }),
+    }
+    const view = render(
+      <FeedtackProvider adapter={adapter} currentUser={mockUser}>
+        <div />
+      </FeedtackProvider>,
+    )
+    await act(async () => {
+      view.rerender(
+        <FeedtackProvider
+          adapter={adapter}
+          currentUser={{ id: 'user-42', name: 'Identified', role: 'admin' }}
+        >
+          <div />
+        </FeedtackProvider>,
+      )
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Feedback'))
+    })
+    await act(async () => {
+      fireEvent.change(screen.getByRole('textbox'), {
+        target: { value: 'after identify' },
+      })
+    })
+    await act(async () => {
+      fireEvent.click(screen.getByText('Submit'))
+    })
+    expect(capturedUser?.id).toBe('user-42')
+  })
+
   it('useFeedtack exposes modal controls', async () => {
     const { useFeedtack } = await import('./useFeedtack.js')
     function Consumer() {

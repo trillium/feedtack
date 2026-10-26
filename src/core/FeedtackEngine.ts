@@ -28,7 +28,7 @@ import type {
 const DEFAULT_IDLE_MS = 5 * 60 * 1000
 
 export class FeedtackEngine {
-  private readonly opts: FeedtackEngineOpts
+  private opts: FeedtackEngineOpts
   private state: FeedtackEngineState
   private listeners = new Set<FeedtackStateListener>()
   private actionCtx: ActionContext
@@ -104,6 +104,17 @@ export class FeedtackEngine {
   }
 
   // ── Lifecycle ──────────────────────────────────────────────────────────
+
+  /**
+   * Refresh the options that may change after construction. `disabled` takes
+   * effect on the next `mount()`; `currentUser` is picked up immediately.
+   */
+  updateOpts(
+    partial: Pick<Partial<FeedtackEngineOpts>, 'disabled' | 'currentUser'>,
+  ): void {
+    this.opts = { ...this.opts, ...partial }
+    if (partial.currentUser) this.actionCtx.currentUser = partial.currentUser
+  }
 
   mount(): void {
     if (this.opts.disabled) return

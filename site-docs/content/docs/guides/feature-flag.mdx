@@ -1,0 +1,35 @@
+---
+title: Gate with a feature flag
+description: Show Feedtack only to users whose feature flag is on
+---
+
+Roll Feedtack out to a cohort with any feature-flag service. Feedtack has no flag dependency; you pass it the result.
+
+## Mount the provider only when the flag is `true`
+
+Render your page unconditionally and add the provider only when the flag is strictly `true`. Key it by the user's distinct id so a change of identity gives a fresh provider.
+
+```tsx
+function App({ children }: { children: React.ReactNode }) {
+  const flag = useFeatureFlag('feedtack-enabled') // true | false | string | undefined
+  const user = useCurrentUser()
+
+  if (flag !== true) return <>{children}</>
+
+  return (
+    <FeedtackProvider key={user.id} adapter={adapter} currentUser={user}>
+      {children}
+    </FeedtackProvider>
+  )
+}
+```
+
+Compare with `=== true`: while flags are loading the value is `undefined`, and multivariate flags return strings. Neither should show Feedtack.
+
+Turning the flag off unmounts the provider and removes its UI and hotkey. Turning it on again mounts it cleanly.
+
+## Or toggle `disabled`
+
+`disabled={flag !== true}` also works. While disabled, the provider renders only its children, adds nothing to the DOM and loads no feedback. When `disabled` becomes `false`, Feedtack mounts fully; when it becomes `true` again the UI is removed. `useFeedtack()` stays safe to call throughout, and its actions are no-ops while disabled.
+
+`currentUser` changes (for example anonymous to identified) are picked up on the next submit, so the `key` above is optional.

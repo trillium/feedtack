@@ -88,140 +88,144 @@ export function FeedtackProvider<TUser = FeedtackUser>({
     >
       {children}
 
-      {!disabled && showButton && (
-        <button
-          type="button"
-          className={cx(
-            'feedtack-btn',
-            (state.isPinModeActive || state.isModalOpen) && 'active',
-            classes.button,
-          )}
-          onClick={() => state.openModal()}
-          title="Open feedback"
-          aria-label="Open feedback"
-        >
-          Feedback
-        </button>
-      )}
-
-      {state.isPinModeActive && (
-        <div className={cx('feedtack-color-picker', classes.colorPicker)}>
-          {PIN_PALETTE.map((color) => (
+      {!disabled && (
+        <>
+          {showButton && (
             <button
               type="button"
-              key={color}
               className={cx(
-                'feedtack-color-swatch',
-                state.selectedColor === color && 'selected',
+                'feedtack-btn',
+                (state.isPinModeActive || state.isModalOpen) && 'active',
+                classes.button,
               )}
-              style={{ background: color }}
-              onClick={() => state.setSelectedColor(color)}
-              title={color}
+              onClick={() => state.openModal()}
+              title="Open feedback"
+              aria-label="Open feedback"
+            >
+              Feedback
+            </button>
+          )}
+
+          {state.isPinModeActive && (
+            <div className={cx('feedtack-color-picker', classes.colorPicker)}>
+              {PIN_PALETTE.map((color) => (
+                <button
+                  type="button"
+                  key={color}
+                  className={cx(
+                    'feedtack-color-swatch',
+                    state.selectedColor === color && 'selected',
+                  )}
+                  style={{ background: color }}
+                  onClick={() => state.setSelectedColor(color)}
+                  title={color}
+                />
+              ))}
+            </div>
+          )}
+
+          {state.pendingPins.map((pin) => (
+            <div
+              key={`${pin.x}-${pin.y}-${pin.color}`}
+              className={cx('feedtack-pin-marker', classes.pinMarker)}
+              style={{
+                background: pin.color,
+                left: pin.x,
+                top: pin.y,
+                position: 'absolute',
+              }}
             />
           ))}
-        </div>
-      )}
 
-      {state.pendingPins.map((pin) => (
-        <div
-          key={`${pin.x}-${pin.y}-${pin.color}`}
-          className={cx('feedtack-pin-marker', classes.pinMarker)}
-          style={{
-            background: pin.color,
-            left: pin.x,
-            top: pin.y,
-            position: 'absolute',
-          }}
-        />
-      ))}
-
-      {state.showForm && (
-        <CommentForm
-          comment={state.comment}
-          commentError={state.commentError}
-          sentiment={state.sentiment}
-          submitting={state.submitting}
-          formPos={formPos}
-          classes={classes}
-          sentimentLabels={sentimentLabels}
-          onCommentChange={(v) => {
-            state.setComment(v)
-            state.setCommentError(false)
-          }}
-          onSentimentChange={state.setSentiment}
-          onSubmit={state.handleSubmit}
-          onCancel={state.deactivatePinMode}
-        />
-      )}
-
-      {!state.loading && (
-        <PinOverlay
-          feedbackItems={state.feedbackItems}
-          pathname={state.pathname}
-          isArchivedForUser={state.isArchivedForUser}
-          hasValidPins={state.hasValidPins}
-          hasUnread={state.hasUnread}
-          openThreadId={state.openThreadId}
-          setOpenThreadId={state.setOpenThreadId}
-          getPosition={getPosition}
-          renderPinIcon={renderPinIcon}
-          pinMarkerClass={classes.pinMarker}
-        />
-      )}
-
-      {openItem && (
-        <ThreadPanel
-          item={openItem}
-          replyBody={state.replyBody}
-          onReplyBodyChange={state.setReplyBody}
-          onReply={() => state.handleReply(openItem.payload.id)}
-          onResolve={() => state.handleResolve(openItem.payload.id)}
-          onArchive={() => state.handleArchive(openItem.payload.id)}
-          onClose={closeThread}
-          onBackdropClick={state.isPinModeActive ? undefined : closeThread}
-          pinPosition={getPosition(
-            openItem.payload.id,
-            openItem.payload.pins[0],
+          {state.showForm && (
+            <CommentForm
+              comment={state.comment}
+              commentError={state.commentError}
+              sentiment={state.sentiment}
+              submitting={state.submitting}
+              formPos={formPos}
+              classes={classes}
+              sentimentLabels={sentimentLabels}
+              onCommentChange={(v) => {
+                state.setComment(v)
+                state.setCommentError(false)
+              }}
+              onSentimentChange={state.setSentiment}
+              onSubmit={state.handleSubmit}
+              onCancel={state.deactivatePinMode}
+            />
           )}
-          className={classes.thread}
-        />
-      )}
 
-      {!disabled && (
-        <FeedbackModal
-          className={classes.modal}
-          isOpen={state.isModalOpen}
-          onClose={state.closeModal}
-          activeTab={state.composeScope}
-          onTabChange={state.setComposeScope}
-          siteFeedback={state.siteFeedback}
-          pageFeedback={state.pageFeedback}
-          comment={state.comment}
-          onCommentChange={(v) => {
-            state.setComment(v)
-            state.setCommentError(false)
-          }}
-          commentError={state.commentError}
-          sentiment={state.sentiment}
-          onSentimentChange={state.setSentiment}
-          submitting={state.submitting}
-          onSubmit={state.handleModalSubmit}
-          onPlacePin={() => {
-            state.closeModal()
-            state.activatePinMode()
-          }}
-          replyBody={state.replyBody}
-          onReplyBodyChange={state.setReplyBody}
-          onReply={(id) => state.handleReply(id)}
-          onResolve={(id) => state.handleResolve(id)}
-          onArchive={(id) => state.handleArchive(id)}
-          openThreadId={state.openThreadId}
-          onOpenThread={state.setOpenThreadId}
-        />
-      )}
+          {!state.loading && (
+            <PinOverlay
+              feedbackItems={state.feedbackItems}
+              pathname={state.pathname}
+              isArchivedForUser={state.isArchivedForUser}
+              hasValidPins={state.hasValidPins}
+              hasUnread={state.hasUnread}
+              openThreadId={state.openThreadId}
+              setOpenThreadId={state.setOpenThreadId}
+              getPosition={getPosition}
+              renderPinIcon={renderPinIcon}
+              pinMarkerClass={classes.pinMarker}
+            />
+          )}
 
-      {state.loading && (
-        <div className="feedtack-loading">Loading feedback…</div>
+          {openItem && (
+            <ThreadPanel
+              item={openItem}
+              replyBody={state.replyBody}
+              onReplyBodyChange={state.setReplyBody}
+              onReply={() => state.handleReply(openItem.payload.id)}
+              onResolve={() => state.handleResolve(openItem.payload.id)}
+              onArchive={() => state.handleArchive(openItem.payload.id)}
+              onClose={closeThread}
+              onBackdropClick={state.isPinModeActive ? undefined : closeThread}
+              pinPosition={getPosition(
+                openItem.payload.id,
+                openItem.payload.pins[0],
+              )}
+              className={classes.thread}
+            />
+          )}
+
+          {
+            <FeedbackModal
+              className={classes.modal}
+              isOpen={state.isModalOpen}
+              onClose={state.closeModal}
+              activeTab={state.composeScope}
+              onTabChange={state.setComposeScope}
+              siteFeedback={state.siteFeedback}
+              pageFeedback={state.pageFeedback}
+              comment={state.comment}
+              onCommentChange={(v) => {
+                state.setComment(v)
+                state.setCommentError(false)
+              }}
+              commentError={state.commentError}
+              sentiment={state.sentiment}
+              onSentimentChange={state.setSentiment}
+              submitting={state.submitting}
+              onSubmit={state.handleModalSubmit}
+              onPlacePin={() => {
+                state.closeModal()
+                state.activatePinMode()
+              }}
+              replyBody={state.replyBody}
+              onReplyBodyChange={state.setReplyBody}
+              onReply={(id) => state.handleReply(id)}
+              onResolve={(id) => state.handleResolve(id)}
+              onArchive={(id) => state.handleArchive(id)}
+              openThreadId={state.openThreadId}
+              onOpenThread={state.setOpenThreadId}
+            />
+          }
+
+          {state.loading && (
+            <div className="feedtack-loading">Loading feedback…</div>
+          )}
+        </>
       )}
     </FeedtackContext.Provider>
   )
