@@ -154,7 +154,8 @@ export class FeedtackEngine {
     this.inputHandles?.detachKeyboard()
     this.inputHandles?.detachClick()
     this.inputHandles = null
-    setCrosshair(false)
+    this.deactivatePinMode()
+    this.setState({ isModalOpen: false })
     this.styleEl?.remove()
     this.rootEl?.remove()
     this.styleEl = null

@@ -189,38 +189,36 @@ export function FeedtackProvider<TUser = FeedtackUser>({
             />
           )}
 
-          {
-            <FeedbackModal
-              className={classes.modal}
-              isOpen={state.isModalOpen}
-              onClose={state.closeModal}
-              activeTab={state.composeScope}
-              onTabChange={state.setComposeScope}
-              siteFeedback={state.siteFeedback}
-              pageFeedback={state.pageFeedback}
-              comment={state.comment}
-              onCommentChange={(v) => {
-                state.setComment(v)
-                state.setCommentError(false)
-              }}
-              commentError={state.commentError}
-              sentiment={state.sentiment}
-              onSentimentChange={state.setSentiment}
-              submitting={state.submitting}
-              onSubmit={state.handleModalSubmit}
-              onPlacePin={() => {
-                state.closeModal()
-                state.activatePinMode()
-              }}
-              replyBody={state.replyBody}
-              onReplyBodyChange={state.setReplyBody}
-              onReply={(id) => state.handleReply(id)}
-              onResolve={(id) => state.handleResolve(id)}
-              onArchive={(id) => state.handleArchive(id)}
-              openThreadId={state.openThreadId}
-              onOpenThread={state.setOpenThreadId}
-            />
-          }
+          <FeedbackModal
+            className={classes.modal}
+            isOpen={state.isModalOpen}
+            onClose={state.closeModal}
+            activeTab={state.composeScope}
+            onTabChange={state.setComposeScope}
+            siteFeedback={state.siteFeedback}
+            pageFeedback={state.pageFeedback}
+            comment={state.comment}
+            onCommentChange={(v) => {
+              state.setComment(v)
+              state.setCommentError(false)
+            }}
+            commentError={state.commentError}
+            sentiment={state.sentiment}
+            onSentimentChange={state.setSentiment}
+            submitting={state.submitting}
+            onSubmit={state.handleModalSubmit}
+            onPlacePin={() => {
+              state.closeModal()
+              state.activatePinMode()
+            }}
+            replyBody={state.replyBody}
+            onReplyBodyChange={state.setReplyBody}
+            onReply={(id) => state.handleReply(id)}
+            onResolve={(id) => state.handleResolve(id)}
+            onArchive={(id) => state.handleArchive(id)}
+            openThreadId={state.openThreadId}
+            onOpenThread={state.setOpenThreadId}
+          />
 
           {state.loading && (
             <div className="feedtack-loading">Loading feedback…</div>

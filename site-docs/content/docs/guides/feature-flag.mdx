@@ -30,6 +30,6 @@ Turning the flag off unmounts the provider and removes its UI and hotkey. Turnin
 
 ## Or toggle `disabled`
 
-`disabled={flag !== true}` also works. While disabled, the provider renders only its children, adds nothing to the DOM and loads no feedback. When `disabled` becomes `false`, Feedtack mounts fully; when it becomes `true` again the UI is removed. `useFeedtack()` stays safe to call throughout, and its actions are no-ops while disabled.
+`disabled={flag !== true}` also works. While disabled, the provider renders only its children, injects no Feedtack root or styles, binds no hotkey and loads no feedback. When `disabled` becomes `false`, Feedtack mounts fully; when it becomes `true` again the UI is removed and any open pin mode or modal is closed. `useFeedtack()` stays safe to call throughout: while disabled, the actions it returns do nothing and `isPinModeActive` and `isModalOpen` read `false`.
 
-`currentUser` changes (for example anonymous to identified) are picked up on the next submit, so the `key` above is optional.
+`currentUser` changes (for example anonymous to identified) are picked up immediately, for submits and for which archived pins are hidden, so the `key` above is optional.

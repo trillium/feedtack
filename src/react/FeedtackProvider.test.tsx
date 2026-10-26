@@ -244,6 +244,40 @@ describe('FeedtackProvider', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
+  it('clears pin mode and modal when disabled is toggled off and on', async () => {
+    const view = render(
+      <FeedtackProvider adapter={mockAdapter} currentUser={mockUser}>
+        <div />
+      </FeedtackProvider>,
+    )
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'P', shiftKey: true })
+    })
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'P', shiftKey: true })
+    })
+    expect(document.querySelector('.feedtack-color-picker')).toBeInTheDocument()
+    for (const disabled of [true, false]) {
+      await act(async () => {
+        view.rerender(
+          <FeedtackProvider
+            adapter={mockAdapter}
+            currentUser={mockUser}
+            disabled={disabled}
+          >
+            <div />
+          </FeedtackProvider>,
+        )
+      })
+    }
+    expect(screen.getByText('Feedback')).toBeInTheDocument()
+    expect(
+      document.querySelector('.feedtack-color-picker'),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.documentElement).not.toHaveClass('feedtack-crosshair')
+  })
+
   it('reflects a changed currentUser in submittedBy', async () => {
     let capturedUser: FeedtackUser | undefined
     const adapter: FeedtackAdapter = {
