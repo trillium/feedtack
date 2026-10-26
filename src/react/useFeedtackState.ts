@@ -52,12 +52,14 @@ export function useFeedtackState({
     })
   }
   const engine = engineRef.current
+  engine.updateOpts({ currentUser })
 
   // Mount / destroy lifecycle. The fiber check runs here — first mount in the
   // browser is the earliest moment fiber presence is observable (library code
   // is never executed at build), and in dev it equals "dev server launched,
   // page opened" — the right time to inform the developer.
   useEffect(() => {
+    engine.updateOpts({ disabled })
     if (!disabled) checkFiberAtMount()
     engine.mount()
     return () => engine.destroy()
