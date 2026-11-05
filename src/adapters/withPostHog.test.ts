@@ -136,40 +136,6 @@ describe('withPostHog', () => {
       })
     })
 
-    it('extracts component_name, data_testid, and element_path with snake_case and camelCase fallback', () => {
-      const payload = createSamplePayload({
-        pins: [
-          {
-            index: 1,
-            color: '#000',
-            x: 0,
-            y: 0,
-            xPct: 0,
-            yPct: 0,
-            target: {
-              selector: '.card',
-              best_effort: true,
-              tagName: 'DIV',
-              ancestors: [],
-              boundingRect: { x: 0, y: 0, width: 10, height: 10 },
-              // snake_case forms
-              component_name: 'ProductCard',
-              data_testid: 'card-1',
-              element_path: 'body > div.card',
-            } as unknown as FeedtackPayload['pins'][0]['target'],
-          },
-        ],
-      })
-
-      const { properties } = buildPostHogPayload(payload)
-      expect(properties.pins[0]).toEqual({
-        selector: '.card',
-        component_name: 'ProductCard',
-        data_testid: 'card-1',
-        element_path: 'body > div.card',
-      })
-    })
-
     it('handles pins with missing or null attributes gracefully', () => {
       const payload = createSamplePayload({
         pins: [
@@ -298,54 +264,34 @@ describe('withPostHog', () => {
   })
 
   describe('error resilience and submit delegation', () => {
-    it('submits successfully when PostHog client capture succeeds', async () => {
+    const okFetch = () =>
+      vi.fn().mockResolvedValue({ ok: true, status: 200 } as Response)
+
+    it('posts to the capture endpoint with the allowlisted body after submit', async () => {
       const adapter = createMockAdapter()
-      const client = {
-        capture: vi.fn().mockResolvedValue(undefined),
-      }
-      const wrapped = withPostHog(adapter, { client })
+      const mockFetch = okFetch()
+      const wrapped = withPostHog(adapter, {
+        apiKey: 'phc_custom',
+        host: 'https://eu.i.posthog.com/',
+        fetch: mockFetch,
+      })
       const payload = createSamplePayload()
 
       await wrapped.submit(payload)
 
-      expect(client.capture).toHaveBeenCalledWith(
-        'feedtack submitted',
+      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://eu.i.posthog.com/capture/',
         expect.objectContaining({
-          feedtack_id: payload.id,
-          scope: 'element',
-          distinct_id: 'usr_abc',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: expect.any(AbortSignal),
         }),
-        { uuid: payload.id },
       )
-      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
-    })
-
-    it('does not fail wrapped submit when PostHog client throws synchronously', async () => {
-      const adapter = createMockAdapter()
-      const client = {
-        capture: vi.fn().mockImplementation(() => {
-          throw new Error('PostHog client synchronous crash')
-        }),
-      }
-      const wrapped = withPostHog(adapter, { client })
-      const payload = createSamplePayload()
-
-      await expect(wrapped.submit(payload)).resolves.not.toThrow()
-      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
-    })
-
-    it('does not fail wrapped submit when PostHog client returns rejected promise', async () => {
-      const adapter = createMockAdapter()
-      const client = {
-        capture: vi
-          .fn()
-          .mockRejectedValue(new Error('PostHog client async error')),
-      }
-      const wrapped = withPostHog(adapter, { client })
-      const payload = createSamplePayload()
-
-      await expect(wrapped.submit(payload)).resolves.not.toThrow()
-      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body)
+      expect(body.api_key).toBe('phc_custom')
+      expect(body.event).toBe('feedtack submitted')
+      expect(body.uuid).toBe(payload.id)
     })
 
     it('does not fail wrapped submit when fetch suffers a network failure', async () => {
@@ -359,63 +305,72 @@ describe('withPostHog', () => {
       })
       const payload = createSamplePayload()
 
-      await expect(wrapped.submit(payload)).resolves.not.toThrow()
+      await expect(wrapped.submit(payload)).resolves.toBeUndefined()
       expect(mockFetch).toHaveBeenCalled()
       expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
     })
 
-    it('does not fail wrapped submit when PostHog HTTP endpoint returns 500 error', async () => {
+    it('does not fail wrapped submit when PostHog returns a 500', async () => {
       const adapter = createMockAdapter()
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-        statusText: 'Internal Server Error',
-      } as Response)
+      const mockFetch = vi
+        .fn()
+        .mockResolvedValue({ ok: false, status: 500 } as Response)
       const wrapped = withPostHog(adapter, {
         apiKey: 'phc_test',
         fetch: mockFetch,
       })
-      const payload = createSamplePayload()
 
-      await expect(wrapped.submit(payload)).resolves.not.toThrow()
+      await expect(
+        wrapped.submit(createSamplePayload()),
+      ).resolves.toBeUndefined()
       expect(mockFetch).toHaveBeenCalled()
-      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
     })
 
-    it('sends correct request payload and headers to custom endpoint via fetch', async () => {
+    it('does not block submit when the PostHog request hangs, and aborts it on timeout', async () => {
+      vi.useFakeTimers()
+      try {
+        const adapter = createMockAdapter()
+        let signal: AbortSignal | undefined
+        const hangingFetch = vi.fn((_url: string, init: RequestInit) => {
+          signal = init.signal as AbortSignal
+          return new Promise<Response>(() => {})
+        })
+        const wrapped = withPostHog(adapter, {
+          apiKey: 'phc_test',
+          fetch: hangingFetch as unknown as typeof fetch,
+        })
+
+        await expect(
+          wrapped.submit(createSamplePayload()),
+        ).resolves.toBeUndefined()
+        expect(signal?.aborted).toBe(false)
+        vi.advanceTimersByTime(5000)
+        expect(signal?.aborted).toBe(true)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('does not send to PostHog when the underlying submit fails', async () => {
       const adapter = createMockAdapter()
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-      } as Response)
+      adapter.submitSpy.mockRejectedValue(
+        new Error('Underlying database failed'),
+      )
+      const mockFetch = okFetch()
       const wrapped = withPostHog(adapter, {
-        endpoint: 'https://custom-analytics.example.com/capture/',
-        apiKey: 'phc_custom',
+        apiKey: 'phc_test',
         fetch: mockFetch,
       })
-      const payload = createSamplePayload()
 
-      await wrapped.submit(payload)
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        'https://custom-analytics.example.com/capture/',
-        expect.objectContaining({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: expect.any(String),
-        }),
+      await expect(wrapped.submit(createSamplePayload())).rejects.toThrow(
+        'Underlying database failed',
       )
-
-      const body = JSON.parse(mockFetch.mock.calls[0][1].body)
-      expect(body.api_key).toBe('phc_custom')
-      expect(body.event).toBe('feedtack submitted')
-      expect(body.uuid).toBe(payload.id)
-      expect(adapter.submitSpy).toHaveBeenCalledWith(payload)
+      expect(mockFetch).not.toHaveBeenCalled()
     })
 
     it('forwards other adapter methods and preserves adapter this context', async () => {
       const adapter = createMockAdapter()
-      const wrapped = withPostHog(adapter, 'phc_key')
+      const wrapped = withPostHog(adapter, { apiKey: 'phc_key' })
 
       await wrapped.reply('ft_1', {
         body: 'Reply text',
@@ -428,20 +383,6 @@ describe('withPostHog', () => {
         author: { id: 'u1', name: 'User', role: 'admin' },
         timestamp: '2026-11-05T00:00:00.000Z',
       })
-    })
-
-    it('bubbles up underlying adapter errors', async () => {
-      const adapter = createMockAdapter()
-      adapter.submitSpy.mockRejectedValue(
-        new Error('Underlying database failed'),
-      )
-      const client = { capture: vi.fn().mockResolvedValue(undefined) }
-      const wrapped = withPostHog(adapter, { client })
-      const payload = createSamplePayload()
-
-      await expect(wrapped.submit(payload)).rejects.toThrow(
-        'Underlying database failed',
-      )
     })
   })
 })

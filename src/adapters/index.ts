@@ -5,7 +5,6 @@ export type { WebhookAdapterConfig } from './WebhookAdapter.js'
 export { WebhookAdapter } from './WebhookAdapter.js'
 export type {
   PostHogCaptureBody,
-  PostHogClient,
   PostHogEventProperties,
   PostHogOptions,
   PostHogPinPayload,

@@ -148,10 +148,9 @@ Wrap any adapter to mirror submissions to PostHog analytics as a `'feedtack subm
 ```ts
 import { WebhookAdapter, withPostHog } from 'feedtack'
 
-// PostHog client or API key can be passed explicitly, or resolved automatically via window.posthog / env vars
 const adapter = withPostHog(
   new WebhookAdapter({ submitUrl: '/api/feedtack' }),
-  { apiKey: 'phc_...' } // or pass posthog client instance
+  { apiKey: 'phc_...', host: 'https://us.i.posthog.com' }
 )
 ```
 

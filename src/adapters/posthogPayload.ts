@@ -29,27 +29,13 @@ export interface PostHogCaptureBody {
   properties: PostHogEventProperties
 }
 
-export interface PostHogClient {
-  capture(
-    event: string,
-    properties?: Record<string, unknown> | PostHogEventProperties,
-    options?: { uuid?: string },
-  ): void | Promise<void>
-}
-
 export interface PostHogOptions {
   /** PostHog Project API Key (token) */
-  apiKey?: string
+  apiKey: string
   /** PostHog host URL. Defaults to 'https://us.i.posthog.com' */
   host?: string
-  /** Full custom capture endpoint URL (overrides host) */
-  endpoint?: string
   /** Custom fetch function */
   fetch?: typeof fetch
-  /** Custom PostHog client (e.g. from posthog-js) */
-  posthog?: PostHogClient
-  /** Alternative alias for posthog client */
-  client?: PostHogClient
 }
 
 /**
@@ -74,67 +60,15 @@ export function generateUUID(): string {
  * Leaves out coordinates, bounding rect, color, index, and ancestor textContent.
  */
 function formatPin(pin: FeedtackPin): PostHogPinPayload {
-  const target = pin?.target as
-    | (FeedtackPin['target'] & {
-        component_name?: string
-        componentName?: string
-        data_testid?: string
-        element_path?: string
-      })
-    | undefined
-
-  let componentName: string | null = null
-  if (target) {
-    if (typeof target.component_name === 'string') {
-      componentName = target.component_name
-    } else if (typeof target.componentName === 'string') {
-      componentName = target.componentName
-    } else if (Array.isArray(target.ancestors)) {
-      for (const ancestor of target.ancestors) {
-        if (!ancestor) continue
-        const ancestorWithSnake = ancestor as typeof ancestor & {
-          component_name?: string
-        }
-        if (
-          typeof ancestor.componentName === 'string' &&
-          ancestor.componentName
-        ) {
-          componentName = ancestor.componentName
-          break
-        }
-        if (
-          typeof ancestorWithSnake.component_name === 'string' &&
-          ancestorWithSnake.component_name
-        ) {
-          componentName = ancestorWithSnake.component_name
-          break
-        }
-      }
-    }
-  }
-
-  const dataTestId =
-    target && typeof target.data_testid === 'string'
-      ? target.data_testid
-      : target && typeof target.dataTestId === 'string'
-        ? target.dataTestId
-        : null
-
-  const elementPath =
-    target && typeof target.element_path === 'string'
-      ? target.element_path
-      : target && typeof target.elementPath === 'string'
-        ? target.elementPath
-        : null
-
-  const selector =
-    target && typeof target.selector === 'string' ? target.selector : ''
-
+  const target = pin.target
+  const componentName =
+    target.ancestors.find((ancestor) => ancestor.componentName)
+      ?.componentName ?? null
   return {
-    selector,
+    selector: target.selector,
     component_name: componentName,
-    data_testid: dataTestId,
-    element_path: elementPath,
+    data_testid: target.dataTestId,
+    element_path: target.elementPath,
   }
 }
 
