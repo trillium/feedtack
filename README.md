@@ -141,6 +141,20 @@ class SupabaseAdapter implements FeedtackAdapter {
 }
 ```
 
+### PostHog wrapper (`withPostHog`)
+
+Wrap any adapter to mirror submissions to PostHog analytics as a `'feedtack submitted'` event. Privacy-safe by default: only allowlisted metadata (`feedtack_id`, `scope`, `sentiment`, `pathname`, `schema_version`, `breakpoint`, and pin target selectors/components) is forwarded; user comment text, ancestor text, emails, and screenshots are excluded. PostHog errors or network failures never fail or block the underlying submission.
+
+```ts
+import { WebhookAdapter, withPostHog } from 'feedtack'
+
+// PostHog client or API key can be passed explicitly, or resolved automatically via window.posthog / env vars
+const adapter = withPostHog(
+  new WebhookAdapter({ submitUrl: '/api/feedtack' }),
+  { apiKey: 'phc_...' } // or pass posthog client instance
+)
+```
+
 ## The payload
 
 Every submission emits a versioned JSON payload. The `scope` field indicates where the feedback lives.
